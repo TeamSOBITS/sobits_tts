@@ -39,11 +39,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 - Open JTalk (旧Text to Speech)
 - SVOX Pico TTS (旧Text to Speech)
 - Parler TTS
-
-対応予定
 - Coqui TTS
-- Fish Speech
-- Voice Vox
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -112,8 +108,11 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## マイルストーン
+- [ ] 以下のTTSに対応
+  - [ ] Fish Speech
+  - [ ] VOICEVOX
 
-現時点のバッグや新規機能の依頼を確認するためにIssueページ をご覧ください．
+現時点のバグや新規機能の依頼を確認するためにIssueページ をご覧ください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
