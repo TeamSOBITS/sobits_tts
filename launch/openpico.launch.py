@@ -1,8 +1,10 @@
+import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue 
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     tts_model_name_arg = DeclareLaunchArgument(
@@ -21,15 +23,15 @@ def generate_launch_description():
     # --- Open JTalk 固有パラメータ ---
     openpico_voice_data_ja_arg = DeclareLaunchArgument(
         'openpico_voice_data_ja',
-        default_value='/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice',
+        # default_value='/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice',
+        # その他の Open JTalk 音声データ例
+        # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_angry.htsvoice"),
+        # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_bashful.htsvoice"),
+        # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_happy.htsvoice"),
+        default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_normal.htsvoice"),
+        # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_sad.htsvoice"),
+        
         description='Path to Open JTalk voice data (.htsvoice file).'
-        # その他の Open JTalk 音声データ例（システムにインストールされている場合）
-        # default_value='/usr/share/hts-voice/mei/mei_normal.htsvoice',
-        # default_value='/usr/share/hts-voice/mei/mei_angry.htsvoice',
-        # default_value='/usr/share/hts-voice/mei/mei_bashful.htsvoice',
-        # default_value='/usr/share/hts-voice/mei/mei_happy.htsvoice',
-        # default_value='/usr/share/hts-voice/mei/mei_sad.htsvoice',
-        # default_value='/usr/share/hts-voice/cmu-arctic-slt/cmu_us_arctic_slt.htsvoice', # 英語音声の例
     )
     openpico_dic_path_ja_arg = DeclareLaunchArgument(
         'openpico_dic_path_ja',
