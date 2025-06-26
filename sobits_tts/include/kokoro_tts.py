@@ -1,7 +1,7 @@
-# sobits_tts/include/kokoro_tts.py
 from rclpy.node import Node
-# BaseTTSModel のインポートパスを include ディレクトリに変更
+# BaseTTSModelを継承
 from sobits_tts.include._base_tts import BaseTTSModel
+
 from kokoro import KPipeline
 import numpy as np
 import torch
