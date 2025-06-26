@@ -3,12 +3,13 @@ from rclpy.node import Node
 import pygame
 import time
 import importlib
-import io # Pygame mixer.music.load が BytesIO を直接受け入れるため、ここに残す
+import io
+import traceback
 
 from sobits_interfaces.action import TextToSpeech
 from rclpy.action import ActionServer, GoalResponse, CancelResponse
 
-# TTSモデルインターフェースのインポート（パスを include ディレクトリに変更）
+# TTSモデルインターフェースのインポート
 from sobits_tts.include._base_tts import BaseTTSModel
 
 class TTSActionServer(Node):
@@ -28,7 +29,6 @@ class TTSActionServer(Node):
 
         # 1. モデル固有モジュールのロードと初期化
         try:
-            # モジュールパスを include ディレクトリに変更
             module_path = f'sobits_tts.include.{self.tts_model_name}_tts'
             tts_model_module = importlib.import_module(module_path)
             
@@ -39,7 +39,6 @@ class TTSActionServer(Node):
             ModelClass = getattr(tts_model_module, model_class_name)
             
             # モデルインスタンスを生成し、ROSノードと共通のサンプルレートを渡す
-            # モデルクラスがBaseTTSModelを継承していることを前提とする
             if not issubclass(ModelClass, BaseTTSModel):
                 raise TypeError(f"Model class {model_class_name} does not inherit from BaseTTSModel. Please check its definition.")
 
@@ -54,9 +53,11 @@ class TTSActionServer(Node):
             raise RuntimeError(f"Model class not found for '{self.tts_model_name}'.")
         except TypeError as e:
             self.get_logger().fatal(f"Type error during model initialization for '{self.tts_model_name}': {e}")
+            self.get_logger().fatal(traceback.format_exc()) 
             raise RuntimeError(f"Model initialization failed for '{self.tts_model_name}'.")
         except Exception as e:
-            self.get_logger().fatal(f"An unexpected error occurred during TTS model loading/initialization for '{self.tts_model_name}': {e}", exc_info=True)
+            self.get_logger().fatal(f"An unexpected error occurred during TTS model loading/initialization for '{self.tts_model_name}': {e}") # exc_info=True を削除
+            self.get_logger().fatal(traceback.format_exc()) 
             raise RuntimeError(f"Failed to load or initialize TTS model '{self.tts_model_name}'.")
         
         # 2. Pygameミキサーの初期化 (共通部分)
@@ -100,7 +101,6 @@ class TTSActionServer(Node):
 
     def cancel_callback(self, goal_handle):
         self.get_logger().debug('Received cancel request.')
-        # TODO: 再生中の場合は停止ロジックを追加検討
         return CancelResponse.ACCEPT
 
     def execute_callback(self, goal_handle):
@@ -130,7 +130,7 @@ class TTSActionServer(Node):
 
         try:
             # TTSモデル固有のインスタンスの音声生成関数を呼び出す
-            # この関数は推定再生時間とBytesIOオブジェクトを返す
+            # 返り値は推定再生時間とBytesIOオブジェクト
             play_time, audio_buffer = self._tts_model_instance.generate_audio(text)
 
             if audio_buffer is None or play_time <= 0:
@@ -189,10 +189,12 @@ class TTSActionServer(Node):
         # エラーハンドリング
         except pygame.error as e:
             self.get_logger().error(f"Pygame error during audio playback: {e}")
+            self.get_logger().error(traceback.format_exc()) # tracebackを別途出力
             response.success = False
             goal_handle.abort()
         except Exception as e:
-            self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}", exc_info=True)
+            self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}") # exc_info=True を削除
+            self.get_logger().error(traceback.format_exc()) # tracebackを別途出力
             response.success = False
             goal_handle.abort()
         
@@ -206,31 +208,30 @@ def main(args=None):
         rclpy.spin(action_server)
     except RuntimeError as e:
         # モデルロードやPygame初期化に失敗した場合の致命的なエラーハンドリング
-        # ノードが作成されていない可能性も考慮
-        if action_server and rclpy.ok(): # action_serverが作成済みでROSがまだ動いている場合
-            action_server.get_logger().fatal(f"TTS Action Server could not be started due to initialization failure: {e}")
+        if action_server and rclpy.ok(): 
+            action_server.get_logger().fatal(f"TTS Action Server could not be started due to initialization failure: {e}") 
+            action_server.get_logger().fatal(traceback.format_exc()) # tracebackを別途出力
         else:
-            # ノード初期化前にエラーが発生した場合や、ROSがシャットダウンしている場合
-            # 一時的なノードを作成してログを出力し、すぐに破棄
             try:
                 temp_node = rclpy.create_node('tts_server_fatal_logger')
-                temp_node.get_logger().fatal(f"Failed to initialize TTS Action Server: {e}")
+                temp_node.get_logger().fatal(f"Failed to initialize TTS Action Server: {e}") 
+                temp_node.get_logger().fatal(traceback.format_exc()) # tracebackを別途出力
                 temp_node.destroy_node()
             except Exception as log_e:
-                # ロガー作成自体が失敗した場合（稀だが念のため）
                 print(f"FATAL ERROR: Could not initialize logger or TTS Action Server: {e}, Logger error: {log_e}")
-
     except KeyboardInterrupt:
         # Ctrl+Cによる正常終了を捕捉
         pass 
     except Exception as e:
         # その他の予期せぬエラー
         if action_server and rclpy.ok():
-            action_server.get_logger().fatal(f"An unexpected error occurred in main loop: {e}", exc_info=True)
+            action_server.get_logger().fatal(f"An unexpected error occurred in main loop: {e}") # exc_info=True を削除
+            action_server.get_logger().fatal(traceback.format_exc()) # tracebackを別途出力
         else:
             try:
                 temp_node = rclpy.create_node('tts_server_fatal_logger')
-                temp_node.get_logger().fatal(f"An unexpected error occurred before node creation: {e}", exc_info=True)
+                temp_node.get_logger().fatal(f"An unexpected error occurred before node creation: {e}")
+                temp_node.get_logger().fatal(traceback.format_exc()) # tracebackを別途出力
                 temp_node.destroy_node()
             except Exception as log_e:
                 print(f"FATAL ERROR: Could not initialize logger or TTS Action Server: {e}, Logger error: {log_e}")
