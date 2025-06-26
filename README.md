@@ -25,6 +25,8 @@
 対応予定
 - Coqui TTS
 - Parler TTS
+- Fish Speech
+- Voice Vox
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
