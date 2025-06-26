@@ -5,6 +5,8 @@ echo "╔══╣ Install: sobits_tts Common Dependencies (STARTING) ╠══�
 # システムのパッケージリストを更新
 sudo apt update -y
 
+sudo apt install -y ros-humble-vision-msgs
+
 echo "--- Installing Common APT Dependencies ---"
 # サウンド再生に必要なALSAユーティリティ
 sudo apt install -y \
