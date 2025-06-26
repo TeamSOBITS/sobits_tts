@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'tts_action_server = sobits_tts.tts_action_server:main',
+            'tts_action_client = sobits_tts.tts_action_client:main',
         ],
     },
 )
