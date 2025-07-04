@@ -36,8 +36,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 現在以下のTTSに対応しています．
 - Kokoro TTS
-- Open JTalk (旧Text to Speech)
-- SVOX Pico TTS (旧Text to Speech)
+- Open JTalk, SVOX Pico TTS (旧Text to Speech)
 - Parler TTS
 - Coqui TTS
 
@@ -99,7 +98,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 | TTS名                       | 精度 | 生成速度 | 特徴 | 
 | ---                         | -- |--- |--- |
-| [Kokoro](README_detail.md)                      | ○ | ○ | --- |
+| [Kokoro](README_detail.md)                      | ◯ | ○ | --- |
 | [OpenPico (旧Text to Speech)](README_detail.md) | △ | ◎ | --- |
 | [Coqui](README_detail.md)                       | ○ | ○ | --- |
 | [Parler](README_detail.md)                     | ◎ | △ | 感情指定が可能なモデルあり |

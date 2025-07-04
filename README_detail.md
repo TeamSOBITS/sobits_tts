@@ -16,7 +16,7 @@
 </details>
 
 # Kokoro TTS
-Kokoroは，8,200万のパラメータを持つオープンウェイトのTTS（Text-to-Speech：音声合成）モデルです．
+[Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)は，8,200万のパラメータを持つオープンウェイトのTTS（Text-to-Speech：音声合成）モデルです．
 軽量なアーキテクチャにもかかわらず，大規模モデルに匹敵する品質を実現し，同時に処理速度とコスト効率を大幅に向上させています．
 
 ## インストール方法
@@ -122,9 +122,9 @@ kokoro_split_regex_arg = DeclareLaunchArgument(
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 # OpenPico
-OpenPicoはOpenJTalkとpico2waveを組み合わせたものです．
+OpenPicoは[OpenJTalk](https://open-jtalk.sourceforge.net/)と[SVOX Pico](https://www.openhab.org/addons/voice/picotts/)を組み合わせたものです．
 OpenJTalkは日本語のテキストを音声に変換するためのオープンソースの音声合成ソフトウェアです．
-pico2waveは様々な言語に対応した軽量なテキスト音声変換（TTS）エンジンです．
+SVOX Picoは様々な言語に対応した軽量なテキスト音声変換（TTS）エンジンです．
 
 
 ## インストール方法
@@ -164,12 +164,12 @@ OpenPicoは以下の言語に対応しています．\
 
 ### 話者
 OpenPicoは日本語のみ様々な話者に対応しています．\
-[openpico.launch.py](launch/openpico.launch.py)の**openpico_voice_data_ja**を使用する話者のファイルパスに書き換えてください．\
+[openpico.launch.py](launch/openpico.launch.py)の**openpico_voice_data_ja**を使用する話者のファイルパスに書き換えてください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 # Coqui TTS
-Coqui TTSは，テキストから音声を生成するためのオープンソースの音声合成ツールキットです．
+[Coqui TTS](https://github.com/coqui-ai/TTS)は，テキストから音声を生成するためのオープンソースの音声合成ツールキットです．
 
 ## インストール方法
 1.  sobits_ttsのinstallディレクトリに移動
