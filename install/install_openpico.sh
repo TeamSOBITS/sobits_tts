@@ -1,20 +1,38 @@
-#!/bin/bash
+#! /bin/bash
 
-echo "╔══╣ Install: Open JTalk & Pico TTS Dependencies (STARTING) ╠══╗"
+echo "╔══╣ Install: OpenPico TTS (STARTING) ╠══╗"
 
-# システムのパッケージリストを更新 (念のためここでも実行)
 sudo apt update -y
 
-echo "--- Installing Open JTalk Dependencies ---"
-# Open JTalk 本体
+echo "Install gTTS"
+python3 -m pip install gTTS==2.0.1
+python3 -m pip install gTTS-token --upgrade
+
+echo "Install mpg321"
+sudo apt install -y \
+    mpg321
+
+echo "Install voice data"
 sudo apt install -y \
     open-jtalk \
     open-jtalk-mecab-naist-jdic \
     hts-voice-nitech-jp-atr503-m001
 
-echo "--- Installing Pico TTS Dependencies ---"
-# Pico TTS 本体 (pico2wave コマンドを含む)
+echo "Install wave"
+python3 -m pip install \
+    wave
+
+echo "Install mutagen"
+python3 -m pip install \
+    mutagen
+
+echo "Install pico2wave"
 sudo apt install -y \
     libttspico-utils
 
-echo "╚══╣ Install: Open JTalk & Pico TTS Dependencies (FINISHED) ╠══╝"
+echo "Install alsa"
+sudo apt install -y \
+    alsa \
+    alsa-utils
+
+echo "╚══╣ Install: OpenPico TTS (FINISHED) ╠══╝"
