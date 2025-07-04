@@ -98,10 +98,10 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 | TTS名                       | 精度 | 生成速度 | 特徴 | 
 | ---                         | -- |--- |--- |
-| [Kokoro](README_detail.md)                      | ◯ | ○ | --- |
-| [OpenPico (旧Text to Speech)](README_detail.md) | △ | ◎ | --- |
-| [Coqui](README_detail.md)                       | ○ | ○ | --- |
-| [Parler](README_detail.md)                     | ◎ | △ | 感情指定が可能なモデルあり |
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ◯ | ◯ | --- |
+| [OpenPico (旧Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △ | ◎ | --- |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ◯ | ◯ | --- |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎ | △ | 感情指定が可能なモデルあり |
 
 
 
