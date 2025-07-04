@@ -10,112 +10,117 @@
 
 # SOBITS TTS
 
-# 作成中
-<!-- 目次 -->
 <details>
-  <summary>目次</summary>
-  <ol>
-    <li>
-      <a href="#概要">概要</a>
-    </li>
-    <li>
-      <a href="#セットアップ">セットアップ</a>
-      <ul>
-        <li><a href="#環境条件">環境条件</a></li>
-        <li><a href="#インストール方法">インストール方法</a></li>
-      </ul>
-    </li>
-    <li><a href="#実行・操作方法">実行・操作方法</a></li>
-    <li><a href="#マイルストーン">マイルストーン</a></li>
-  </ol>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#getting-started">Getting Started</a>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#launch-and-usage">Launch and Usage</a></li>
+<li><a href="#milestones">Milestones</a></li>
+</ol>
 </details>
 
-<!-- レポジトリの概要 -->
-## 概要
-SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ，まとめたものです．
+## Introduction
 
-現在以下のTTSに対応しています．
-- Kokoro TTS
-- Open JTalk (旧Text to Speech)
-- SVOX Pico TTS (旧Text to Speech)
-- Parler TTS
+SOBITS TTS integrates various Text-to-Speech (TTS) engines with ROS2 Action communication.
 
-対応予定
-- Coqui TTS
-- Fish Speech
-- Voice Vox
+Currently, it supports the following TTS engines:
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+  - Kokoro TTS
+  - Open JTalk, SVOX Pico TTS (formerly Text to Speech)
+  - Parler TTS
+  - Coqui TTS
 
-<!-- セットアップ -->
-## セットアップ
-ここで，本レポジトリのセットアップ方法について説明します．
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+## Getting Started
 
-### 環境条件
-まず，以下の環境を整えてから，次のインストール方法に進んでください．
+This section explains how to set up this repository.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Prerequisites
+
+First, ensure you have the following environment set up before proceeding with the installation method.
 | System  | Version |
 | --- | --- |
 | Ubuntu | 22.04 (Jammy Jellyfish) |
 | ROS    | Humble Hawksbill |
 | Python | 3.10 |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### インストール方法
-1. ROS2の`src`フォルダに移動します．
+### Installation
+
+1.  Navigate to your ROS2 `src` folder.
+
     ```sh
     cd ~/colcon_ws/src/
     ```
 
-2. 本レポジトリをcloneします．
+2.  Clone this repository.
+
     ```sh
     git clone -b humble-devel https://github.com/TeamSOBITS/sobits_tts.git
     ```
-3. レポジトリの中へ移動します．
+
+3.  Move into the repository directory.
+
     ```sh
     cd sobits_tts/
     ```
-4. 依存パッケージをインストールします．
+
+4.  Install the dependent packages.
+
     ```sh
     bash install.sh
     ```
-5. パッケージをコンパイルします．
+
+5.  Compile the package.
+
     ```sh
     cd ~/colcon_ws/
     ```
+
     ```sh
     colcon build --symlink-install
     ```
+
     ```sh
     source ~/colcon_ws/install/setup.sh
     ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- 実行・操作方法 -->
-## 実行・操作方法
+## Launch and Usage
 
-実行する前に，使用するTTSのモデルをダウンロードする必要があります．
+Before running, you need to download the models for the TTS engine you intend to use.
 
-各TTS名をクリックするとダウンロードと実行方法を閲覧できます．
+Click on each TTS name to view download and execution instructions.
 
-| TTS名                       | 精度 | 生成速度 | 特徴 | 
-| ---                         | -- |--- |--- |
-| [Kokoro]()                      | ○ | ○ |--- |
-| [OpenPico (旧Text to Speech)]() | △ | ◎ |--- |
-| [Parler]()                     | ◎ | △ | 感情指定が可能なモデルあり |
-| [Coqui]()                       | --- |--- |--- |
+| TTS Name                    | Accuracy | Generation Speed | Features                               |
+| ---                         | --       | ---              | ---                                    |
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ◯        | ◯                | ---                                    |
+| [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △        | ◎                | ---                                    |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+## Milestones
 
-## マイルストーン
+  - [ ] Support for the following TTS engines:
+      - [ ] Fish Speech
+      - [ ] VOICEVOX
 
-現時点のバッグや新規機能の依頼を確認するためにIssueページ をご覧ください．
+Please refer to the Issue page for current bugs and feature requests.
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
