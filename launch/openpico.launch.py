@@ -7,8 +7,8 @@ from launch_ros.parameter_descriptions import ParameterValue
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    tts_model_name_arg = DeclareLaunchArgument(
-        'tts_model_name',
+    tts_name_arg = DeclareLaunchArgument(
+        'tts_name',
         default_value='openpico', # モデル名を 'openpico' に設定
         description='Name of the TTS model to use (e.g., kokoro, openpico).'
     )
@@ -57,7 +57,7 @@ def generate_launch_description():
         name='tts_action_server',
         output='screen', 
         parameters=[
-            {'tts_model_name': LaunchConfiguration('tts_model_name')},
+            {'tts_name': LaunchConfiguration('tts_name')},
             
             # OpenPicoTTSModel 固有のパラメータ
             {'openpico.language': LaunchConfiguration('openpico_language')},
@@ -69,7 +69,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        tts_model_name_arg,
+        tts_name_arg,
         openpico_language_arg,
         openpico_voice_data_ja_arg,
         openpico_dic_path_ja_arg,

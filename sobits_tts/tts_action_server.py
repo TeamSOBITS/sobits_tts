@@ -14,16 +14,11 @@ from rclpy.action import ActionServer, GoalResponse, CancelResponse
 from sobits_tts.include._base_tts import BaseTTSModel
 
 class TTSActionServer(Node):
-    """
-    Text-to-Speech (TTS) アクションサーバーを実装するROS 2ノード。
-    指定されたTTSモデルを使用してテキストを音声に変換し、再生します。
-    """
     def __init__(self):
         super().__init__('tts_action_server')
-
-        self.declare_parameter('tts_model_name', 'kokoro')
-        self.tts_model_name = self.get_parameter('tts_model_name').get_parameter_value().string_value
-        self.get_logger().info(f"Selected TTS model: {self.tts_model_name}")
+        self.declare_parameter('tts_name', 'kokoro')
+        self.tts_name = self.get_parameter('tts_name').get_parameter_value().string_value
+        self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
         self.sample_rate = 24000 
 
@@ -31,40 +26,35 @@ class TTSActionServer(Node):
         self._mixer_initialized = False
 
         try:
-            share_directory = get_package_share_directory('sobits_tts')
-            colcon_ws_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(share_directory))))
-            package_source_root = os.path.join(colcon_ws_root, 'src', 'sobits_tts')
+            self.save_dir = os.path.join(get_package_share_directory('sobits_tts'), 'soundfile')
+            self.output_filename = 'output.wav'
+            self.output_filepath = os.path.join(self.save_dir, self.output_filename)
 
         except Exception as e:
             self.get_logger().fatal(f"Could not determine package source root directory: {e}")
             self.get_logger().fatal(traceback.format_exc())
             raise RuntimeError("Failed to determine package source path.")
 
-        self.save_dir = os.path.join(package_source_root, 'soundfile')
-        self.output_filename = 'output.wav'
-        self.output_filepath = os.path.join(self.save_dir, self.output_filename)
-
         os.makedirs(self.save_dir, exist_ok=True)
         self.get_logger().info(f"Audio files will be saved to: {self.save_dir}")
 
         try:
-            module_path = f'sobits_tts.include.{self.tts_model_name}_tts'
+            module_path = f'sobits_tts.include.{self.tts_name}_tts'
             tts_model_module = importlib.import_module(module_path)
 
-            # 例: 'coqui_tts' -> 'CoquiTTSModel'
-            model_class_name = f"{self.tts_model_name.capitalize()}TTSModel"
+            model_class_name = f"{self.tts_name.capitalize()}TTSModel"
             ModelClass = getattr(tts_model_module, model_class_name)
 
             if not issubclass(ModelClass, BaseTTSModel):
                 raise TypeError(f"Model class {model_class_name} does not inherit from BaseTTSModel. Please check its definition.")
 
             self._tts_model_instance = ModelClass(node=self, sample_rate=self.sample_rate)
-            self.get_logger().info(f"Successfully loaded and initialized TTS model '{self.tts_model_name}'.")
+            self.get_logger().info(f"Successfully loaded and initialized TTS'{self.tts_name}'.")
 
         except Exception as e:
-            self.get_logger().fatal(f"An error occurred during TTS model loading/initialization for '{self.tts_model_name}': {e}")
+            self.get_logger().fatal(f"An error occurred during TTS loading/initialization for '{self.tts_name}': {e}")
             self.get_logger().fatal(traceback.format_exc())
-            raise RuntimeError(f"Failed to load or initialize TTS model '{self.tts_model_name}'.")
+            raise RuntimeError(f"Failed to load or initialize TTS '{self.tts_name}'.")
 
         try:
             pygame.mixer.init(frequency=self.sample_rate, size=-16, channels=1, buffer=512)
@@ -82,14 +72,10 @@ class TTSActionServer(Node):
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
 
-        self.get_logger().info(f"TTS Action Server ready with model: {self.tts_model_name}")
+        self.get_logger().info(f"TTS Action Server ready with: {self.tts_name}")
 
     def destroy_node(self):
-        """
-        ノードが破棄されるときに呼び出されるクリーンアップメソッド。
-        Pygameミキサーを停止・終了します。
-        """
-        self.get_logger().info('Shutting down TTS action server...')
+        self.get_logger().info('Shutting down pygame...')
         if pygame.mixer.get_init():
             try:
                 pygame.mixer.music.stop()
@@ -100,30 +86,17 @@ class TTSActionServer(Node):
         super().destroy_node()
 
     def goal_callback(self, goal_request):
-        """
-        アクションゴールリクエストが受信されたときに呼び出されるコールバック。
-        リクエストされたテキストをログに出力し、ミキサーとTTSモデルの初期化状態に基づいて
-        ゴールを ACCEPT または REJECT します。
-        """
         self.get_logger().debug(f"Received goal request with text: '{goal_request.text}'")
         if not self._mixer_initialized or self._tts_model_instance is None:
-            self.get_logger().error("Mixer or TTS model not initialized. Rejecting goal.")
+            self.get_logger().error("Mixer or TTS not initialized. Rejecting goal.")
             return GoalResponse.REJECT
         return GoalResponse.ACCEPT
 
     def cancel_callback(self, goal_handle):
-        """
-        アクションキャンセルリクエストが受信されたときに呼び出されるコールバック。
-        キャンセルリクエストを受け入れます。
-        """
         self.get_logger().debug('Received cancel request.')
         return CancelResponse.ACCEPT
 
     def execute_callback(self, goal_handle):
-        """
-        アクションゴールが実行されるときに呼び出されるコールバック。
-        テキストを音声に変換し、再生し、フィードバックをパブリッシュします。
-        """
         feedback = TextToSpeech.Feedback()
         response = TextToSpeech.Result()
         text = goal_handle.request.text
@@ -134,7 +107,7 @@ class TTSActionServer(Node):
             goal_handle.abort()
             return response
 
-        self.get_logger().info(f"Processing text: [{text}] using {self.tts_model_name} model.")
+        self.get_logger().info(f"Processing text: [{text}] using {self.tts_name}.")
 
         if not pygame.mixer.get_init() or self._tts_model_instance is None:
             self.get_logger().error("Pygame mixer or TTS model is not initialized. Cannot play audio.")
@@ -150,7 +123,7 @@ class TTSActionServer(Node):
             play_time, audio_buffer = self._tts_model_instance.generate_audio(text)
 
             if audio_buffer is None or play_time <= 0:
-                self.get_logger().error(f"Audio buffer generation failed or invalid play time ({play_time:.2f}s) from '{self.tts_model_name}' model. Check model logs for details.")
+                self.get_logger().error(f"Audio buffer generation failed or invalid play time ({play_time:.2f}s) from '{self.tts_name}' model. Check model logs for details.")
                 response.success = False
                 goal_handle.abort()
                 return response

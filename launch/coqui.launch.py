@@ -13,8 +13,8 @@ def generate_launch_description():
 
     # 使用するTTSモデル名をROSパラメータとして宣言
     # このLaunchファイルではCoqui TTSを使用するため、デフォルトを 'coqui' に設定
-    tts_model_name_arg = DeclareLaunchArgument(
-        'tts_model_name',
+    tts_name_arg = DeclareLaunchArgument(
+        'tts_name',
         default_value='coqui', # Coqui TTS モデルを指定
         description='Name of the TTS model to use (e.g., kokoro, openpico, parler, coqui).'
     )
@@ -57,7 +57,7 @@ def generate_launch_description():
         name='tts_action_server',
         output='screen', 
         parameters=[
-            {'tts_model_name': LaunchConfiguration('tts_model_name')},
+            {'tts_name': LaunchConfiguration('tts_name')},
             {'coqui.url': LaunchConfiguration('coqui_url')},
             {'coqui.add_stop_char': LaunchConfiguration('coqui_add_stop_char')},
             {'coqui.speaker_id': LaunchConfiguration('coqui_speaker_id')},
@@ -67,7 +67,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        tts_model_name_arg,
+        tts_name_arg,
         coqui_url_arg,
         coqui_add_stop_char_arg,
         coqui_speaker_id_arg,

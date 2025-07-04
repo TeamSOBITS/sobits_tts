@@ -6,8 +6,8 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue 
 
 def generate_launch_description():
-    tts_model_name_arg = DeclareLaunchArgument(
-        'tts_model_name',
+    tts_name_arg = DeclareLaunchArgument(
+        'tts_name',
         default_value='parler', # モデル名を 'parler_tts' に設定
         description='Name of the TTS model to use (e.g., kokoro, openpico, parler_tts).'
     )
@@ -44,7 +44,7 @@ def generate_launch_description():
         name='tts_action_server',
         output='screen', 
         parameters=[
-            {'tts_model_name': LaunchConfiguration('tts_model_name')},
+            {'tts_name': LaunchConfiguration('tts_name')},
             {'parler_tts.model_name': LaunchConfiguration('parler_tts_model_name')},
             {'parler_tts.description': LaunchConfiguration('parler_tts_description')},
             {'parler_tts.device': LaunchConfiguration('parler_tts_device')},
@@ -52,7 +52,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        tts_model_name_arg,
+        tts_name_arg,
         parler_tts_model_name_arg,
         parler_tts_description_arg,
         parler_tts_device_arg,

@@ -5,8 +5,8 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue 
 
 def generate_launch_description():
-    tts_model_name_arg = DeclareLaunchArgument(
-        'tts_model_name',
+    tts_name_arg = DeclareLaunchArgument(
+        'tts_name',
         default_value='kokoro',
         description='Name of the TTS model to use (e.g., kokoro, parler).'
     )
@@ -60,7 +60,7 @@ def generate_launch_description():
         name='tts_action_server',
         output='screen', 
         parameters=[
-            {'tts_model_name': LaunchConfiguration('tts_model_name')},
+            {'tts_name': LaunchConfiguration('tts_name')},
             {'kokoro.lang_code': LaunchConfiguration('kokoro_lang_code')},
             {'kokoro.voice': LaunchConfiguration('kokoro_voice')},
             {'kokoro.speech_speed': LaunchConfiguration('kokoro_speech_speed')},
@@ -69,7 +69,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        tts_model_name_arg,
+        tts_name_arg,
         kokoro_lang_code_arg,
         kokoro_voice_arg,
         kokoro_speech_speed_arg,
