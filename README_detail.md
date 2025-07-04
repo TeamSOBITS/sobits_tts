@@ -30,6 +30,8 @@ Kokoroは，8,200万のパラメータを持つオープンウェイトのTTS（
     bash kokoro.sh
     ```
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
 ## 実行・操作方法
 1. [kokoro.launch.py](launch/kokoro.launch.py)を起動
     ```bash
@@ -37,6 +39,8 @@ Kokoroは，8,200万のパラメータを持つオープンウェイトのTTS（
     ```
 
 2. Action Clientを起動
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## パラメータ
 
@@ -117,7 +121,12 @@ kokoro_split_regex_arg = DeclareLaunchArgument(
 ```
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-# OpenPico (旧Text_to_Speech)
+# OpenPico
+OpenPicoはOpenJTalkとpico2waveを組み合わせたものです．
+OpenJTalkは日本語のテキストを音声に変換するためのオープンソースの音声合成ソフトウェアです．
+pico2waveは様々な言語に対応した軽量なテキスト音声変換（TTS）エンジンです．
+
+
 ## インストール方法
 1. sobits_ttsのinstallディレクトリに移動
     ```sh
@@ -128,6 +137,8 @@ kokoro_split_regex_arg = DeclareLaunchArgument(
     ```bash
     bash openpico.sh
     ```
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## 実行・操作方法
 1. [openpico.launch.py](launch/openpico.launch.py)を起動
@@ -155,24 +166,10 @@ OpenPicoは以下の言語に対応しています．\
 OpenPicoは日本語のみ様々な話者に対応しています．\
 [openpico.launch.py](launch/openpico.launch.py)の**openpico_voice_data_ja**を使用する話者のファイルパスに書き換えてください．\
 
-  ```python
-  openpico_voice_data_ja_arg = DeclareLaunchArgument(
-      'openpico_voice_data_ja',
-      # default_value='/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice',
-      # その他の Open JTalk 音声データ例
-      # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_angry.htsvoice"),
-      # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_bashful.htsvoice"),
-      # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_happy.htsvoice"),
-      default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_normal.htsvoice"),
-      # default_value = os.path.join(get_package_share_directory("sobits_tts"), "install", "mei_sad.htsvoice"),
-      
-      description='Path to Open JTalk voice data (.htsvoice file).'
-  )
-  ```
-
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 # Coqui TTS
+Coqui TTSは，テキストから音声を生成するためのオープンソースの音声合成ツールキットです．
 
 ## インストール方法
 1.  sobits_ttsのinstallディレクトリに移動
@@ -217,13 +214,15 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
     ```
 3.  Action Clientを起動
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
 ## パラメータ
 [coqui.launch.py](launch/coqui.launch.py)で以下のパラメータを指定できます．
 
 | パラメータ  | パラメータ名 | 説明 | デフォルト値 |
 | ----- | ----- | ----- | ----- |
-| 対応言語 | coqui_language_id | 使用する言語のID | |
-| 話者 | coqui_speaker_id | 使用する話者のID | p225 |
+| 対応言語 | coqui_language_id | 使用する言語のID (英語のみ) | |
+| 話者 | coqui_speaker_id | 使用する話者のID (p225 ~ p376) | p225 |
 | 句読点の自動追加 | coqui_add_stop_char | テキストの最後に句読点を自動追加するかどうか | True |
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
@@ -243,6 +242,8 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
     ```bash
     bash parler.sh
     ```
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## 実行・操作方法
 1. [parler.launch.py](launch/parler.launch.py)を起動 (時間がかかるので注意)
@@ -299,6 +300,8 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
       default_value='Alisa.fast speed. Expression is rich. The speaking voice is noisy.',
       ```
 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
 ### 話し方
 次のような単純なテキストプロンプトで話し方を変更することができます．
 - 例1
@@ -313,8 +316,8 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 - 最高品質のオーディオを生成するには「very clear audio」という用語を含め，高レベルのバックグラウンドノイズには「very noisy audio」という用語を含めます
 - 残りの音声機能(性別，発話速度，ピッチ，残響)は，プロンプトから直接制御できます
-- 声の距離は必要ないかも（そもそも声の大きさが変わらない）
-- A female（ランダム）にしても出力時間は変わらない（若干遅いときもあるけど）
+- 声の大きさが変わらないため声の距離の指定は必要ない
+- 話者をランダムにしても出力時間は変化なし
 
 - 感情指定可能モデルについて
     - "happy", "confused", "laughing", "sad", "whisper", "emphasis"などの感情を指定できます.
