@@ -105,10 +105,10 @@ Click on each TTS name to view download and execution instructions.
 
 | TTS Name                    | Accuracy | Generation Speed | Features                               |
 | ---                         | --       | ---              | ---                                    |
-| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ◯        | ◯                | ---                                    |
-| [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △        | ◎                | ---                                    |
-| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
-| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#kokoro-tts)                      | ◯        | ◯                | ---                                    |
+| [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
