@@ -99,11 +99,10 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 | TTS名                       | 精度 | 生成速度 | 特徴 | 
 | ---                         | -- |--- |--- |
-| [Kokoro](README_detail.md)                      | ○ | ○ | --- |
-| [OpenPico (旧Text to Speech)](README_detail.md) | △ | ◎ | --- |
-| [Coqui](README_detail.md)                       | ○ | ○ | --- |
-| [Parler](README_detail.md)                     | ◎ | △ | 感情指定が可能なモデルあり |
-
+| [Kokoro]()                      | ○ | ○ |--- |
+| [OpenPico (旧Text to Speech)]() | △ | ◎ |--- |
+| [Parler]()                     | ◎ | △ | 感情指定が可能なモデルあり |
+| [Coqui]()                       | --- |--- |--- |
 
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
