@@ -1,6 +1,4 @@
 from rclpy.node import Node
-# BaseTTSModelを継承
-from sobits_tts.include._base_tts import BaseTTSModel
 
 from kokoro import KPipeline
 import numpy as np
@@ -8,13 +6,13 @@ import torch
 import soundfile as sf
 import io
 from typing import Tuple
+from sobits_tts.include._base_tts import BaseTTSModel
 
-class KokoroTTSModel(BaseTTSModel): # BaseTTSModelを継承
+class KokoroTTSModel(BaseTTSModel):
     def __init__(self, node: Node, sample_rate: int):
-        super().__init__(node, sample_rate) # 親クラスのコンストラクタを呼び出す
+        super().__init__(node, sample_rate) 
 
         # Kokoro TTS 固有のROSパラメータをここで宣言・取得
-        # パラメータ名にはモデル固有のプレフィックス 'kokoro.' をつける
         self._node.declare_parameter('kokoro.lang_code', 'a')
         self._node.declare_parameter('kokoro.voice', 'af_heart')
         self._node.declare_parameter('kokoro.speech_speed', 1.0)
@@ -25,73 +23,39 @@ class KokoroTTSModel(BaseTTSModel): # BaseTTSModelを継承
         self.speech_speed = self._node.get_parameter('kokoro.speech_speed').get_parameter_value().double_value
         self.split_regex = self._node.get_parameter('kokoro.split_regex').get_parameter_value().string_value
 
-        # デバイスの決定
-        # TTSサーバーのコンストラクタでデバイスパラメータを受け取らないため、ここで決定
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
-        self._logger.debug(f"KokoroTTSModel using device: {self.device}")
+        self._logger.debug(f"KokoroTTS using device: {self.device}")
 
-        # KPipelineの初期化 (モデルロード)
         try:
             self.pipeline = KPipeline(lang_code=self.lang_code, device=self.device)
-            self._logger.info(f"Kokoro KPipeline initialized (Lang: {self.lang_code}, Voice: {self.voice})")
+            self._logger.info(f"Kokoro TTS initialized (Lang: {self.lang_code}, Voice: {self.voice})")
         except Exception as e:
-            self._logger.error(f"Failed to initialize Kokoro KPipeline: {e}")
-            raise # 初期化失敗時は例外を再送出し、TTSサーバーの起動を停止
+            self._logger.error(f"Failed to initialize Kokoro TTS: {e}")
+            raise 
 
     def generate_audio(self, text: str) -> Tuple[float, io.BytesIO]:
-        """
-        Kokoro TTSを使って音声データを生成する。
-        BaseTTSModelの抽象メソッドを実装。
-        """
         combined_audio_chunks = []
         total_samples = 0
 
         try:
-            # KPipelineを使用してテキストから音声を生成
             for i, result in enumerate(self.pipeline(text, voice=self.voice, speed=self.speech_speed, split_pattern=self.split_regex)):
-                # self._logger.debug(f"Processing audio chunk {i}...") # デバッグログが多い場合はコメントアウト
                 audio_chunk = result.audio
 
-                # 音声データがPyTorchテンソルであればNumPy配列に変換
                 if isinstance(audio_chunk, torch.Tensor):
                     audio_chunk = audio_chunk.cpu().numpy()
-                # 音声データがリストまたはタプルであれば各要素を処理
-                elif isinstance(audio_chunk, (list, tuple)):
-                    processed_elements = []
-                    for x in audio_chunk:
-                        if isinstance(x, torch.Tensor):
-                            processed_elements.append(x.cpu().numpy().squeeze())
-                        else:
-                            # NumPy配列でない場合、かつsqueeze可能な場合はsqueeze
-                            try:
-                                processed_elements.append(np.squeeze(x))
-                            except:
-                                self._logger.warn(f"Could not squeeze element: {type(x)}")
-                                processed_elements.append(x) # そのまま追加
-                    # 処理された要素をNumPy配列にスタック
-                    try:
-                        audio_chunk = np.stack(processed_elements, axis=0)
-                    except ValueError as e:
-                        self._logger.error(f"Error stacking audio chunks in KokoroTTSModel: {e}. Elements: {[type(el) for el in processed_elements]}")
-                        return 0.0, None
-
-                # 音声チャンクの次元を調整
                 if audio_chunk.ndim == 1:
                     final_chunk = audio_chunk
-                elif audio_chunk.ndim == 2:
-                    # 2次元の場合、行数が列数より少なければ転置 (例: (1, N) -> (N, 1))
-                    final_chunk = audio_chunk.T if audio_chunk.shape[0] < audio_chunk.shape[1] else audio_chunk
                 else:
-                    self._logger.error(f"Unsupported audio chunk shape in KokoroTTSModel: {audio_chunk.shape}. Expected 1D or 2D.")
+                    self._logger.error(f"Unsupported audio chunk shape.")
                     return 0.0, None
 
                 combined_audio_chunks.append(final_chunk) # 処理済みチャンクを追加
                 total_samples += final_chunk.shape[0] # 総サンプル数を加算
             
-        except RuntimeError as e: # KPipeline関連など、実行時のエラーのハンドリング
+        except RuntimeError as e:
             self._logger.error(f"Runtime error during Kokoro KPipeline processing: {e}", exc_info=True)
             return 0.0, None
-        except Exception as e: # その他の予期せぬエラーのハンドリング
+        except Exception as e:
             self._logger.error(f"An unexpected error occurred during Kokoro audio generation: {e}", exc_info=True)
             return 0.0, None
 
@@ -109,7 +73,6 @@ class KokoroTTSModel(BaseTTSModel): # BaseTTSModelを継承
 
         # 推定再生時間の計算
         play_time = float(total_samples) / self._sample_rate
-        # self._logger.debug(f"Kokoro: Total estimated play time: {play_time:.2f}s for {total_samples} samples.") # デバッグログが多い場合はコメントアウト
 
         # 再生時間が無効な場合
         if play_time <= 0:
@@ -117,11 +80,9 @@ class KokoroTTSModel(BaseTTSModel): # BaseTTSModelを継承
             return 0.0, None
 
         try:
-            buffer = io.BytesIO() # インメモリのバイトストリームを作成
-            # 音声データをWAV形式でバッファに書き込む
-            # subtype='PCM_16' は16ビットPCM形式を指定
+            buffer = io.BytesIO()
             sf.write(buffer, combined_audio, self._sample_rate, format='WAV', subtype='PCM_16')
-            buffer.seek(0) # バッファの読み込み位置を先頭に戻す
+            buffer.seek(0)
             return play_time, buffer
         except Exception as e:
             self._logger.error(f"Error writing audio to buffer in KokoroTTSModel: {e}", exc_info=True)

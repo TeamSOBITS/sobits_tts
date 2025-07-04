@@ -1,22 +1,16 @@
-import rclpy
 from rclpy.node import Node
 import requests
 import io
-import wave # WAVファイルのヘッダを読み取って再生時間を計算するため
-import os # style_wav のパス処理のため
+import wave
+import os 
 from typing import Tuple
-import traceback # エラーログ用
+import traceback
 
 # BaseTTSModelを継承するため、その定義をインポート
 from sobits_tts.include._base_tts import BaseTTSModel
 
 class CoquiTTSModel(BaseTTSModel):
-    """
-    Coqui TTS (TTSサーバーAPI経由) を使用して音声合成を行うTTSモデルクラス。
-    BaseTTSModelを継承。
-    """
     def __init__(self, node: Node, sample_rate: int):
-        # BaseTTSModelのコンストラクタを呼び出す
         super().__init__(node, sample_rate)
 
         # Coqui TTS 固有のROSパラメータをここで宣言・取得
@@ -37,7 +31,7 @@ class CoquiTTSModel(BaseTTSModel):
         self.VALID_END_OF_PHRASE = ['.', ';', '!', '?']
 
         self._logger.info(f"CoquiTTSModel initialized. URL: {self.url}, Speaker ID: {self.speaker_id}")
-        self._initialized_successfully = True # 初期化成功フラグ
+        self._initialized_successfully = True
 
     def _end_text(self, text: str) -> str:
         """
@@ -48,10 +42,6 @@ class CoquiTTSModel(BaseTTSModel):
         return text
 
     def generate_audio(self, text: str) -> Tuple[float, io.BytesIO]:
-        """
-        BaseTTSModelの抽象メソッドを実装。
-        Coqui TTSサーバーのAPIを呼び出し、音声データをio.BytesIOとして返す。
-        """
         if not self._initialized_successfully:
             self._logger.error("CoquiTTS model was not initialized successfully. Cannot generate audio.")
             return 0.0, None
@@ -71,7 +61,7 @@ class CoquiTTSModel(BaseTTSModel):
             response = requests.get(
                 f"{self.url}/api/tts",
                 params=req_params,
-                timeout=30 # 30秒のタイムアウトを設定
+                timeout=30 
             )
             response.raise_for_status() # HTTPエラー (4xx, 5xx) が発生した場合に例外を発生させる
 
@@ -91,7 +81,6 @@ class CoquiTTSModel(BaseTTSModel):
             audio_buffer.seek(0) # バッファの読み取り位置を先頭に戻す
 
             try:
-                # WAVファイルのヘッダを読み取り、再生時間を計算
                 with wave.open(audio_buffer, 'r') as audio_file:
                     frame_rate = audio_file.getframerate()
                     n_frames = audio_file.getnframes()

@@ -1,16 +1,15 @@
-import rclpy
 from rclpy.node import Node
-from sobits_tts.include._base_tts import BaseTTSModel
+
 import subprocess
-import codecs
 import os
 import soundfile as sf
 import wave
 import io
 import tempfile
 from typing import Tuple
+from sobits_tts.include._base_tts import BaseTTSModel
 
-class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
+class OpenpicoTTSModel(BaseTTSModel):
     """
     Open JTalk と Pico TTS を使用して音声合成を行うTTSモデルクラス。
     BaseTTSModelを継承。
@@ -33,10 +32,9 @@ class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
 
         # 外部コマンドとファイルパスの存在チェック
         self._check_deps()
-        self._logger.info(f"OpenPicoTTSModel initialized. Default language: {self.language}")
+        self._logger.info(f"OpenPicoTTS initialized. Default language: {self.language}")
 
     def _check_deps(self):
-        """依存する外部コマンドとファイルの存在をチェックする"""
         deps = {
             self.open_jtalk_cmd: "Open JTalk",
             self.pico2wave_cmd: "Pico TTS (libttspico-utils)",
@@ -77,23 +75,18 @@ class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
         """WAVファイルの再生時間を取得するヘルパー"""
         try:
             if filepath.endswith('.wav'): # Pico TTS (soundfile) / Open JTalk (wave)
-                if self.language == 'en': # Pico TTS uses soundfile
+                if self.language == 'en':
                      with sf.SoundFile(filepath, 'r') as f:
                         return float(len(f)) / float(f.samplerate)
-                else: # Open JTalk uses wave
+                else:
                     with wave.open(filepath, "r") as wf:
                         return float(wf.getnframes()) / wf.getframerate()
-            return 0.0 # Unknown file type or error
+            return 0.0
         except Exception as e:
             self._logger.error(f"Error reading audio file '{filepath}': {e}")
             return 0.0
 
     def generate_audio(self, text: str) -> Tuple[float, io.BytesIO]:
-        """
-        BaseTTSModelの抽象メソッドを実装。
-        設定された言語に基づいてOpen JTalkまたはPico TTSを呼び出し、
-        音声データをio.BytesIOとして返す。
-        """
         play_time = 0.0
         audio_buffer = None
         
@@ -101,15 +94,13 @@ class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
             output_filepath = tmp_file.name
         
         try:
-            if self.language == "en":
-                # Pico TTS (pico2wave)
-                speech_text = codecs.decode(str(text).encode('utf-8'))
-                if not speech_text.strip(): return 0.0, None # 空白チェック
-                cmd = [self.pico2wave_cmd, '-w', output_filepath, speech_text]
+            if self.language == "en": # Pico TTS (pico2wave)
+                
+                if not text.strip(): return 0.0, None # 空白チェック
+                cmd = [self.pico2wave_cmd, '-w', output_filepath, text]
                 self._execute_tts_command(cmd) # stderr, stdout は無視
 
-            elif self.language == "ja":
-                # Open JTalk
+            elif self.language == "ja": # Open JTalk
                 cmd = [
                     self.open_jtalk_cmd, '-x', self.dic_path_ja, '-m', self.voice_data_ja,
                     '-a', '0.5', '-b', '0.3', '-r', '1.0', '-ow', output_filepath,
@@ -121,7 +112,6 @@ class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
                 self._logger.error(f"Unsupported language: {self.language}")
                 return 0.0, None
 
-            # 音声ファイルの再生時間取得とバッファへの読み込み
             play_time = self._get_audio_info(output_filepath)
             if play_time > 0:
                 with open(output_filepath, 'rb') as f:
@@ -131,13 +121,12 @@ class OpenpicoTTSModel(BaseTTSModel): # Pを小文字に変更
                 self._logger.error(f"Generated audio is invalid or empty for language '{self.language}'.")
                 return 0.0, None
 
-        except subprocess.CalledProcessError: # 外部コマンド実行失敗時
+        except subprocess.CalledProcessError:
             return 0.0, None
-        except Exception as e: # その他のエラー
+        except Exception as e:
             self._logger.error(f"An unexpected error occurred during audio generation: {e}", exc_info=True)
             return 0.0, None
         finally:
             if os.path.exists(output_filepath):
                 os.remove(output_filepath)
-
         return play_time, audio_buffer
