@@ -71,8 +71,9 @@ class TTSActionServer(Node):
             execute_callback=self.execute_callback,
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
-
-        self.get_logger().info(f"TTS Action Server ready with: {self.tts_name}")
+        YELLOW = '\033[93m'
+        ENDC = '\033[0m'
+        self.get_logger().info(f"{YELLOW}TTS Action Server ready with: {self.tts_name}{ENDC}")
 
     def destroy_node(self):
         self.get_logger().info('Shutting down pygame...')
