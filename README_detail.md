@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JP](README_detail.md) | [EN](README_detail.en.md)
+[JA](README_detail.md) | [EN](README_detail.en.md)
 
 [戻る](README.md)
 
@@ -334,31 +334,41 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 # Open Audio TTS
-Open Audio TTSはFish-Speechからブランド名を変更したTTSで，Zero-shotやFew-shotでの音声クローン、多様な感情、トーン、特殊マーカーをサポートしています．
+Open Audio TTSはZero-shotやFew-shotでの音声クローン，多様な感情，トーン，特殊マーカーをサポートしています．また，GPUでの使用を推奨します．
+
+
+Open Audio TTSは以下の言語に対応しています．言語は自動検出されるため設定する必要はありません．
+
+| | | | |
+| --- | --- | --- | --- |
+| 英語 | 中国語 | 日本語 | ドイツ語 |
+| フランス語 | スペイン語 | 韓国語 | アラビア語 |
+| ロシア語 | オランダ語 | イタリア語 | ポーランド語 |
+| ポルトガル語 |  |  |  |
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## インストール方法
 1. [Hugging Face](https://huggingface.co/)のアカウント作成
 
-    上記リンクへアクセスし、Sing UpからHugging Faceのアカウントを作成します。すでにある場合は2へ進みます。
-2. [モデルページ](https://huggingface.co/fishaudio/openaudio-s1-mini)にアクセスし、規約を読んで同意します。
-    下記のような文章がある箇所です。
+    上記リンクへアクセスし，Sing UpからHugging Faceのアカウントを作成します．既にアカウントがある場合は2へ進みます．
+2. [モデルページ](https://huggingface.co/fishaudio/openaudio-s1-mini)にアクセスし，規約を読んで同意します．
+    下記のような文章がある箇所です．
 
     You need to agree to share your contact information to access this model.
 
 3. Hugging Faceのアクセストークン作成
 
-    [Hugging Faceの設定ページ](https://huggingface.co/settings/tokens)にアクセスします。
-	「New token」をクリックし、以下のように設定します。
+    [Hugging Faceの設定ページ](https://huggingface.co/settings/tokens)にアクセスします．
+	「New token」をクリックし，以下のように設定します．
     - Token type: fine-grained
     - Token name: 任意の名前
     - User Permissions:
         - Repositories：Read access to contents of all public gated repos you can access
         - Inference: Make calls to Inference Providers
     
-    設定後、「Create token」をクリックしてトークンを生成します。
-4. ターミナルを開き，sobits_ttsのinstallディレクトリに移動します。
+    設定後，「Create token」をクリックしてトークンを生成します．
+4. ターミナルを開き，sobits_ttsのinstallディレクトリに移動します．
     ```sh
     cd ~/colcon_ws/src/sobits_tts/install/
     ```
@@ -381,49 +391,11 @@ Open Audio TTSはFish-Speechからブランド名を変更したTTSで，Zero-sh
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## パラメータ
-### 対応言語
-openaudio-s1-miniは以下の言語に対応しています。言語は自動検出するされるため、設定する必要はありません。
-
-| | | | |
-| --- | --- | --- | --- |
-| 英語 | 中国語 | 日本語 | ドイツ語 |
-| フランス語 | スペイン語 | 韓国語 | アラビア語 |
-| ロシア語 | オランダ語 | イタリア語 | ポーランド語 |
-| ポルトガル語 |  |  |  |
-
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
-
-## laucnhファイルで設定可能なパラメータ
-
-以下は[openaudio.launch.py](launch/openaudio.launch.py)で設定可能なパラメータです。
+### 感情，トーン，発話速度のコントロール
+発話させるテキストにタグを指定することで感情や発話速度，トーンを制御できます．詳細は[公式ページ](https://docs.fish.audio/emotion-control/tts-emotion-and-control-tags-user-guide)を参照してください．
 
 
-| パラメータ名                 | 説明                                | 変更の影響                                                       | デフォルト値         |
-| --- | ---------- | ------------ | -------------- |
-| `listen_address`       | APIサーバーがリクエストを受け付けるIPアドレス・ポート。    | アドレスを変更するとサーバーが待機するネットワークインタフェースや接続可能範囲が変わる。                | `0.0.0.0:8080` |
-| `use_half_precision`   | 推論に半精度（FP16）を使うか。                 | 速度とメモリ使用量が改善されるが、音質や安定性に微妙な劣化が出る場合がある。                      | `True`         |
-| `device`               | 使用する推論デバイス（`cuda` か `cpu`）。       | `cpu` にするとGPUより遅くなるが、環境に依存せずどこでも動作する。`cuda`なら高速化・FP16も利用可能。 | `cuda`         |
-| `compile_model`        | `torch.compile()`によるモデル高速化を適用するか。 | 有効化で推論は高速化するものの、初回ロード時にコンパイル時間がかかる。特に複雑なモデルでは数秒〜数十秒の遅延。     | `False`        |
-| `max_text_length`      | 入力テキストの最大文字数。                     | この長さを超えると切り捨てて複数チャンクになるため、一貫した長文生成には注意が必要だが、処理負荷は抑えられる。     | `256`          |
-| `chunk_length`         | 推論時にテキストを分割する際の1チャンクの文字数。         | 小さくすると応答開始が早くなるが、分割が細かくなり文脈つながりが損なわれる場合がある。大きくするとメモリ消費増。    | `200`          |
-| `reference_audio_path` | 声質を模倣するための参照音声のファイルの絶対パス。            | 指定するとモデルがその音声のトーン・声質を学習し出力に反映。空にすると通常の声質で出る。                | `""`           |
-| `reference_text`       | 参照音声に対応するテキスト。音声と内容を一致させるために使用。   | 設定すると精度が向上するが生成速度が遅くなる。        | `""`           |
-| `reference_id`         | 参照データに付ける識別子。                     | 複数の参照を使う際にIDで区別・管理可能。空の場合は識別なし。                             | `None`         |
-| `seed`                 | 乱数シードを固定して出力の再現性を確保。              | 毎回同じ出力が得られる。未指定だと完全ランダムな変動がある。                              | `None`         |
-| `use_memory_cache`     | 中間結果をメモリにキャッシュするか。                | キャッシュを有効にすると処理が高速化するが、メモリ使用量が増える。無効だとその分軽減。                 | `True`         |
-| `normalize`            | 出力波形の音量を一貫させる正規化を行うか。             | Falseにすると出力音声の音量にばらつきが出る。録音元の音量に依存したまま出力される。                 | `True`         |
-| `max_new_tokens`       | 生成する新トークン数の上限。                    | 上限を小さくすると短文出力や出力途中終了が多くなる。大きくすると処理時間・メモリ使用量が増える。     | `1024`         |
-| `top_p`                | トップ-pサンプリングの確率質量。                 | 小さい値（例えば0.3）にすると出力の多様性が減り安定するが、創造性が失われやすい。大きいと多様性が増す。    | `0.8`          |
-| `repetition_penalty`   | 同じフレーズの繰り返し抑制ペナルティ値。              | 値が大きいほど同一表現の繰り返しが減るが、文の自然な連続性に悪影響を及ぼす可能性もあり。                | `1.1`          |
-| `temperature`          | 出力の確率分布を平滑化／シャープ化する温度パラメータ。       | 小さくすると（例:0.2）確実性重視の出力になるが創造性が制限される。大きくすると（例:1.0）多様性や偶然性が出る。 | `0.8`          |
-
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
-
-### 感情、トーン、発話速度のコントロール
-発話させるテキストにタグを指定することで感情や発話速度、トーンを制御できます。詳細は[公式ページ](https://docs.fish.audio/emotion-control/tts-emotion-and-control-tags-user-guide)を参照してください。
-
-
-感情タグは文の先頭に、トーンマーカーと特別なマーカーは任意の位置に配置できます。
+感情タグは文の先頭に，トーンマーカーと特別なマーカーは任意の位置に配置できます．
 
 例
 ```
@@ -449,20 +421,20 @@ openaudio-s1-miniは以下の言語に対応しています。言語は自動検
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ### 音声クローンについて
-以下のコマンドで、launch起動後でも参照音声を変更できます。**参照音声ファイルの絶対パス**を書き換えてください。
+以下のコマンドで，launch起動後でも参照音声を変更できます．**参照音声ファイルの絶対パス**を書き換えてください．
 ```sh
-ros2 param set /tts_action_server openaudio_tts.reference_audio_path 参照音声ファイルの絶対パス
+ros2 param set /tts_action_server openaudio_tts.reference_audio_path ${参照音声ファイルの絶対パス}
 ```
-また、以下のコマンドでも同様に、launch起動後でも参照音声に対応するテキストを変更できます。
+また，以下のコマンドでも同様に，launch起動後でも参照音声に対応するテキストを変更できます．
 ```sh
-ros2 param set /tts_action_server openaudio_tts.reference_text 参照音声に対応するテキスト
+ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に対応するテキスト}
 ```
 
-以下に推奨する参照音声の条件について説明します。
-詳細は[公式ページ](https://docs.fish.audio/text-to-speech/voice-clone-best-practices)を参照してください。
+以下に推奨する参照音声の条件について説明します．
+詳細は[公式ページ](https://docs.fish.audio/text-to-speech/voice-clone-best-practices)を参照してください．
 
 - シングルスピーカーのみ
-- 安定した音量、トーン、感情
+- 安定した音量，トーン，感情
 - 短い一時停止(0.5秒を推奨)
 - 簡単な音声クローン作成
     - 30〜45秒の高品質オーディオ
@@ -473,5 +445,32 @@ ros2 param set /tts_action_server openaudio_tts.reference_text 参照音声に�
     - 背景雑音なし
     - 高い録音品質
     - 反響音なし
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+
+## launchファイルで設定可能なパラメータ
+
+以下は[openaudio.launch.py](launch/openaudio.launch.py)で設定可能なパラメータです．
+
+
+| パラメータ名                 | 説明                                | 変更の影響                                                       | デフォルト値         |
+| --- | ---------- | ------------ | -------------- |
+| `listen_address`       | TTSサーバーがリクエストを受け付けるIPアドレス・ポート    | アドレスを変更するとサーバーが待機するネットワークインタフェースや接続可能範囲が変わる               | `0.0.0.0:8080` |
+| `use_half_precision`   | 推論に半精度（FP16）を使用するかどうか                 | 速度とメモリ使用量が改善されるが，音質や安定性に微妙な劣化が出る場合がある                     | `True`         |
+| `device`               | 使用する推論デバイス（`cuda` か `cpu`）       | `cpu` にするとGPUより遅くなるが，環境に依存せずどこでも動作する．`cuda`なら高速化・FP16も利用可能． | `cuda`         |
+| `compile_model`        | `torch.compile()`によるモデル高速化を適用するか | 有効化で推論は高速化するが，初回ロード時にコンパイル時間がかかる．     | `False`        |
+| `max_text_length`      | 入力テキストの最大文字数                     | この長さを超えると切り捨てて複数チャンクになるため，一貫した長文生成には注意が必要だが，処理負荷は抑えられる．     | `256`          |
+| `chunk_length`         | 推論時にテキストを分割する際の1チャンクの文字数         | 小さくすると応答開始が早くなるが，分割が細かくなり文脈つながりが損なわれる場合がある．大きくするとメモリ消費増．    | `200`          |
+| `reference_audio_path` | 音声クローンのための参照音声のファイルの絶対パス            | 指定するとモデルがその音声のトーン・声質を学習し出力に反映                | `""`           |
+| `reference_text`       | 参照音声で発話されているテキスト   | 設定すると精度が向上するが生成速度が遅くなる．        | `""`           |
+| `reference_id`         | 参照データに付ける識別子                     | 複数の参照を使う際にIDで区別・管理可能．空の場合は識別なし．                             | `None`         |
+| `seed`                 | 話者の再現性を確保するための乱数シード           | 指定すると常に同じ話者で発話する．0かNoneだと完全ランダムな話者で発話する．                              | `None`         |
+| `use_memory_cache`     | 中間結果をメモリにキャッシュするかどうか                | キャッシュを有効にすると処理が高速化するが，メモリ使用量が増加する．                     | `True`         |
+| `normalize`            | 出力波形の音量を一貫させる正規化を行うかどうか             | Falseにすると出力音声の音量にばらつきが出る．録音元の音量に依存したまま出力される．                 | `True`         |
+| `max_new_tokens`       | 生成する新トークン数の上限                    | 上限を小さくすると短文出力や出力途中終了が多くなる．大きくすると処理時間・メモリ使用量が増える．     | `1024`         |
+| `top_p`                | 生成されるテキストの多様性と確実性を制御するカーネル サンプリング確率                 | 小さい値（例えば0.3）にすると出力の多様性が減り安定．大きいと多様性が増す．    | `0.8`          |
+| `repetition_penalty`   | 同じフレーズの繰り返しを抑制する値        | 値が大きいほど同一表現の繰り返しが減るが，文の自然な連続性に悪影響を及ぼす可能性もある．                | `1.1`          |
+| `temperature`          | 生成されるテキストのランダム性を調整する温度係数       | 値が大きいほど，ランダム性が増す． | `0.8`          |
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
