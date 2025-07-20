@@ -2,6 +2,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.descriptions import ParameterValue
 import os
 
 def generate_launch_description():   
@@ -10,40 +11,9 @@ def generate_launch_description():
         default_value='openaudio',
         description='Name of the TTS model to use.'
     )
-    listen_address_arg = DeclareLaunchArgument(
-        'listen_address',
-        default_value='0.0.0.0:8080',
-        description='Listen address for the OpenAudioTTS API server.'
-    )
-    use_half_precision_arg = DeclareLaunchArgument(
-        'use_half_precision',
-        default_value='True',
-        description='Use half precision (FP16) for OpenAudioTTS model.'
-    )
-    device_arg = DeclareLaunchArgument(
-        'device',
-        default_value='cuda',
-        description='Device to use for OpenAudioTTS (e.g., cuda, cpu).'
-    )
-    compile_model_arg = DeclareLaunchArgument(
-        'compile_model',
-        default_value='False',
-        description='Enable model compilation (torch.compile) for OpenAudioTTS.'
-    )
-    max_text_length_arg = DeclareLaunchArgument(
-        'max_text_length',
-        default_value='256',
-        description='Maximum text length for OpenAudioTTS.'
-    )
-
-    chunk_length_arg = DeclareLaunchArgument(
-        'chunk_length',
-        default_value='200', 
-        description='Chunk length for OpenAudioTTS inference.'
-    )
     reference_audio_path_arg = DeclareLaunchArgument(
         'reference_audio_path',
-        default_value='', 
+        default_value='/home/sobits/colcon_ws/src/sobits_tts/soundfile/record.wav', 
         description='Path to the reference audio file for OpenAudioTTS.'
     )
     reference_text_arg = DeclareLaunchArgument(
@@ -51,7 +21,6 @@ def generate_launch_description():
         default_value="", 
         description='Reference text for OpenAudioTTS (if using reference audio).'
     )
-
     reference_id_arg = DeclareLaunchArgument(
         'reference_id',
         default_value='None',
@@ -61,6 +30,11 @@ def generate_launch_description():
         'seed',
         default_value='None',
         description='Seed for OpenAudioTTS generation.'
+    )
+    chunk_length_arg = DeclareLaunchArgument(
+        'chunk_length',
+        default_value='200', 
+        description='Chunk length for OpenAudioTTS inference.'
     )
     use_memory_cache_arg = DeclareLaunchArgument(
         'use_memory_cache',
@@ -93,7 +67,32 @@ def generate_launch_description():
         description='Temperature for OpenAudioTTS.'
     )
 
-    from launch_ros.descriptions import ParameterValue
+
+    use_half_precision_arg = DeclareLaunchArgument(
+        'use_half_precision',
+        default_value='True',
+        description='Use half precision (FP16) for OpenAudioTTS model.'
+    )
+    device_arg = DeclareLaunchArgument(
+        'device',
+        default_value='cuda',
+        description='Device to use for OpenAudioTTS (e.g., cuda, cpu).'
+    )
+    compile_model_arg = DeclareLaunchArgument(
+        'compile_model',
+        default_value='False',
+        description='Enable model compilation (torch.compile) for OpenAudioTTS.'
+    )
+    max_text_length_arg = DeclareLaunchArgument(
+        'max_text_length',
+        default_value='256',
+        description='Maximum text length for OpenAudioTTS.'
+    )
+    listen_address_arg = DeclareLaunchArgument(
+        'listen_address',
+        default_value='0.0.0.0:8080',
+        description='Listen address for the OpenAudioTTS API server.'
+    )
 
     tts_server_node = Node(
         package='sobits_tts',
