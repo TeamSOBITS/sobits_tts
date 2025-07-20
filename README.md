@@ -38,6 +38,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 - Open JTalk, SVOX Pico TTS (旧Text to Speech)
 - Parler TTS
 - Coqui TTS
+- Open Audio TTS
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -103,13 +104,10 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎ | △ | 英語・日本語などに対応，感情指定が可能なモデルあり |
 | [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)                     | ◎ | △ | 英語・日本語などに対応，音声クローン，感情指定可 |
 
-
-
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ## マイルストーン
 - [ ] 以下のTTSに対応
-  - [ ] Fish Speech
   - [ ] VOICEVOX
 
 現時点のバグや新規機能の依頼を確認するためにIssueページ をご覧ください．
