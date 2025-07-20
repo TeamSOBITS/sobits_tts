@@ -53,21 +53,6 @@ class OpenaudioTTSModel(BaseTTSModel):
         self.compile_model = self._node.get_parameter('openaudio_tts.compile_model').value
         self.max_text_length = self._node.get_parameter('openaudio_tts.max_text_length').value
 
-        self.chunk_length = self._node.get_parameter('openaudio_tts.chunk_length').value
-        self.reference_id = self._node.get_parameter('openaudio_tts.reference_id').value
-        self.seed = self._node.get_parameter('openaudio_tts.seed').value
-        self.use_memory_cache = self._node.get_parameter('openaudio_tts.use_memory_cache').value
-        self.normalize = self._node.get_parameter('openaudio_tts.normalize').value
-        self.max_new_tokens = self._node.get_parameter('openaudio_tts.max_new_tokens').value
-        self.top_p = self._node.get_parameter('openaudio_tts.top_p').value
-        self.repetition_penalty = self._node.get_parameter('openaudio_tts.repetition_penalty').value
-        self.temperature = self._node.get_parameter('openaudio_tts.temperature').value
-
-        if self.use_memory_cache:
-            self.use_memory_cache = "on"
-        else:
-            self.use_memory_cache = "off"
-
         base_url = f"http://{self.listen_address.split(':')[0]}:{self.listen_address.split(':')[1]}"
         self.full_api_url = f"{base_url}/v1/tts"
 
@@ -186,8 +171,6 @@ class OpenaudioTTSModel(BaseTTSModel):
             return 0.0, None
 
         self.reference_audio_path = os.path.abspath(self._node.get_parameter('openaudio_tts.reference_audio_path').value)
-        self.reference_text = self._node.get_parameter('openaudio_tts.reference_text').value
-
         encoded_ref_audio = None
         if self.reference_audio_path:
             try:
@@ -196,16 +179,8 @@ class OpenaudioTTSModel(BaseTTSModel):
                     encoded_ref_audio = base64.b64encode(audio_bytes).decode('utf-8')
             except Exception as e:
                 self._logger.warning(f"Failed to load reference audio: {e}")
-
-        self.reference_id = None if self.reference_id == 'None' else self.reference_id
-
-        if self.seed == 'None':
-            self.seed = None
-        elif self.seed is None:
-            self.seed = None
-        else:
-            self.seed = int(self.seed)
-
+        self.reference_text = self._node.get_parameter('openaudio_tts.reference_text').value
+        
         references_payload = []
         if encoded_ref_audio:
             ref_entry = {
@@ -213,6 +188,18 @@ class OpenaudioTTSModel(BaseTTSModel):
                 "text": self.reference_text
             }
             references_payload.append(ref_entry)
+        self.reference_id = self._node.get_parameter('openaudio_tts.reference_id').value
+        self.reference_id = None if self.reference_id == 'None' else self.reference_id
+        self.chunk_length = self._node.get_parameter('openaudio_tts.chunk_length').value
+        self.seed = self._node.get_parameter('openaudio_tts.seed').value
+        self.seed = None if self.seed in ('None', None) else int(self.seed)
+        self.use_memory_cache = self._node.get_parameter('openaudio_tts.use_memory_cache').value
+        self.use_memory_cache = "on" if self.use_memory_cache else "off"
+        self.normalize = self._node.get_parameter('openaudio_tts.normalize').value
+        self.max_new_tokens = self._node.get_parameter('openaudio_tts.max_new_tokens').value
+        self.top_p = self._node.get_parameter('openaudio_tts.top_p').value
+        self.repetition_penalty = self._node.get_parameter('openaudio_tts.repetition_penalty').value
+        self.temperature = self._node.get_parameter('openaudio_tts.temperature').value
 
         payload = {
             "text": text,
