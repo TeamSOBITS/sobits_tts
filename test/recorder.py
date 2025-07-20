@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
     while True:
         try:
-            recording_duration_str = input("How many seconds would you like to record? (e.g., 5): ")
+            recording_duration_str = input("Input seconds to record? (example: 5): ")
             recording_duration_seconds = float(recording_duration_str)
             if recording_duration_seconds <= 0:
                 print("Please enter a number greater than 0.")
