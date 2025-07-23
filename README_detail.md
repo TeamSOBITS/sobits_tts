@@ -124,6 +124,8 @@ kokoro_split_regex_arg = DeclareLaunchArgument(
 ```
 <p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
+<a name="openpico-top"></a>
+
 # OpenPico
 OpenPicoは[OpenJTalk](https://open-jtalk.sourceforge.net/)と[SVOX Pico](https://www.openhab.org/addons/voice/picotts/)を組み合わせたものです．
 OpenJTalkは日本語のテキストを音声に変換するためのオープンソースの音声合成ソフトウェアです．
@@ -141,7 +143,7 @@ SVOX Picoは様々な言語に対応した軽量なテキスト音声変換（TT
     bash openpico.sh
     ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openpico-top">OpenPico TTSに戻る</a>)</p>
 
 ## 実行・操作方法
 1. [openpico.launch.py](launch/openpico.launch.py)を起動
@@ -151,7 +153,7 @@ SVOX Picoは様々な言語に対応した軽量なテキスト音声変換（TT
 
 2. Action Clientを起動
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openpico-top">OpenPico TTSに戻る</a>)</p>
 
 ## パラメータ
 ### 対応言語
@@ -163,13 +165,15 @@ OpenPicoは以下の言語に対応しています．\
 | 英語 | en |
 | 日本語 | ja |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openpico-top">OpenPico TTSに戻る</a>)</p>
 
 ### 話者
 OpenPicoは日本語のみ様々な話者に対応しています．\
 [openpico.launch.py](launch/openpico.launch.py)の**openpico_voice_data_ja**を使用する話者のファイルパスに書き換えてください．
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openpico-top">OpenPico TTSに戻る</a>)</p>
+
+<a name="coqui-top"></a>
 
 # Coqui TTS
 [Coqui TTS](https://github.com/coqui-ai/TTS)は，テキストから音声を生成するためのオープンソースの音声合成ツールキットです．
@@ -198,7 +202,7 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
 > [!IMPORTANT]
 > すでに，Dockerのコンテナーの中にいる場合，ローカル環境上でコマンド6を実行する必要がある．
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#coqui-top">Coqui TTSトップに戻る</a>)</p>
 
 ## 実行・操作方法
 1. **ローカル環境**上でTTSサーバーを立ち上げる．
@@ -217,7 +221,7 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
     ```
 3.  Action Clientを起動
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#coqui-top">Coqui TTSトップに戻る</a>)</p>
 
 ## パラメータ
 [coqui.launch.py](launch/coqui.launch.py)で以下のパラメータを指定できます．
@@ -228,7 +232,9 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
 | 話者 | coqui_speaker_id | 使用する話者のID (p225 ~ p376) | p225 |
 | 句読点の自動追加 | coqui_add_stop_char | テキストの最後に句読点を自動追加するかどうか | True |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#coqui-top">Coqui TTSトップに戻る</a>)</p>
+
+<a name="palar-top"></a>
 
 # Parler TTS
 Parler_TTSは，特定のスピーカーのスタイル(性別，ピッチ，話し方など)で高品質で自然な音声を生成できる軽量のテキスト読み上げ(TTS)モデルです．
@@ -246,7 +252,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
     bash parler.sh
     ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
 
 ## 実行・操作方法
 1. [parler.launch.py](launch/parler.launch.py)を起動 (時間がかかるので注意)
@@ -256,7 +262,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 2. Action Clientを起動
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
 
 ## パラメータ
 ### 対応言語
@@ -287,7 +293,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 別のモデルを使用したい場合は[こちら](https://huggingface.co/models?other=parler_tts&sort=likes)から選択してください．
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">上に戻る</a>)</p>
 
 ### 話者
 [parler.launch.py](launch/parler.launch.py)の**description**の項目で，特定の話者(推奨)か，毎回ランダムな話者にするかを指定できます．
@@ -303,7 +309,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
       default_value='Alisa.fast speed. Expression is rich. The speaking voice is noisy.',
       ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
 
 ### 話し方
 次のような単純なテキストプロンプトで話し方を変更することができます．
@@ -325,7 +331,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 - 感情指定可能モデルについて
     - "happy", "confused", "laughing", "sad", "whisper", "emphasis"などの感情を指定できます.
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">上に戻る</a>)</p>
 
 ## 発話させる文章について
 
@@ -334,7 +340,9 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 - 句読点は，世代の韻律を制御するために使用できます(たとえば，カンマを使用して音声に小さな区切りを追加します)
 - 1単語のみ発話させる場合は生成に時間がかかります
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+
+<a name="openaudio-top"></a>
 
 # Open Audio TTS
 Open Audio TTSはZero-shotやFew-shotでの音声クローン，多様な感情，トーン，特殊マーカーをサポートしています．録音した声を再現し，好きな声で好きな文章を発話でさせることができます．
@@ -351,7 +359,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
 | ロシア語 | オランダ語 | イタリア語 | ポーランド語 |
 | ポルトガル語 |  |  |  |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
 
 ## インストール方法
 1. [Hugging Face](https://huggingface.co/)のアカウント作成
@@ -383,7 +391,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
     bash openaudio.sh
     ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
 
 ## 実行・操作方法
 
@@ -401,7 +409,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
 
 2. Action Clientを起動．
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">上に戻る</a>)</p>
 
 ### マイクで録音した音声をクローンして発話させる場合
 1. Ubuntuの設定で，サウンドの入力デバイスを使用するマイクに設定する．
@@ -418,10 +426,10 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
    ```
 5. Action Clientを起動する．
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
 
 ### すでに用意したwavファイルをクローンして発話させる場合
-1. [openaudio.launch.py](launch/openaudio.launch.py)にある**reference_audio_path**を、用意したwavファイルの絶対パスに書き換える．
+1. [openaudio.launch.py](launch/openaudio.launch.py)にある**reference_audio_path**を、用意した**wavファイルの絶対パス**に書き換える．
 2. [openaudio.launch.py](launch/openaudio.launch.py)を起動する．
 3. Action Clientを起動する．
 
@@ -453,7 +461,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
     (laughing) (chuckling) (sobbing) (crying loudly) (sighing) (panting) (groaning) (crowd laughing) (background laughter) (audience laughing)
 </details>
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
 
 ### 音声クローンについて
 以下のコマンドで，launch起動後でも参照音声を変更できます．**参照音声ファイルの絶対パス**を書き換えてください．
@@ -468,7 +476,7 @@ ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に
 以下に推奨する参照音声の条件について説明します．
 詳細は[公式ページ](https://docs.fish.audio/text-to-speech/voice-clone-best-practices)を参照してください．
 
-- シングルスピーカーのみ
+- 単一の話者のみ
 - 安定した音量，トーン，感情
 - 短い一時停止(0.5秒を推奨)
 - 簡単な音声クローン作成
@@ -481,8 +489,7 @@ ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に
     - 高い録音品質
     - 反響音なし
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
-
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
 
 ## launchファイルで設定可能なパラメータ
 
@@ -495,17 +502,18 @@ ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に
 | `reference_text`       | 参照音声で発話されているテキスト   | 設定すると精度が向上するが生成速度が遅くなる．        | `""`           |
 | `reference_id`         | 参照データに付ける識別子                     | 複数の参照を使う際にIDで区別・管理可能．空の場合は識別なし．                             | `None`         |
 | `seed`                 | 話者の再現性を確保するための乱数シード           | 指定すると常に同じ話者で発話する．0かNoneだと完全ランダムな話者で発話する．                              | `None`         |
-| `chunk_length`         | 推論時にテキストを分割する際の1チャンクの文字数         | 小さくすると応答開始が早くなるが，分割が細かくなり文脈つながりが損なわれる場合がある．大きくするとメモリ消費増．    | `200`          |
+| `use_half_precision`   | 推論に半精度（FP16）を使用するかどうか                 | 速度とメモリ使用量が改善されるが，音質や安定性に微妙な劣化が出る場合がある                     | `True`         |
 | `use_memory_cache`     | 中間結果をメモリにキャッシュするかどうか                | キャッシュを有効にすると処理が高速化するが，メモリ使用量が増加する．                     | `True`         |
+| `chunk_length`         | 推論時にテキストを分割する際の1チャンクの文字数         | 小さくすると応答開始が早くなるが，分割が細かくなり文脈つながりが損なわれる場合がある．大きくするとメモリ消費増．    | `200`          |
 | `normalize`            | 出力波形の音量を一貫させる正規化を行うかどうか             | Falseにすると出力音声の音量にばらつきが出る．録音元の音量に依存したまま出力される．                 | `True`         |
 | `max_new_tokens`       | 生成する新トークン数の上限                    | 上限を小さくすると短文出力や出力途中終了が多くなる．大きくすると処理時間・メモリ使用量が増える．     | `1024`         |
 | `top_p`                | 生成されるテキストの多様性と確実性を制御するカーネル サンプリング確率                 | 小さい値（例えば0.3）にすると出力の多様性が減り安定．大きいと多様性が増す．    | `0.8`          |
 | `repetition_penalty`   | 同じフレーズの繰り返しを抑制する値        | 値が大きいほど同一表現の繰り返しが減るが，文の自然な連続性に悪影響を及ぼす可能性もある．                | `1.1`          |
 | `temperature`          | 生成されるテキストのランダム性を調整する温度係数       | 値が大きいほど，ランダム性が増す． | `0.8`          |
-| `use_half_precision`   | 推論に半精度（FP16）を使用するかどうか                 | 速度とメモリ使用量が改善されるが，音質や安定性に微妙な劣化が出る場合がある                     | `True`         |
 | `device`               | 使用する推論デバイス（`cuda` か `cpu`）       | `cpu` にするとGPUより遅くなるが，環境に依存せずどこでも動作する．`cuda`なら高速化・FP16も利用可能． | `cuda`         |
 | `compile_model`        | `torch.compile()`によるモデル高速化を適用するか | 有効化で推論は高速化するが，初回ロード時にコンパイル時間がかかる．     | `False`        |
 | `max_text_length`      | 入力テキストの最大文字数                     | この長さを超えると切り捨てて複数チャンクになるため，一貫した長文生成には注意が必要だが，処理負荷は抑えられる．     | `256`          |
 | `listen_address`       | TTSサーバーがリクエストを受け付けるIPアドレス・ポート    | アドレスを変更するとサーバーが待機するネットワークインタフェースや接続可能範囲が変わる               | `0.0.0.0:8080` |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>
