@@ -293,7 +293,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 別のモデルを使用したい場合は[こちら](https://huggingface.co/models?other=parler_tts&sort=likes)から選択してください．
 
-<p align="right">(<a href="#palar-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
 
 ### 話者
 [parler.launch.py](launch/parler.launch.py)の**description**の項目で，特定の話者(推奨)か，毎回ランダムな話者にするかを指定できます．
@@ -331,7 +331,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 - 感情指定可能モデルについて
     - "happy", "confused", "laughing", "sad", "whisper", "emphasis"などの感情を指定できます.
 
-<p align="right">(<a href="#palar-top">上に戻る</a>)</p>
+<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
 
 ## 発話させる文章について
 
@@ -409,8 +409,8 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
 
 2. Action Clientを起動．
 
-<p align="right">(<a href="#openaudio-top">上に戻る</a>)</p>
-
+<p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
+``
 ### マイクで録音した音声をクローンして発話させる場合
 1. Ubuntuの設定で，サウンドの入力デバイスを使用するマイクに設定する．
 2. ターミナルを開いてtestディレクトリに移動し，[recorder.py](/test/recorder.py)を実行して録音する．
