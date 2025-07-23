@@ -11,6 +11,7 @@ pip3 install torch torchaudio numpy scipy
 
 pip3 install huggingface_hub
 echo "export PATH=\"$(python3 -m site --user-base)/bin:\$PATH\"" >> ~/.bashrc
+source ~/.bashrc
 
 echo "╚══╣ Enter the created token to log in ╠══╝"
 huggingface-cli login
@@ -19,5 +20,7 @@ echo "╚══╣ Starting model download ╠══╝"
 huggingface-cli download fishaudio/openaudio-s1-mini --local-dir checkpoints/openaudio-s1-mini
 
 pip3 install git+https://github.com/fishaudio/fish-speech.git
+
+touch ~/.local/lib/python3.10/site-packages/.project-root
 
 echo "╚══╣ Install: Open Audio TTS (FINISHED) ╠══╝"
