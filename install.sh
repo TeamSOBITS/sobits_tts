@@ -4,6 +4,8 @@ echo "╔══╣ Install: SOBITS TTS (STARTING) ╠══╗"
 
 sudo apt update -y
 
+sudo apt install pulseaudio pulseaudio-utils -y
+
 sudo apt install -y ros-${ROS_DISTRO}-vision-msgs
 
 # Install "sobits_msgs"
