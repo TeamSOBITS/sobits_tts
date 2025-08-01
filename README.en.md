@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JP](README.md) | [EN](README.en.md)
+[JA](README.md) | [EN](README.en.md)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -35,6 +35,8 @@ Currently, it supports the following TTS engines:
   - Open JTalk, SVOX Pico TTS (formerly Text to Speech)
   - Parler TTS
   - Coqui TTS
+  - Open Audio TTS
+  - Voicevox TTS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -109,15 +111,12 @@ Click on each TTS name to view download and execution instructions.
 | [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
 | [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
+| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#voicevox-tts) | ◯ | ◯ | Supports only Japanese; speech is available with Zundamon voice |
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Milestones
-
-  - [ ] Support for the following TTS engines:
-      - [ ] Fish Speech
-      - [ ] VOICEVOX
-
 Please refer to the Issue page for current bugs and feature requests.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

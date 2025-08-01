@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JP](README_detail.md) | [EN](README_detail.en.md)
+[JA](README_detail.md) | [EN](README_detail.en.md)
 
 [Back](README.en.md)
 
@@ -13,6 +13,8 @@
 <li><a href="#openpico">OpenPico (formerly Text_to_Speech)</a></li>
 <li><a href="#coqui-tts">Coqui TTS</a></li>
 <li><a href="#parler-tts">Parler TTS</a></li>
+<li><a href="#open-audio-tts">Open Audio TTS</a></li>
+<li><a href="#voicevox-tts">Voicevox TTS</a></li>
 </ol>
 </details>
 
@@ -408,3 +410,62 @@ You can modify the speaking style with simple text prompts like the following:
   - Generating a single word takes more time.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# Open Audio TTS
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<a name="voicevox-top"></a>
+
+# Voicevox TTS
+
+[Voicevox](https://github.com/VOICEVOX/voicevox_core?tab=readme-ov-file) is a free, mid-quality text-to-speech and singing voice synthesis software.  
+It only supports Japanese. If you want it to speak English, you can achieve this by writing the text in katakana.
+
+## Installation
+1. Move to the `install` directory of `sobits_tts`
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. Install the model. Add `-g` at the end if you want to enable GPU.
+    ```bash
+    bash voicevox.sh
+    ```
+
+<p align="right">(<a href="#voicevox-top">Back to Voicevox TTS Top</a>)</p>
+
+## Launch and Usage
+1. Launch [voicevox.launch.py](launch/voicevox.launch.py)
+    ```bash
+    ros2 launch sobits_tts voicevox.launch.py
+    ```
+
+2. Start the Action Client
+
+<p align="right">(<a href="#voicevox-top">Back to Voicevox TTS Top</a>)</p>
+
+## Parameters
+You can set the following parameters in [voicevox.launch.py](launch/voicevox.launch.py).
+
+| Parameter | Name | Description | Default |
+| --- | --- | --- | --- |
+| Style ID | voicevox_style_id | Specifies the speaking style. Refer to the [VVM file and style ID mapping](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8). | 14 |
+| VVM file name | voicevox_model_file_num | Specifies the speaker. Refer to the table above. | 1.vvm |
+| Speech speed | voicevox_speed_scale | For example, 1.0 → 1.5 increases speed by 50%, 1.0 → 0.5 reduces speed by 50%. | 1.0 |
+| Pitch scale | voicevox_pitch_scale | Higher values (e.g., +1.0) make the voice higher and cuter; negative values (e.g., -1.0) make the voice lower and calmer. | 0.0 |
+| Intonation | voicevox_intonation_scale | Values closer to 0 produce flatter, more monotone speech. | 1.0 |
+| Volume | voicevox_volume_scale | For example, 1.0 → 2.0 doubles the volume, 1.0 → 0.5 halves the volume. | 1.0 |
+| Pre-speech silence | voicevox_pre_phoneme_length | For example, 0.3 adds 0.3 seconds of silence before speech starts. | 0.1 |
+| Post-speech silence | voicevox_post_phoneme_length | For example, 0.3 adds 0.3 seconds of silence after speech ends. | 0.1 |
+| Sampling rate | voicevox_output_sampling_rate | Higher values improve sound quality. | 48000 |
+| Stereo output | voicevox_output_stereo | Whether to output stereo sound (split between left and right speakers for a spatial effect). | false |
+
+<p align="right">(<a href="#voicevox-top">Back to Voicevox TTS Top</a>)</p>
+
+<p align="right">(<a href="#readme-top">Back to Page Top</a>)</p>
+
+
+
