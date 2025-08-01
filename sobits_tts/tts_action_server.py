@@ -16,7 +16,7 @@ from sobits_tts.include._base_tts import BaseTTSModel
 class TTSActionServer(Node):
     def __init__(self):
         super().__init__('tts_action_server')
-        self.declare_parameter('tts_name', 'kokoro')
+        self.declare_parameter('tts_name', 'kokoro') 
         self.tts_name = self.get_parameter('tts_name').get_parameter_value().string_value
         self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
@@ -26,7 +26,8 @@ class TTSActionServer(Node):
         self._mixer_initialized = False
 
         try:
-            self.save_dir = os.path.join(get_package_share_directory('sobits_tts'), 'soundfile')
+            self.save_dir = os.path.join(os.path.abspath(os.path.join(get_package_share_directory('sobits_tts'), '..', '..', '..', '..')),
+                                        'src', 'sobits_tts', 'soundfile')
             self.output_filename = 'output.wav'
             self.output_filepath = os.path.join(self.save_dir, self.output_filename)
 
