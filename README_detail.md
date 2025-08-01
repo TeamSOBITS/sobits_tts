@@ -549,11 +549,20 @@ ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に
 
 ## パラメータ
 [voicevox.launch.py](launch/voicevox.launch.py)で以下のパラメータを指定できます．
+以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
+
+例：スタイルIDを2に変更する場合
+```sh
+ros2 param set /tts_action_server voicevox.style_id 1
+```
+
+
+
 
 | パラメータ | パラメータ名 | 説明 | デフォルト値 |
 | --- |  --- |  --- |  --- | 
-| スタイルID |  voicevox_style_id |  話し方を指定する．[VVMファイルとスタイルIDの対応表](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8)を参照すること． |  14 | 
-| VVMファイル名	 |  voicevox_model_file_num | 話者を指定する．上記の対応表を参照すること．|  1.vvm | 
+| スタイルID |  voicevox_style_id |  話し方を指定する．[VVMファイルとスタイルIDの対応表](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8)を参照すること． |  3 | 
+| VVMファイル名	 |  voicevox_model_file_num | 話者を指定する．上記の対応表を参照すること．|  0.vvm | 
 | 発話速度 | voicevox_speed_scale |  1.0 → 1.5 にすると発話速度が50%アップ．1.0 → 0.5にすると発話速度が50%ダウン． |  1.0 | 
 | ピッチスケール |  voicevox_pitch_scale |  上げると高くなる．正の値（例：+1.0）を指定すると，声が高くなり可愛い印象．負の値（例：−1.0）では低い声に変化し，落ち着いた印象． |  0.0 | 
 | イントネーション |  voicevox_intonation_scale |  値を 0に近づけると，平坦で単調な音声になる． |  1.0 | 

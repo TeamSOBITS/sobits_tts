@@ -450,10 +450,19 @@ It only supports Japanese. If you want it to speak English, you can achieve this
 ## Parameters
 You can set the following parameters in [voicevox.launch.py](launch/voicevox.launch.py).
 
+After launching the launch file, you can still dynamically change parameters using the following command.
+
+Example: To change the style ID to 2
+
+```sh
+ros2 param set /tts_action_server voicevox.style_id 1
+```
+
+
 | Parameter | Name | Description | Default |
 | --- | --- | --- | --- |
-| Style ID | voicevox_style_id | Specifies the speaking style. Refer to the [VVM file and style ID mapping](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8). | 14 |
-| VVM file name | voicevox_model_file_num | Specifies the speaker. Refer to the table above. | 1.vvm |
+| Style ID | voicevox_style_id | Specifies the speaking style. Refer to the [VVM file and style ID mapping](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8). | 3 |
+| VVM file name | voicevox_model_file_num | Specifies the speaker. Refer to the table above. | 0.vvm |
 | Speech speed | voicevox_speed_scale | For example, 1.0 → 1.5 increases speed by 50%, 1.0 → 0.5 reduces speed by 50%. | 1.0 |
 | Pitch scale | voicevox_pitch_scale | Higher values (e.g., +1.0) make the voice higher and cuter; negative values (e.g., -1.0) make the voice lower and calmer. | 0.0 |
 | Intonation | voicevox_intonation_scale | Values closer to 0 produce flatter, more monotone speech. | 1.0 |
