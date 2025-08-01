@@ -111,7 +111,7 @@ Click on each TTS name to view download and execution instructions.
 | [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
 | [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
-| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#voicevox-tts) | ◯ | ◯ | Supports only Japanese; speech is available with Zundamon voice |
+| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#voicevox-tts) | ◯ | ◯ | Supports only Japanese; speech is available with Zundamon voice |
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
