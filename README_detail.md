@@ -13,6 +13,7 @@
     <li><a href="#coqui-tts">Coqui TTS</a></li>
     <li><a href="#parler-tts">Parler TTS</a></li>
     <li><a href="#open-audio-tts">Open Audio TTS</a></li>
+    <li><a href="#voicevox-tts">Voicevox TTS</a></li>
   </ol>
 </details>
 
@@ -516,4 +517,52 @@ ros2 param set /tts_action_server openaudio_tts.reference_text ${参照音声に
 | `listen_address`       | TTSサーバーがリクエストを受け付けるIPアドレス・ポート    | アドレスを変更するとサーバーが待機するネットワークインタフェースや接続可能範囲が変わる               | `0.0.0.0:8080` |
 
 <p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
+
+<a name="voicevox-top"></a>
+
+# Voicevox TTS
+
+[Voicevox](https://github.com/VOICEVOX/voicevox_core?tab=readme-ov-file)は無料で使える中品質なテキスト読み上げ・歌声合成ソフトウェアです．対応言語は日本語のみです．英語を発話させたい場合はカタカナにすることで発話させることができます．
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール．GPUを使用する場合は-gを末尾に追加.
+    ```bash
+    bash voicevox.sh
+    ```
+
+<p align="right">(<a href="#voicevox-top">Voicevox TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [voicevox.launch.py](launch/voicevox.launch.py)を起動
+    ```bash
+    ros2 launch sobits_tts voicevox.launch.py
+    ```
+
+2. Action Clientを起動
+
+<p align="right">(<a href="#voicevox-top">Voicevox TTSトップに戻る</a>)</p>
+
+## パラメータ
+[voicevox.launch.py](launch/voicevox.launch.py)で以下のパラメータを指定できます．
+
+| パラメータ | パラメータ名 | 説明 | デフォルト値 |
+| --- |  --- |  --- |  --- | 
+| スタイルID |  voicevox_style_id |  話し方を指定する．[VVMファイルとスタイルIDの対応表](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8)を参照すること． |  14 | 
+| VVMファイル名	 |  voicevox_model_file_num | 話者を指定する．上記の対応表を参照すること．|  1.vvm | 
+| 発話速度 | voicevox_speed_scale |  1.0 → 1.5 にすると発話速度が50%アップ．1.0 → 0.5にすると発話速度が50%ダウン． |  1.0 | 
+| ピッチスケール |  voicevox_pitch_scale |  上げると高くなる．正の値（例：+1.0）を指定すると，声が高くなり可愛い印象．負の値（例：−1.0）では低い声に変化し，落ち着いた印象． |  0.0 | 
+| イントネーション |  voicevox_intonation_scale |  値を 0に近づけると，平坦で単調な音声になる． |  1.0 | 
+| 音量 |  voicevox_volume_scale |  1.0 → 2.0 にすると倍の音量になる．1.0 → 0.5 にすると半分の音量になる．|  1.0 | 
+| 音声の前の無音時間 |  voicevox_pre_phoneme_length |  0.3にすると音声開始前に0.3秒の空白が入る． |  0.1 | 
+| 音声の後の無音時間 |  voicevox_post_phoneme_length |  0.3にすると音声終了後に0.3秒の空白が入る． |  0.1 | 
+| サンプリングレート |  voicevox_output_sampling_rate |  高くすると音質が向上する． |  48000 | 
+| ステレオ出力 |  voicevox_output_stereo |  左右2つのスピーカーで音を分けて立体的に聞こえるように出力するかどうか． |  false | 
+
+<p align="right">(<a href="#voicevox-top">Voicevox TTSトップに戻る</a>)</p>
+
 <p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>
