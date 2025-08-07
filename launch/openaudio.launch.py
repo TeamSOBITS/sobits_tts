@@ -38,7 +38,7 @@ def generate_launch_description():
     )
     use_memory_cache_arg = DeclareLaunchArgument(
         'use_memory_cache',
-        default_value='True',
+        default_value='False',
         description='Use memory cache for OpenAudioTTS. ("on" or "off")'
     )
     normalize_arg = DeclareLaunchArgument(
@@ -48,12 +48,12 @@ def generate_launch_description():
     )
     max_new_tokens_arg = DeclareLaunchArgument(
         'max_new_tokens',
-        default_value='1024',
+        default_value='512',
         description='Max new tokens for OpenAudioTTS.'
     )
     top_p_arg = DeclareLaunchArgument(
         'top_p',
-        default_value='0.8',
+        default_value='0.65',
         description='Top-p sampling parameter for OpenAudioTTS.'
     )
     repetition_penalty_arg = DeclareLaunchArgument(

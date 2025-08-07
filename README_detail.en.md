@@ -4,7 +4,7 @@
 
 [Back](README.en.md)
 
------
+
 
 <details>
 <summary>Table of Contents</summary>
@@ -113,7 +113,7 @@ For more details, refer to [this link](https://huggingface.co/hexgrad/Kokoro-82M
 
 ### Speech Speed
 
-To change the speech speed, modify **kokoro\_speech\_speed** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `1.0`).
+To change the speech speed, modify **kokoro_speech_speed** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `1.0`).
  
 Example: To set to 1.2x speed
 
@@ -129,7 +129,7 @@ kokoro_speech_speed_arg = DeclareLaunchArgument(
 
 ### Delimiter Characters
 
-To split speech at specific characters, modify **kokoro\_split\_regex** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `r'[\n,.!?、。！？]+'`).
+To split speech at specific characters, modify **kokoro_split\_regex** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `r'[\n,.!?、。！？]+'`).
  
 Example: To split at `*`
 
@@ -412,6 +412,205 @@ You can modify the speaking style with simple text prompts like the following:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Open Audio TTS
+
+Open Audio TTS supports zero-shot and few-shot voice cloning, as well as various emotions, tones, and special markers. **You can reproduce a recorded voice and make it speak any text you want in that voice.**
+
+Using a GPU with 8GB or more of VRAM is recommended.
+
+Open Audio TTS supports the following languages. Language is automatically detected, so no configuration is needed.
+
+| | | | |
+| --- | --- | --- | --- |
+| English | Chinese | Japanese | German |
+| French | Spanish | Korean | Arabic |
+| Russian | Dutch | Italian | Polish |
+| Portuguese | | | |
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+## Installation Guide
+
+1.  **Create a [Hugging Face](https://huggingface.co/) Account**
+
+    Access the link above and create an account via "Sign Up". If you already have an account, proceed to step 2.
+
+2.  **Access the Model Page and Agree to the Terms**
+
+    Go to the [model page](https://huggingface.co/fishaudio/openaudio-s1-mini) and agree to the terms. Look for a section that says something like:
+
+    `You need to agree to share your contact information to access this model.`
+
+3.  **Create a Hugging Face Access Token**
+
+    Go to the [Hugging Face settings page](https://huggingface.co/settings/tokens).
+    Click "New token" and set the following options:
+
+      - **Token type**: `fine-grained`
+      - **Token name**: `Any name you like`
+      - **User Permissions**:
+          - `Repositories`: `Read access to contents of all public gated repos you can access`
+          - `Inference`: `Make calls to Inference Providers`
+
+    After setting, click "Create token" to generate your token.
+
+4.  **Open a terminal and navigate to the `sobits_tts` install directory.**
+
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+5.  **Install dependencies**
+
+    ```bash
+    bash openaudio.sh
+    ```
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+## Execution and Usage
+
+There are three main ways to use the service.
+
+  - Using it as a standard TTS
+  - Cloning and speaking with a voice recorded via a microphone
+  - Cloning and speaking with a pre-existing WAV file
+
+### Using It as a Standard TTS
+
+1.  Launch `openaudio.launch.py`.
+    ```sh
+    ros2 launch sobits_tts openaudio.launch.py
+    ```
+2.  Launch the Action Client.
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+### Cloning a Microphone-Recorded Voice
+
+1.  In Ubuntu settings, set your microphone as the sound input device.
+2.  Open a terminal, navigate to the `test` directory, and run `recorder.py` to record.
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/test/
+    python3 recorder.py
+    ```
+3.  In `openaudio.launch.py`, change the `reference_audio_path` to the **absolute path of the `record.wav` file** created in the `soundfile` directory.
+4.  Launch `openaudio.launch.py`.
+    ```sh
+    ros2 launch sobits_tts openaudio.launch.py
+    ```
+5.  Launch the Action Client.
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+### Cloning a Pre-existing WAV File
+
+1.  In `openaudio.launch.py`, change the `reference_audio_path` to the **absolute path of your WAV file**.
+2.  Launch `openaudio.launch.py`.
+3.  Launch the Action Client.
+
+## Parameters
+
+### Controlling Emotion, Tone, and Speed
+
+You can control emotion, speaking speed, and tone by adding tags to the text you want to speak. For more details, refer to the [official documentation](https://docs.fish.audio/emotion-control/tts-emotion-and-control-tags-user-guide).
+
+Emotion tags are placed at the beginning of a sentence, while tone and special markers can be placed anywhere.
+
+Examples:
+
+  - **Emotion Tag Usage**: `(Happy)How are you today?`
+  - **Tone Marker**: `Help! (shouting) Hey!`
+  - **Special Marker**: `What! (laughing) Ha,ha,ha!`
+
+<details>
+<summary>All Configurable Tags</summary>
+
+1.  **Emotion Markers (only at the beginning of a sentence)**
+
+    `  (angry) (sad) (disdainful) (excited) (surprised) (satisfied) (unhappy) (anxious) (hysterical) (delighted) (scared) (worried) (indifferent) (upset) (impatient) (nervous) (guilty) (scornful) (frustrated) (depressed) (panicked) (furious) (empathetic) (embarrassed) (reluctant) (disgusted) (keen) (moved) (proud) (relaxed) (grateful) (confident) (interested) (curious) (confused) (joyful) (disapproving) (negative) (denying) (astonished) (serious) (sarcastic) (conciliative) (comforting) (sincere) (sneering) (hesitating) (yielding) (painful) (awkward) (amused) `
+
+2.  **Tone Markers (can be placed anywhere)**
+
+    `(in a hurry tone) (shouting) (screaming) (whispering) (soft tone)`
+
+3.  **Special Markers (can be placed anywhere)**
+
+    `(laughing) (chuckling) (sobbing) (crying loudly) (sighing) (panting) (groaning) (crowd laughing) (background laughter) (audience laughing)`
+
+</details>
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+### About Voice Cloning
+
+You can change the reference audio even after launching the service with the following command. **Be sure to replace it with the absolute path of your reference audio file.**
+
+```sh
+ros2 param set /tts_action_server openaudio_tts.reference_audio_path ${absolute_path_to_reference_audio}
+```
+
+Similarly, you can change the text corresponding to the reference audio after launch:
+
+```sh
+ros2 param set /tts_action_server openaudio_tts.reference_text ${text_corresponding_to_reference_audio}
+```
+
+Here are the recommended conditions for reference audio. For more details, refer to the [official documentation](https://docs.fish.audio/text-to-speech/voice-clone-best-practices).
+
+  - A single speaker only
+  - Stable volume, tone, and emotion
+  - Short pauses (0.5 seconds recommended)
+  - **For Simple Voice Cloning**
+      - 30-45 seconds of high-quality audio
+      - **Best**: 2-3 audio clips of 15-20 seconds each that form a complete paragraph
+  - **For High-Quality Voice Cloning**
+      - 30-180 minutes of high-quality audio
+      - Multiple languages and emotions
+      - No background noise
+      - High recording quality
+      - No echo
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+## Configurable Parameters in the Launch File
+
+The following parameters can be set in `openaudio.launch.py`.
+You can also dynamically change parameters after launching the file with commands like the one below.
+
+Example: To change the absolute path of the reference audio file for voice cloning:
+
+```sh
+ros2 param set /tts_action_server openaudio_tts.reference_audio_path
+```
+
+| Parameter Name                 | Description                                                                       | Impact of Change                                                                                                                                                                     | Default Value      |
+| ------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `reference_audio_path`         | The absolute path to the reference audio file for voice cloning.                  | When specified, the model learns the tone and voice quality of that audio and applies it to the output.                                                                                | `""`                 |
+| `reference_text`               | The text spoken in the reference audio.                                           | Setting this improves accuracy but slows down generation speed.                                                                                                                      | `""`                 |
+| `reference_id`                 | An identifier for the reference data.                                             | Allows for distinguishing and managing multiple references by ID. An empty value means no identifier.                                                                                | `None`             |
+| `seed`                         | A random seed to ensure speaker reproducibility.                                  | When specified, it always speaks with the same speaker. A value of 0 or `None` will result in a completely random speaker.                                                            | `None`             |
+| `use_memory_cache`             | Whether to cache intermediate results in memory.                                  | Enabling the cache speeds up processing but increases memory usage.                                                                                                                  | `False`            |
+| `chunk_length`                 | The number of characters per chunk when splitting text for inference.             | A smaller value starts the response sooner but can result in more fragmented splits, potentially losing context. A larger value increases memory consumption.                          | `200`              |
+| `normalize`                    | Whether to perform normalization to ensure consistent volume of the output waveform. | If `False`, the output audio volume may vary, depending on the volume of the original recording.                                                                                     | `True`             |
+| `max_new_tokens`               | The upper limit on the number of new tokens to generate.                          | A smaller limit may result in shorter outputs or premature termination. A larger limit increases processing time and memory usage.                                                       | `512`              |
+| `top_p`                        | The kernel sampling probability controlling the diversity and certainty of the generated text. | A smaller value (e.g., 0.3) reduces output diversity and increases stability. A larger value increases diversity.                                                                   | `0.65`             |
+| `repetition_penalty`           | A value to suppress the repetition of the same phrases.                           | A larger value reduces the repetition of identical expressions, but it may also negatively affect the natural flow of sentences.                                                         | `1.1`              |
+| `temperature`                  | The temperature coefficient to adjust the randomness of the generated text.         | A low value (e.g., 0.2) results in a stable output, like a news broadcast. A value of 0.9 or higher adopts rarer words, creating a more character-rich delivery. | `0.8`              |
+
+The following parameters **cannot be changed dynamically** after launching the service.
+
+| Parameter Name                 | Description                                                                                             | Impact of Change                                                                                                                                                                     | Default Value      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `use_half_precision`           | Whether to use half-precision (FP16) for inference.                                                     | Improves speed and reduces memory usage, but may slightly degrade sound quality or stability.                                                                                        | `True`             |
+| `device`                       | The inference device to use (`cuda` or `cpu`).                                                          | `cpu` is slower than GPU but works universally. `cuda` enables faster processing and FP16 usage.                                                                                   | `cuda`             |
+| `compile_model`                | Whether to apply `torch.compile()` to speed up the model.                                               | Enabling this speeds up inference but requires a compilation time during the initial load.                                                                                         | `False`            |
+| `max_text_length`              | The maximum number of characters for input text.                                                        | Text exceeding this length is truncated and split into multiple chunks, requiring care for consistent long-text generation but reducing processing load.                          | `256`              |
+| `listen_address`               | The IP address and port where the TTS server accepts requests.                                          | Changing the address alters the network interface and connection range where the server listens.                                                                                     | `0.0.0.0:8080`     |
+
+<p align="right">(<a href="#openaudio-top">Return to Open Audio TTS Top</a>)</p>
+
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
