@@ -35,7 +35,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 現在以下のTTSに対応しています．
 - Kokoro TTS
-- Open JTalk, SVOX Pico TTS (旧Text to Speech)
+- Open JTalk, SVOX Pico TTS
 - Parler TTS
 - Coqui TTS
 - Open Audio TTS
@@ -100,7 +100,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 | TTS名                       | 精度 | 生成速度 | 特徴 | 
 | ---                         | -- |--- |--- |
 | [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ◯ | ◯ | 英語・日本語などに対応 |
-| [OpenPico (旧Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △ | ◎ | 英語・日本語に対応 |
+| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △ | ◎ | 英語・日本語に対応 |
 | [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ◯ | ◯ | 英語のみに対応 |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎ | △ | 英語・日本語などに対応，感情指定が可能なモデルあり |
 | [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)                     | ◎ | △ | 英語・日本語などに対応，音声クローン，感情指定可 |
@@ -111,7 +111,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 ## マイルストーン
 
 
-現時点のバグや新規機能の依頼を確認するためにIssueページ をご覧ください．
+現時点のバグや新規機能の依頼を確認するためにIssueページをご覧ください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 

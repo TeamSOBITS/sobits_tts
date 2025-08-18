@@ -32,7 +32,7 @@ SOBITS TTS integrates various Text-to-Speech (TTS) engines with ROS2 Action comm
 Currently, it supports the following TTS engines:
 
   - Kokoro TTS
-  - Open JTalk, SVOX Pico TTS (formerly Text to Speech)
+  - Open JTalk, SVOX Pico TTS
   - Parler TTS
   - Coqui TTS
   - Open Audio TTS
@@ -108,7 +108,7 @@ Click on each TTS name to view download and execution instructions.
 | TTS Name                    | Accuracy | Generation Speed | Features                               |
 | ---                         | --       | ---              | ---                                    |
 | [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#kokoro-tts)                      | ◯        | ◯                | ---                                    |
-| [OpenPico (formerly Text to Speech)](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
+| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
 | [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
 |[OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)  | ◎ | △ | Supports English, Japanese, etc., voice cloning, and emotion specification.
