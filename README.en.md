@@ -118,7 +118,7 @@ Click on each TTS name to view download and execution instructions.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Milestones
-Please refer to the Issue page for current bugs and feature requests.
+Please refer to the [Issue page](https://github.com/TeamSOBITS/sobits_tts/issues) for current bugs and feature requests.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -111,7 +111,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 ## マイルストーン
 
 
-現時点のバグや新規機能の依頼を確認するためにIssueページをご覧ください．
+現時点のバグや新規機能の依頼を確認するために[Issueページ](https://github.com/TeamSOBITS/sobits_tts/issues)をご覧ください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
