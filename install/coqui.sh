@@ -8,7 +8,6 @@ sudo apt install ffmpeg
 
 python3 -m pip install -U pip
 python3 -m pip install \
-    requests \
-    wave
+    requests
 
 echo "╚══╣ Install: Coqui TTS (FINISHED) ╠══╝"

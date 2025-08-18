@@ -191,17 +191,17 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
 3. TTSサーバーを簡単に実行するために， `alias` を作成する.
     - **CPUのみ**の場合:
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/coqui_tts_ros/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
     ```
     - **GPU**の場合:
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/coqui_tts_ros/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
     ```
 > [!IMPORTANT]
 > `{PATH_ROS_WS_LOCAL}` は**ローカル環境**に存在するROSのワークスペースのPATHである．
 
 > [!IMPORTANT]
-> すでに，Dockerのコンテナーの中にいる場合，ローカル環境上でコマンド6を実行する必要がある．
+> すでに，Dockerのコンテナーの中にいる場合，ローカル環境上でコマンド3を実行する必要がある．
 
 <p align="right">(<a href="#coqui-top">Coqui TTSトップに戻る</a>)</p>
 
@@ -411,7 +411,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
 2. Action Clientを起動．
 
 <p align="right">(<a href="#openaudio-top">Open Audio TTSトップに戻る</a>)</p>
-``
+
 ### マイクで録音した音声をクローンして発話させる場合
 1. Ubuntuの設定で，サウンドの入力デバイスを使用するマイクに設定する．
 2. ターミナルを開いてtestディレクトリに移動し，[recorder.py](/test/recorder.py)を実行して録音する．

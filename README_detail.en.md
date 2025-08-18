@@ -224,19 +224,19 @@ Change **openpico_voice_data_ja** in [openpico.launch.py](launch/openpico.launch
       - For **CPU only**:
     <!-- end list -->
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/coqui_tts_ros/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
     ```
       - For **GPU**:
     <!-- end list -->
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/coqui_tts_ros/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
     ```
 
 > [!IMPORTANT]
 > `{PATH_ROS_WS_LOCAL}` is the **local path** to your ROS workspace.
 
 > [!IMPORTANT]
-> If you are already inside a Docker container, you need to run command 6 on your local machine.
+> If you are already inside a Docker container, you need to run command 3 on your local machine.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -14,10 +14,10 @@ echo "export PATH=\"$(python3 -m site --user-base)/bin:\$PATH\"" >> ~/.bashrc
 source ~/.bashrc
 
 echo "╚══╣ Enter the created token to log in ╠══╝"
-huggingface-cli login
+hf auth login
 
 echo "╚══╣ Starting model download ╠══╝"
-huggingface-cli download fishaudio/openaudio-s1-mini --local-dir checkpoints/openaudio-s1-mini
+hf download fishaudio/openaudio-s1-mini --local-dir checkpoints/openaudio-s1-mini
 
 pip3 install git+https://github.com/fishaudio/fish-speech.git
 
