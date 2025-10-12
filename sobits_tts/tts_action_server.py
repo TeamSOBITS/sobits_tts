@@ -7,6 +7,7 @@ import io
 import traceback
 import os
 from ament_index_python.packages import get_package_share_directory
+from rclpy.executors import MultiThreadedExecutor
 
 from sobits_interfaces.action import TextToSpeech
 from rclpy.action import ActionServer, GoalResponse, CancelResponse
@@ -124,6 +125,12 @@ class TTSActionServer(Node):
         try:
             play_time, audio_buffer = self._tts_model_instance.generate_audio(text)
 
+            if goal_handle.is_cancel_requested:
+                self.get_logger().info('Goal canceled after audio generation.')
+                goal_handle.canceled()
+                response.success = False
+                return response
+
             if audio_buffer is None or play_time <= 0:
                 self.get_logger().error(f"Audio buffer generation failed or invalid play time ({play_time:.2f}s) from '{self.tts_name}' model. Check model logs for details.")
                 response.success = False
@@ -190,8 +197,10 @@ def main(args=None):
 
     try:
         action_server = TTSActionServer()
-        rclpy.spin(action_server)
-    except Exception as e:
+        executor = MultiThreadedExecutor()
+        executor.add_node(action_server)
+        executor.spin()
+    except KeyboardInterrupt:
         if action_server and rclpy.ok():
             action_server.get_logger().fatal(f"A fatal error occurred in TTS Action Server: {e}")
             action_server.get_logger().fatal(traceback.format_exc())
