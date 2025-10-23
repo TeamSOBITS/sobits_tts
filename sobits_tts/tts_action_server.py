@@ -27,8 +27,7 @@ class TTSActionServer(Node):
         self._mixer_initialized = False
 
         try:
-            self.save_dir = os.path.join(os.path.abspath(os.path.join(get_package_share_directory('sobits_tts'), '..', '..', '..', '..')),
-                                        'src', 'sobits_tts', 'soundfile')
+            self.save_dir = os.path.join(get_package_share_directory('sobits_tts'), 'soundfile')
             self.output_filename = 'output.wav'
             self.output_filepath = os.path.join(self.save_dir, self.output_filename)
 
