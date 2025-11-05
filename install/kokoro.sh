@@ -5,10 +5,10 @@ sudo apt update -y
 
 sudo apt install -y espeak-ng
 
-pip3 install -q kokoro==0.9.4
-pip3 install -q 'misaki[en,ja]==0.9.4'
+pip3 install -q kokoro==0.9.4 --break-system-packages
+pip3 install -q 'misaki[en,ja]==0.9.4' --break-system-packages
 
-pip3 uninstall -y fugashi unidic unidic-lite
-pip3 install -q fugashi unidic-lite
+pip3 uninstall -y fugashi unidic unidic-lite --break-system-packages
+pip3 install -q fugashi unidic-lite --break-system-packages
 
 echo "╚══╣ Install: Kokoro TTS (FINISHED) ╠══╝"

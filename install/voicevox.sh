@@ -31,6 +31,6 @@ elif [ "$USE_CPU" == "true" ]; then
 fi
 
 echo "Install whl"
-pip3 install https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.0/voicevox_core-0.16.0-cp310-abi3-manylinux_2_34_x86_64.whl
+pip3 install https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.0/voicevox_core-0.16.0-cp310-abi3-manylinux_2_34_x86_64.whl --break-system-packages
 
 echo "╚══╣ Install: voicevox TTS (FINISHED) ╠══╝"

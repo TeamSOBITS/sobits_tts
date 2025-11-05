@@ -5,8 +5,8 @@ echo "╔══╣ Install: OpenPico TTS (STARTING) ╠══╗"
 sudo apt update -y
 
 echo "Install gTTS"
-python3 -m pip install gTTS==2.0.1
-python3 -m pip install gTTS-token --upgrade
+python3 -m pip install gTTS==2.0.1 --break-system-packages
+python3 -m pip install gTTS-token --upgrade --break-system-packages
 
 echo "Install mpg321"
 sudo apt install -y mpg321
@@ -18,7 +18,7 @@ sudo apt install -y \
     hts-voice-nitech-jp-atr503-m001
 
 echo "Install mutagen"
-python3 -m pip install mutagen
+python3 -m pip install mutagen --break-system-packages
 
 echo "Install pico2wave"
 sudo apt install -y libttspico-utils

@@ -6,8 +6,8 @@ sudo apt-get update -y
 
 sudo apt install ffmpeg
 
-python3 -m pip install -U pip
+python3 -m pip install -U pip --break-system-packages
 python3 -m pip install \
-    requests
+    requests --break-system-packages
 
 echo "╚══╣ Install: Coqui TTS (FINISHED) ╠══╝"

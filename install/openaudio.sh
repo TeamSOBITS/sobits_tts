@@ -7,9 +7,9 @@ sudo apt install portaudio19-dev python3-pyaudio -y
 
 sudo apt install pulseaudio-utils -y
 
-pip3 install torch torchaudio numpy scipy
+pip3 install torch torchaudio numpy scipy --break-system-packages
 
-pip3 install huggingface_hub
+pip3 install huggingface_hub --break-system-packages
 echo "export PATH=\"$(python3 -m site --user-base)/bin:\$PATH\"" >> ~/.bashrc
 source ~/.bashrc
 
@@ -19,7 +19,7 @@ hf auth login
 echo "╚══╣ Starting model download ╠══╝"
 hf download fishaudio/openaudio-s1-mini --local-dir checkpoints/openaudio-s1-mini
 
-pip3 install git+https://github.com/fishaudio/fish-speech.git
+pip3 install git+https://github.com/fishaudio/fish-speech.git --break-system-packages
 
 touch ~/.local/lib/python3.10/site-packages/.project-root
 
