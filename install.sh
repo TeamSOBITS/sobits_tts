@@ -16,9 +16,9 @@ else
     echo "sobits_interfaces リポジトリはすでに存在します。スキップします。"
 fi
 
-pip3 install soundfile
+pip3 install soundfile --break-system-packages
 
-pip3 install pygame
+pip3 install pygame --break-system-packages
 
 echo "╚══╣ Install: SOBITS TTS (FINISHED) ╠══╝"
 
