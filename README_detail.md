@@ -99,31 +99,18 @@ kokoro_ttsは言語別で様々な話者に対応しています．\
 
 <p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
-### 発話速度
-発話する速度を変更する場合は，[kokoro.launch.py](launch/kokoro.launch.py)の**kokoro_speech_speed**を書き換えてください．(デフォルト値：1.0)
+## その他のパラメータ
 
-例：1.2倍にしたい場合
-```sh
-kokoro_speech_speed_arg = DeclareLaunchArgument(
-    'kokoro_speech_speed',
-    default_value='1.2',
-    description='Speech speed for Kokoro TTS. 0.5 for half speed, 2.0 for double speed.'
-)
-```
+以下は[kokoro.launch.py](launch/kokoro.launch.py)で設定可能なその他のパラメータです．
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| kokoro_speech_speed | 発話する速度．1.2倍にする場合は`1.2`． | 1.0 |
+| kokoro_split_regex | 区切る文字 ．設定した文字で区切らせて発話できる．| r'[\n,.!?、。！？]+' |
+| kokoro_device | 使用する計算デバイス (cpu or cuda:0)．空の場合，利用可能なGPUがあれば優先的に選択し，なければCPUが自動選択される．| '' |
+
 <p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
-### 区切る文字
-特定の文字で区切らせて発話させる場合は，[kokoro.launch.py](launch/kokoro.launch.py)の**kokoro_split_regex**を書き換えてください．(デフォルト値：**r'[\n,.!?、。！？]+'**)
-
-例：*で区切らせたい場合
-```sh
-kokoro_split_regex_arg = DeclareLaunchArgument(
-    'kokoro_split_regex',
-    default_value= r'[\n,.!?、。！？]+',
-    description='Regular expression to split text'
-)
-```
-<p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
 <a name="openpico-top"></a>
 

@@ -111,39 +111,18 @@ For more details, refer to [this link](https://huggingface.co/hexgrad/Kokoro-82M
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Speech Speed
 
-To change the speech speed, modify **kokoro_speech_speed** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `1.0`).
- 
-Example: To set to 1.2x speed
+## Other Parameters
 
-```sh
-kokoro_speech_speed_arg = DeclareLaunchArgument(
-    'kokoro_speech_speed',
-    default_value='1.2',
-    description='Speech speed for Kokoro TTS. 0.5 for half speed, 2.0 for double speed.'
-)
-```
+The following parameters can be configured in [kokoro.launch.py](launch/kokoro.launch.py).
+
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `kokoro_speech_speed` | Speaking speed. For example, set to `1.2` for 1.2x speed. | 1.0 |
+| `kokoro_split_regex` | Regex pattern for splitting text. The model processes and speaks text segmented by these characters. | `r'[\n,.!?、。！？]+'` |
+| `kokoro_device` | Computing device to use (`cpu` or `cuda:0`). If left empty, it automatically selects GPU if available, otherwise falls back to CPU. | `''` |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Delimiter Characters
-
-To split speech at specific characters, modify **kokoro_split\_regex** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `r'[\n,.!?、。！？]+'`).
- 
-Example: To split at `*`
-
-```sh
-kokoro_split_regex_arg = DeclareLaunchArgument(
-    'kokoro_split_regex',
-    default_value= r'[\n,.!?、。！？]+',
-    description='Regular expression to split text'
-)
-```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
------
 
 # OpenPico
 

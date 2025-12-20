@@ -8,6 +8,7 @@ import io
 import os
 import sys
 import atexit
+import gc
 from huggingface_hub import hf_hub_download
 import huggingface_hub.file_download as fd
 
@@ -22,128 +23,127 @@ class KokoroTTSModel(BaseTTSModel):
         self._node.declare_parameter('kokoro.voice', 'af_heart')
         self._node.declare_parameter('kokoro.speech_speed', 1.0)
         self._node.declare_parameter('kokoro.split_regex', r'[\n,.!?、。！？]+')
+        self._node.declare_parameter('kokoro.device', '') # デフォルト空
 
         self.lang_code = self._node.get_parameter('kokoro.lang_code').get_parameter_value().string_value
         self.voice = self._node.get_parameter('kokoro.voice').get_parameter_value().string_value
         self.speech_speed = self._node.get_parameter('kokoro.speech_speed').get_parameter_value().double_value
         self.split_regex = self._node.get_parameter('kokoro.split_regex').get_parameter_value().string_value
+        
+        device_param = self._node.get_parameter('kokoro.device').get_parameter_value().string_value
+        if not device_param:
+            self.target_device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        else:
+            self.target_device = device_param
 
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
-        self._logger.debug(f"KokoroTTS using device: {self.device}")
+        self._original_hf_download = fd.hf_hub_download
+        atexit.register(self._cleanup_env_vars)
 
-        HF_REPO_NAME = "hexgrad/Kokoro-82M"
-        HF_CACHE_ROOT_PATH = os.path.join("~", ".cache", "huggingface")
-        resolved_cache_root = os.path.expanduser(HF_CACHE_ROOT_PATH)
-        repo_dir = os.path.join(resolved_cache_root, "hub", f"models--{HF_REPO_NAME.replace('/', '--')}")
-        is_local_cache_found = os.path.isdir(repo_dir) and os.path.isdir(os.path.join(repo_dir, "snapshots"))
+        self._logger.info("Step 1: Attempting offline initialization...")
+        success = self._try_init_tts(offline_mode=True)
 
-        if is_local_cache_found:
-            self._logger.info("Kokoro TTS: Local cache found. Forcing local-only load.")
+        if not success:
+            self._logger.warn("Offline initialization failed. Step 2: Retrying in Online mode...")
+            success = self._try_init_tts(offline_mode=False)
             
+            if success:
+                self._logger.info("Online initialization succeeded.")
+                self._apply_offline_patch(True)
+            else:
+                self._logger.fatal("Failed to initialize Kokoro TTS.")
+                raise RuntimeError("Kokoro TTS initialization failed.")
+        
+        actual_device = self.pipeline.model.device
+        self._logger.info(f"KokoroTTS initialized on actual device: {actual_device}")
+
+    def _try_init_tts(self, offline_mode: bool) -> bool:
+        try:
+            self._apply_offline_patch(offline_mode)
+            self.pipeline = KPipeline(lang_code=self.lang_code, device=self.target_device)
+            return True
+        except Exception as e:
+            self._logger.error(f"Init error (offline={offline_mode}): {e}")
+            if hasattr(self, 'pipeline'): del self.pipeline
+            gc.collect()
+            if torch.cuda.is_available():
+                try:
+                    with torch.cuda.device(self.target_device if 'cuda' in self.target_device else 0):
+                        torch.cuda.empty_cache()
+                except:
+                    pass
+            return False
+
+    def _apply_offline_patch(self, enable: bool):
+        if enable:
             os.environ['HF_HUB_OFFLINE'] = '1'
             os.environ['TRANSFORMERS_OFFLINE'] = '1'
-            
-            def cleanup_env_vars(logger):
-                if 'HF_HUB_OFFLINE' in os.environ:
-                    del os.environ['HF_HUB_OFFLINE']
-                    logger.info("Cleaned up HF_HUB_OFFLINE environment variable.")
-                if 'TRANSFORMERS_OFFLINE' in os.environ:
-                    del os.environ['TRANSFORMERS_OFFLINE']
-                    logger.info("Cleaned up TRANSFORMERS_OFFLINE environment variable.")
-            atexit.register(cleanup_env_vars, self._logger)
-            
-            if hasattr(fd, 'hf_hub_download') and not getattr(fd.hf_hub_download, '_is_patched', False):
-                original_hf_hub_download = fd.hf_hub_download
-            else:
-                original_hf_hub_download = hf_hub_download
-
-            def offline_hf_hub_download_wrapper(*args, **kwargs):
-                kwargs['local_files_only'] = True
-                return original_hf_hub_download(*args, **kwargs)
-            
-            offline_hf_hub_download_wrapper._is_patched = True
-
-            patched_count = 0
-            for module_name, module in list(sys.modules.items()):
-                if module_name.startswith('kokoro') or module_name == 'kokoro':
-                    if hasattr(module, 'hf_hub_download'):
-                        setattr(module, 'hf_hub_download', offline_hf_hub_download_wrapper)
-                        patched_count += 1
-            
-            fd.hf_hub_download = offline_hf_hub_download_wrapper
-            
-            self._logger.info(f"Applied offline patch to {patched_count} kokoro modules and huggingface_hub.")
-            
+            local_files_only = True
         else:
-            self._logger.warn("Local model cache not found. Attempting online download.")
-            if 'HF_HUB_OFFLINE' in os.environ: del os.environ['HF_HUB_OFFLINE']
-            if 'TRANSFORMERS_OFFLINE' in os.environ: del os.environ['TRANSFORMERS_OFFLINE']
+            os.environ.pop('HF_HUB_OFFLINE', None)
+            os.environ.pop('TRANSFORMERS_OFFLINE', None)
+            local_files_only = False
 
-        try:
-            self.pipeline = KPipeline(
-                lang_code=self.lang_code, 
-                device=self.device, 
-            )
-            self._logger.info("Kokoro TTS initialized successfully.")
-        except Exception as e:
-            self._logger.error(f"Failed to initialize Kokoro TTS: {e}")
-            raise 
+        def wrapper(*args, **kwargs):
+            kwargs['local_files_only'] = local_files_only
+            return self._original_hf_download(*args, **kwargs)
+
+        fd.hf_hub_download = wrapper
+        for module_name, module in list(sys.modules.items()):
+            if module_name.startswith('kokoro') or module_name == 'kokoro':
+                if hasattr(module, 'hf_hub_download'):
+                    setattr(module, 'hf_hub_download', wrapper)
+        
+        mode = "ENABLED (Offline)" if enable else "DISABLED (Online)"
+        self._logger.info(f"Offline patch {mode}")
 
     def generate_audio(self, text: str) -> Tuple[float, io.BytesIO]:
+        try:
+            return self._execute_pipeline(text)
+        except Exception as e:
+            err_msg = str(e)
+            if "local_files_only" in err_msg or "disk cache" in err_msg or "Offline" in err_msg:
+                self._logger.warn(f"Missing resources for text: [{text}]. Switching to Online mode temporarily...")
+                try:
+                    self._apply_offline_patch(False) 
+                    result = self._execute_pipeline(text)
+                    self._apply_offline_patch(True)  
+                    self._logger.info("Successfully downloaded missing resources and generated audio.")
+                    return result
+                except Exception as e_retry:
+                    self._logger.error(f"Online retry failed: {e_retry}")
+            else:
+                self._logger.error(f"Unexpected generation error: {e}")
+        
+        return 0.0, None
+
+    def _execute_pipeline(self, text: str) -> Tuple[float, io.BytesIO]:
         combined_audio_chunks = []
         total_samples = 0
         
-        try:
-            for i, result in enumerate(
-                self.pipeline(
-                    text, 
-                    voice=self.voice, 
-                    speed=self.speech_speed, 
-                    split_pattern=self.split_regex
-                )
-            ):
-                audio_chunk = result.audio
-
-                if isinstance(audio_chunk, torch.Tensor):
-                    audio_chunk = audio_chunk.cpu().numpy()
-                
-                if audio_chunk.ndim == 1:
-                    final_chunk = audio_chunk
-                else:
-                    self._logger.error(f"Unsupported audio chunk shape.")
-                    return 0.0, None
-
-                combined_audio_chunks.append(final_chunk)
-                total_samples += final_chunk.shape[0]
+        for result in self.pipeline(
+            text, voice=self.voice, speed=self.speech_speed, split_pattern=self.split_regex
+        ):
+            audio_chunk = result.audio
+            if isinstance(audio_chunk, torch.Tensor):
+                audio_chunk = audio_chunk.cpu().numpy()
             
-        except RuntimeError as e:
-            self._logger.error(f"Runtime error during Kokoro KPipeline processing: {e}")
-            return 0.0, None
-        except Exception as e:
-            self._logger.error(f"An unexpected error occurred during Kokoro audio generation: {e}")
-            return 0.0, None
+            if audio_chunk.ndim == 1:
+                combined_audio_chunks.append(audio_chunk)
+                total_samples += audio_chunk.shape[0]
 
         if not combined_audio_chunks:
-            self._logger.warn("No audio chunks generated by Kokoro TTS for the given text.")
             return 0.0, None
 
-        try:
-            combined_audio = np.concatenate(combined_audio_chunks, axis=0)
-        except ValueError as e:
-             self._logger.error(f"Error concatenating audio chunks: {e}")
-             return 0.0, None
-
+        combined_audio = np.concatenate(combined_audio_chunks, axis=0)
         play_time = float(total_samples) / self._sample_rate
 
-        if play_time <= 0:
-            self._logger.warn(f"Kokoro: Calculated play_time is zero or negative ({play_time:.2f}s).")
-            return 0.0, None
+        buffer = io.BytesIO()
+        sf.write(buffer, combined_audio, self._sample_rate, format='WAV', subtype='PCM_16')
+        buffer.seek(0)
+        return play_time, buffer
 
-        try:
-            buffer = io.BytesIO()
-            sf.write(buffer, combined_audio, self._sample_rate, format='WAV', subtype='PCM_16')
-            buffer.seek(0)
-            return play_time, buffer
-        except Exception as e:
-            self._logger.error(f"Error writing audio to buffer: {e}")
-            return 0.0, None
+    def _cleanup_env_vars(self):
+        for var in ['HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE']:
+            os.environ.pop(var, None)
+        if hasattr(self, '_logger'):
+            self._logger.info("Environment variables cleaned up.")

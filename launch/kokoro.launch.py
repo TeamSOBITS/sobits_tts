@@ -11,36 +11,17 @@ def generate_launch_description():
         description='Name of the TTS model to use (e.g., kokoro, parler).'
     )
 
-    kokoro_lang_code_arg = DeclareLaunchArgument(
-        'kokoro_lang_code',
-        default_value='a',
-        description='Language code for Kokoro TTS.'
-    )
+    kokoro_lang_code_arg = DeclareLaunchArgument(   # 'a': English (US), 'b': English (UK)
+        'kokoro_lang_code',                         # 'j': Japanese
+        default_value='a',                          # 'e': Spanish, 'f': French, 'h': Hindi
+        description='Language code for Kokoro TTS.' # 'i': Italian, 'p': Brazilian Portuguese
+    )                                               # 'z': Mandarin Chinese: pip3 install misaki[zh]
 
-    # 🇺🇸 'a' => アメリカ英語, 🇬🇧 'b' => イギリス英語
-    # 🇯🇵 'j' => 日本語
-    # 🇪🇸 'e' => スペイン語
-    # 🇫🇷 'f' => フランス語
-    # 🇮🇳 'h' => ヒンディー語
-    # 🇮🇹 'i' => イタリア語
-    # 🇧🇷 'p' => ブラジルのポルトガル語
-    # 🇨🇳 'z' => 中国語(普通話): pip3 install misaki[zh]
-
-    kokoro_voice_arg = DeclareLaunchArgument(
-        'kokoro_voice',
-        default_value='af_heart',
-        description='Voice model for Kokoro TTS.'
-    )
-
-    # 🇺🇸 アメリカ英語：af_heart
-    # 🇬🇧 イギリス英語：bf_isabella
-    # 🇯🇵 日本語      ：jf_alpha
-    # 🇪🇸 スペイン語  ：ef_dora
-    # 🇫🇷 フランス語  ：ff_siwis
-    # 🇮🇳 ヒンディー語：hf_alpha	
-    # 🇮🇹 イタリア語  ：if_sara
-    # 🇧🇷 ブラジルのポルトガル語：pf_dora
-    # 🇨🇳 中国語(普通話)：zf_xiaobei
+    kokoro_voice_arg = DeclareLaunchArgument(       # English (US): af_heart, English (UK): bf_isabella
+        'kokoro_voice',                             # Japanese: jf_alpha
+        default_value='af_heart',                   # Spanish: ef_dora, French: ff_siwis, Hindi: hf_alpha	
+        description='Voice model for Kokoro TTS.'   # Italian: if_sara, Brazilian Portuguese: pf_dora
+    )                                               # Mandarin Chinese: zf_xiaobei
 
     kokoro_speech_speed_arg = DeclareLaunchArgument(
         'kokoro_speech_speed',
@@ -54,6 +35,12 @@ def generate_launch_description():
         description='Regular expression to split text'
     )
 
+    kokoro_deveice_arg = DeclareLaunchArgument(
+        'kokoro_device',
+        default_value='',
+        description='Device to use for Kokoro TTS (e.g., cpu or cuda).'
+    )
+
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
@@ -65,6 +52,7 @@ def generate_launch_description():
             {'kokoro.voice': LaunchConfiguration('kokoro_voice')},
             {'kokoro.speech_speed': LaunchConfiguration('kokoro_speech_speed')},
             {'kokoro.split_regex': ParameterValue(LaunchConfiguration('kokoro_split_regex'), value_type=str)},
+            {'kokoro.device': LaunchConfiguration('kokoro_device')},
         ]
     )
 
@@ -74,6 +62,6 @@ def generate_launch_description():
         kokoro_voice_arg,
         kokoro_speech_speed_arg,
         kokoro_split_regex_arg,
-        
+        kokoro_deveice_arg,
         tts_server_node
     ])
