@@ -14,6 +14,7 @@
     <li><a href="#parler-tts">Parler TTS</a></li>
     <li><a href="#open-audio-tts">Open Audio TTS</a></li>
     <li><a href="#voicevox-tts">Voicevox TTS</a></li>
+    <li><a href="#supertonic-tts">Supertonic TTS</a></li>
   </ol>
 </details>
 
@@ -570,5 +571,56 @@ ros2 param set /tts_action_server voicevox.style_id 1
 | ステレオ出力 |  voicevox_output_stereo |  左右2つのスピーカーで音を分けて立体的に聞こえるように出力するかどうか． |  false | 
 
 <p align="right">(<a href="#voicevox-top">Voicevox TTSトップに戻る</a>)</p>
+
+<a name="supertonic-top"></a>
+
+# Supertonic TTS
+[Supertonic TTS](https://github.com/supertone-inc/supertonic)は極限の計算負荷で極限のパフォーマンスを目指した，非常に高速なオンデバイステキスト読み上げシステムです．ONNX Runtimeを搭載し，完全にデバイス上で動作します．Raspberry Pi上でも動作します．
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール
+    ```bash
+    bash supertonic.sh
+    ```
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [supertonic.launch.py](launch/supertonic.launch.py)を起動
+    ```sh
+    ros2 launch sobits_tts supertonic.launch.py
+    ```
+
+2. Action Clientを起動
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
+## パラメータ
+[supertonic.launch.py](launch/supertonic.launch.py)で以下のパラメータを指定できます．
+
+以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
+
+例：supertonic.voice_nameをM1に変更する場合
+```sh
+ros2 param set /tts_action_server supertonic.voice_name M1
+```
+
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| supertonic_device | 使用する計算デバイス (cpu or cuda)．空の場合，利用可能なGPUがあれば優先的に選択し，なければCPUが自動選択される． | 'cpu' |
+| supertonic_voice_name | 話者．M1, M2, M3, M4, M5, F1, F2, F3, F4, F5から選択可能． | 'F1' |
+| supertonic_total_steps | ノイズ除去ステップ数．高くすると音質が良くなるが生成時間が遅くなる．| 5 |
+| supertonic_speed | 発話する速度．1.2倍にする場合は`1.2`．上げると読み飛ばしが起こりやすくなる． | 1.05 |
+| supertonic_max_chunk_length | 一度に処理するテキストの最大文字数．| 300 |
+| supertonic_silence_duration | 文と文の間に挿入する無音時間（秒数）．| 0.3 |
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
 
 <p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>

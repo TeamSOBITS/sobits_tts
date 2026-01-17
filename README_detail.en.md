@@ -15,6 +15,7 @@
 <li><a href="#parler-tts">Parler TTS</a></li>
 <li><a href="#open-audio-tts">Open Audio TTS</a></li>
 <li><a href="#voicevox-tts">Voicevox TTS</a></li>
+<li><a href="#supertonic-tts">Supertonic TTS</a></li>
 </ol>
 </details>
 
@@ -652,7 +653,55 @@ ros2 param set /tts_action_server voicevox.style_id 1
 
 <p align="right">(<a href="#voicevox-top">Back to Voicevox TTS Top</a>)</p>
 
+<a name="supertonic-top"></a>
+
+# Supertonic TTS
+
+[Supertonic TTS](https://github.com/supertone-inc/supertonic) is a lightning-fast, on-device text-to-speech system designed for extreme performance with minimal computational overhead. Powered by ONNX Runtime, it runs entirely on your device and is even compatible with Raspberry Pi.
+
+## Installation
+1. Move to the `install` directory of `sobits_tts`
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. Install the model. 
+    ```bash
+    bash supertonic.sh
+    ```
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+## Launch and Usage
+1. Launch [supertonic.launch.py](launch/supertonic.launch.py)
+    ```sh
+    ros2 launch sobits_tts supertonic.launch.py
+    ```
+
+2. Start the Action Client
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+## Parameters
+You can set the following parameters in [supertonic.launch.py](launch/supertonic.launch.py).
+
+After launching the launch file, you can still dynamically change parameters using the following
+
+Example: To change the supertonic.voice_name to M1
+
+```sh
+ros2 param set /tts_action_server supertonic.voice_name M1
+```
+
+| Parameter Name | Description | Default Value |
+| --- | --- | --- |
+| supertonic_device | The computing device to use (cpu or cuda). If left empty, it prioritized the GPU if available; otherwise, the CPU is automatically selected. | 'cpu' |
+| supertonic_voice_name | Speaker selection. Available options: M1, M2, M3, M4, M5, F1, F2, F3, F4, F5. | 'F1' |
+| supertonic_total_steps | Number of denoising steps. Increasing this improves audio quality but slows down generation time. | 5 |
+| supertonic_speed | Speech speed. For example, set to `1.2` for 1.2x speed. Higher values may lead to skipped words. | 1.05 |
+| supertonic_max_chunk_length | The maximum number of characters to process in a single chunk. | 300 |
+| supertonic_silence_duration | The duration of silence (in seconds) to insert between sentences. | 0.3 |
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
 <p align="right">(<a href="#readme-top">Back to Page Top</a>)</p>
-
-
-
