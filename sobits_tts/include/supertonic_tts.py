@@ -56,15 +56,14 @@ class SupertonicTTSModel(BaseTTSModel):
                 del os.environ["CUDA_VISIBLE_DEVICES"]
             self._logger.info("[Supertonic] Mode: GPU (CUDA)")
 
-        package_share_dir = get_package_share_directory('sobits_tts')
-        path_in_share = os.path.join(package_share_dir, "install/supertonic")
+        opt_path = "/opt/supertonic_model"
         
-        if os.path.exists(path_in_share) and any(os.scandir(path_in_share)):
-            self.base_path = path_in_share
+        if os.path.exists(opt_path) and any(os.scandir(opt_path)):
+            self.base_path = opt_path
+            self._logger.info(f"[Supertonic] Using model from system path: {self.base_path}")
         else:
             self.base_path = os.path.expanduser("~/colcon_ws/src/sobits_tts/install/supertonic")
-            self._logger.warn(f"[Supertonic] Falling back to src path: {self.base_path}")
-
+            self._logger.warn(f"[Supertonic] /opt path not found. Falling back to: {self.base_path}")
         try:
             self.supertonic_tts = TTS(
                 model_dir=self.base_path,
