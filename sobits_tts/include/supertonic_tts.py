@@ -28,6 +28,7 @@ class SupertonicTTSModel(BaseTTSModel):
         self._node.declare_parameter('supertonic.speed', 1.05)
         self._node.declare_parameter('supertonic.max_chunk_length', 300)
         self._node.declare_parameter('supertonic.silence_duration', 0.3)
+        self._node.declare_parameter('supertonic.language', 'en')
 
         device_param = str(self._node.get_parameter('supertonic.device').get_parameter_value().string_value).lower()
         intra = self._node.get_parameter('supertonic.intra_op_num_threads').get_parameter_value().integer_value
@@ -64,6 +65,7 @@ class SupertonicTTSModel(BaseTTSModel):
         else:
             self.base_path = os.path.expanduser("~/colcon_ws/src/sobits_tts/install/supertonic")
             self._logger.warn(f"[Supertonic] /opt path not found. Falling back to: {self.base_path}")
+        
         try:
             self.supertonic_tts = TTS(
                 model_dir=self.base_path,
@@ -82,19 +84,24 @@ class SupertonicTTSModel(BaseTTSModel):
             params = self._node.get_parameters([
                 'supertonic.voice_name', 'supertonic.total_steps', 
                 'supertonic.speed', 'supertonic.max_chunk_length', 
-                'supertonic.silence_duration'
+                'supertonic.silence_duration', 'supertonic.language'
             ])
-            v_name, t_steps, spd, m_chunk, s_dur = [p.value for p in params]
+            v_name, t_steps, spd, m_chunk, s_dur, lang_code = [p.value for p in params]
 
             start_time = time.time()
             style = self.supertonic_tts.get_voice_style(voice_name=v_name)
             wav, duration = self.supertonic_tts.synthesize(
-                text=text, voice_style=style, total_steps=t_steps,
-                speed=spd, max_chunk_length=m_chunk, silence_duration=s_dur,
+                text=text, 
+                voice_style=style, 
+                total_steps=t_steps,
+                speed=spd, 
+                max_chunk_length=m_chunk, 
+                silence_duration=s_dur,
+                lang=lang_code,
                 verbose=False
             )
             inference_time = time.time() - start_time
-            self._logger.info(f"[Supertonic] Inference time: {inference_time:.3f}s for {len(text)} chars")
+            self._logger.info(f"[Supertonic] Inference time: {inference_time:.3f}s for {len(text)} chars (Lang: {lang_code})")
             
             wav = wav.flatten()
             actual_sr = self.supertonic_tts.sample_rate 

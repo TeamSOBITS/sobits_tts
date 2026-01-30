@@ -22,6 +22,12 @@ def generate_launch_description():
         description='Voice name for Supertonic (e.g., F1, F2, M1, M2).'
     )
 
+    supertonic_language_arg = DeclareLaunchArgument(
+        'supertonic_language',
+        default_value='en',
+        description='Language code for synthesis (e.g., en, ko, es, fr, pt).'
+    )
+
     supertonic_total_steps_arg = DeclareLaunchArgument(
         'supertonic_total_steps',
         default_value='5',
@@ -55,6 +61,7 @@ def generate_launch_description():
             {'tts_name': LaunchConfiguration('tts_name')},
             {'supertonic.device': LaunchConfiguration('supertonic_device')},
             {'supertonic.voice_name': LaunchConfiguration('supertonic_voice_name')},
+            {'supertonic.language': LaunchConfiguration('supertonic_language')}, 
             {'supertonic.total_steps': LaunchConfiguration('supertonic_total_steps')},
             {'supertonic.speed': LaunchConfiguration('supertonic_speed')},
             {'supertonic.max_chunk_length': LaunchConfiguration('supertonic_max_chunk_length')},
@@ -66,6 +73,7 @@ def generate_launch_description():
         tts_name_arg,
         supertonic_device_arg,
         supertonic_voice_name_arg,
+        supertonic_language_arg, 
         supertonic_total_steps_arg,
         supertonic_speed_arg,
         supertonic_max_chunk_length_arg,

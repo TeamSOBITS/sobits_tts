@@ -615,10 +615,13 @@ ros2 param set /tts_action_server supertonic.voice_name M1
 | --- | --- | --- |
 | supertonic_device | 使用する計算デバイス (cpu or cuda)．空の場合，利用可能なGPUがあれば優先的に選択し，なければCPUが自動選択される． | 'cpu' |
 | supertonic_voice_name | 話者．M1, M2, M3, M4, M5, F1, F2, F3, F4, F5から選択可能． | 'F1' |
+| supertonic_language | 言語．`en`, `ko`, `es`, `pt`, `fr`から選択可能． | 'en' |
 | supertonic_total_steps | ノイズ除去ステップ数．高くすると音質が良くなるが生成時間が遅くなる．| 5 |
 | supertonic_speed | 発話する速度．1.2倍にする場合は`1.2`．上げると読み飛ばしが起こりやすくなる． | 1.05 |
 | supertonic_max_chunk_length | 一度に処理するテキストの最大文字数．| 300 |
 | supertonic_silence_duration | 文と文の間に挿入する無音時間（秒数）．| 0.3 |
+
+言語は英語，韓国語，スペイン語，ポルトガル語，フランス語に対応しています．
 
 <p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
 
