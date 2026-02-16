@@ -14,6 +14,7 @@
     <li><a href="#parler-tts">Parler TTS</a></li>
     <li><a href="#open-audio-tts">Open Audio TTS</a></li>
     <li><a href="#voicevox-tts">Voicevox TTS</a></li>
+    <li><a href="#supertonic-tts">Supertonic TTS</a></li>
   </ol>
 </details>
 
@@ -99,31 +100,18 @@ kokoro_ttsは言語別で様々な話者に対応しています．\
 
 <p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
-### 発話速度
-発話する速度を変更する場合は，[kokoro.launch.py](launch/kokoro.launch.py)の**kokoro_speech_speed**を書き換えてください．(デフォルト値：1.0)
+## その他のパラメータ
 
-例：1.2倍にしたい場合
-```sh
-kokoro_speech_speed_arg = DeclareLaunchArgument(
-    'kokoro_speech_speed',
-    default_value='1.2',
-    description='Speech speed for Kokoro TTS. 0.5 for half speed, 2.0 for double speed.'
-)
-```
+以下は[kokoro.launch.py](launch/kokoro.launch.py)で設定可能なその他のパラメータです．
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| kokoro_speech_speed | 発話する速度．1.2倍にする場合は`1.2`． | 1.0 |
+| kokoro_split_regex | 区切る文字 ．設定した文字で区切らせて発話できる．| r'[\n,.!?、。！？]+' |
+| kokoro_device | 使用する計算デバイス (cpu or cuda:0)．空の場合，利用可能なGPUがあれば優先的に選択し，なければCPUが自動選択される．| '' |
+
 <p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
-### 区切る文字
-特定の文字で区切らせて発話させる場合は，[kokoro.launch.py](launch/kokoro.launch.py)の**kokoro_split_regex**を書き換えてください．(デフォルト値：**r'[\n,.!?、。！？]+'**)
-
-例：*で区切らせたい場合
-```sh
-kokoro_split_regex_arg = DeclareLaunchArgument(
-    'kokoro_split_regex',
-    default_value= r'[\n,.!?、。！？]+',
-    description='Regular expression to split text'
-)
-```
-<p align="right">(<a href="#kokoro-top">Kokoro TTSトップに戻る</a>)</p>
 
 <a name="openpico-top"></a>
 
@@ -583,5 +571,119 @@ ros2 param set /tts_action_server voicevox.style_id 1
 | ステレオ出力 |  voicevox_output_stereo |  左右2つのスピーカーで音を分けて立体的に聞こえるように出力するかどうか． |  false | 
 
 <p align="right">(<a href="#voicevox-top">Voicevox TTSトップに戻る</a>)</p>
+
+<a name="supertonic-top"></a>
+
+# Supertonic TTS
+[Supertonic TTS](https://github.com/supertone-inc/supertonic)は極限の計算負荷で極限のパフォーマンスを目指した，非常に高速なオンデバイステキスト読み上げシステムです．ONNX Runtimeを搭載し，完全にデバイス上で動作します．Raspberry Pi上でも動作します．
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール
+    ```bash
+    bash supertonic.sh
+    ```
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [supertonic.launch.py](launch/supertonic.launch.py)を起動
+    ```sh
+    ros2 launch sobits_tts supertonic.launch.py
+    ```
+
+2. Action Clientを起動
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
+## パラメータ
+[supertonic.launch.py](launch/supertonic.launch.py)で以下のパラメータを指定できます．
+
+以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
+
+例：supertonic.voice_nameをM1に変更する場合
+```sh
+ros2 param set /tts_action_server supertonic.voice_name M1
+```
+
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| supertonic_device | 使用する計算デバイス (cpu or cuda)．空の場合，利用可能なGPUがあれば優先的に選択し，なければCPUが自動選択される． | 'cpu' |
+| supertonic_voice_name | 話者．M1, M2, M3, M4, M5, F1, F2, F3, F4, F5から選択可能． | 'F1' |
+| supertonic_language | 言語．`en`, `ko`, `es`, `pt`, `fr`から選択可能． | 'en' |
+| supertonic_total_steps | ノイズ除去ステップ数．高くすると音質が良くなるが生成時間が遅くなる．| 5 |
+| supertonic_speed | 発話する速度．1.2倍にする場合は`1.2`．上げると読み飛ばしが起こりやすくなる． | 1.05 |
+| supertonic_max_chunk_length | 一度に処理するテキストの最大文字数．| 300 |
+| supertonic_silence_duration | 文と文の間に挿入する無音時間（秒数）．| 0.3 |
+
+言語は英語，韓国語，スペイン語，ポルトガル語，フランス語に対応しています．
+
+<p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
+
+<a name="piper-top"></a>
+
+# Piper TTS
+[Piper TTS](https://github.com/OHF-Voice/piper1-gpl)は音声化のために[espeak-ng](https://github.com/espeak-ng/espeak-ng)を埋め込む高速かつローカルなニューラルテキスト読み上げエンジンです．
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール
+    ```bash
+    bash piper.sh
+    ```
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [piper.launch.py](launch/piper.launch.py)を起動
+    ```sh
+    ros2 launch sobits_tts piper.launch.py
+    ```
+
+2. Action Clientを起動
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## パラメータ
+[piper.launch.py](launch/piper.launch.py)で以下のパラメータを指定できます．
+
+以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
+
+例：piper.volumeを5.0に変更する場合
+```sh
+ros2 param set /tts_action_server piper.volume 5.0
+```
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| piper_model | 使用するモデル名．なければ自動ダウンロードされる． | en_US-lessac-medium |
+| piper_length_scale | 話速の倍率．1.0 より小さいと速く、1.0 より大きいと遅くなる． | 1.0 |
+| piper_noise_scale | 音声の揺らぎ（感情の起伏）．値を変えると声の質感や抑揚が変化する． | 0.667 |
+| piper_noise_w_scale | 音素の長さのばらつき（抑揚）．発音のタイミングのランダム性を制御する． | 0.8 |
+| piper_volume | 音量の倍率． | 1.0 |
+| piper_speaker_id | マルチスピーカーモデルの話者ID． | 0 |
+
+- ダウンロード可能なモデル一覧は以下のコマンドで確認できます
+    ```sh
+    python3 -m piper.download_voices
+    ```
+- ダウンロード済みモデルは以下のコマンドで確認できます
+    ```sh
+    ls ~/.sobits_tts/piper/*.onnx | xargs -n 1 basename | sed 's/\.onnx//'
+    ```
+- モデルの音声サンプルは[こちら](https://rhasspy.github.io/piper-samples/)で確認できます．
+
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
 
 <p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>

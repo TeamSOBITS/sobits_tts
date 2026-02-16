@@ -35,11 +35,13 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 現在以下のTTSに対応しています．
 - Kokoro TTS
+- Coqui TTS
+- Piper TTS
+- Supertonic TTS
+- Voicevox TTS
 - Open JTalk, SVOX Pico TTS
 - Parler TTS
-- Coqui TTS
 - Open Audio TTS
-- Voicevox TTS
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -99,12 +101,16 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 
 | TTS名                       | 精度 | 生成速度 | 特徴 | 
 | ---                         | -- |--- |--- |
-| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ◯ | ◯ | 英語・日本語などに対応 |
-| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico) | △ | ◎ | 英語・日本語に対応 |
-| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ◯ | ◯ | 英語のみに対応 |
-| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                     | ◎ | △ | 英語・日本語などに対応，感情指定が可能なモデルあり |
-| [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)                     | ◎ | △ | 英語・日本語などに対応，音声クローン，感情指定可 |
-| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#voicevox-tts) | ◯|◎| 日本語のみに対応．ずんだもんで発話可能
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#kokoro-tts)                      | ☆☆☆☆  | ☆☆☆☆ | 英語・日本語などに対応 |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#coqui-tts)                       | ☆☆☆☆   | ☆☆☆☆ | 英語のみに対応 |
+| [Piper](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#piper-tts)                     | ☆☆☆     | ☆☆☆☆☆ | 日本語以外の多言語対応，超軽量・CPUでも高速動作　|
+| [Supertonic](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#supertonic-tts)                  | ☆☆     | ☆☆☆☆☆ | 英語，韓国語，フランス語など5カ国語に対応，非常に軽量　|
+| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#voicevox-tts)                    | ☆☆☆☆   | ☆☆☆☆| 日本語のみに対応．ずんだもんで発話可能　|
+| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#openpico)                        | ☆        | ☆☆☆☆☆ | 英語・日本語に対応 |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#parler-tts)                      | ☆☆☆☆   | ☆ | 英語・日本語などに対応，感情指定が可能なモデルあり | 
+| [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | 英語・日本語などに対応，音声クローン，感情指定可 |
+
+
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 

@@ -30,13 +30,14 @@
 SOBITS TTS integrates various Text-to-Speech (TTS) engines with ROS2 Action communication.
 
 Currently, it supports the following TTS engines:
-
-  - Kokoro TTS
-  - Open JTalk, SVOX Pico TTS
-  - Parler TTS
-  - Coqui TTS
-  - Open Audio TTS
-  - Voicevox TTS
+- Kokoro TTS
+- Coqui TTS
+- Piper TTS
+- Supertonic TTS
+- Voicevox TTS
+- Open JTalk, SVOX Pico TTS
+- Parler TTS
+- Open Audio TTS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -105,15 +106,16 @@ Before running, you need to download the models for the TTS engine you intend to
 
 Click on each TTS name to view download and execution instructions.
 
-| TTS Name                    | Accuracy | Generation Speed | Features                               |
-| ---                         | --       | ---              | ---                                    |
-| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#kokoro-tts)                      | ◯        | ◯                | ---                                    |
-| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico) | △        | ◎                | ---                                    |
-| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ◯        | ◯                | ---                                    |
-| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                     | ◎        | △                | Includes models with emotion specification |
-|[OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.md#open-audio-tts)  | ◎ | △ | Supports English, Japanese, etc., voice cloning, and emotion specification.
-| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#voicevox-tts) | ◯ | ◎ | Supports only Japanese; speech is available with Zundamon voice |
-
+| TTS Name                       | Accuracy | Generation Speed | Features | 
+| ---                         | -- |--- |--- |
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#kokoro-tts)                      | ☆☆☆☆  | ☆☆☆☆ | Supports English, Japanese, etc. |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ☆☆☆☆   | ☆☆☆☆ | Supports only English. |
+| [Piper](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#piper-tts)                     | ☆☆☆     | ☆☆☆☆☆ | Supports multiple languages beyond Japanese. Ultra-lightweight and high-speed operation even on a CPU.　|
+| [Supertonic](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#supertonic-tts)                  | ☆☆☆     | ☆☆☆☆☆ | Support for 5 languages (English, Korean, French, etc.)，lightning-fast.　|
+| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#voicevox-tts)                    | ☆☆☆☆   | ☆☆☆☆| Supports only Japanese; speech is available with Zundamon voice　|
+| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico)                        | ☆        | ☆☆☆☆☆ | Supports English and Japanese. |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#parler-tts)                      | ☆☆☆☆   | ☆ | Supports English, Japanese, etc. Includes models with emotion specification | 
+| [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | Supports English, Japanese, etc., voice cloning, and emotion specification. |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

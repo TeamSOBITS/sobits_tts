@@ -15,6 +15,7 @@
 <li><a href="#parler-tts">Parler TTS</a></li>
 <li><a href="#open-audio-tts">Open Audio TTS</a></li>
 <li><a href="#voicevox-tts">Voicevox TTS</a></li>
+<li><a href="#supertonic-tts">Supertonic TTS</a></li>
 </ol>
 </details>
 
@@ -111,39 +112,18 @@ For more details, refer to [this link](https://huggingface.co/hexgrad/Kokoro-82M
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Speech Speed
 
-To change the speech speed, modify **kokoro_speech_speed** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `1.0`).
- 
-Example: To set to 1.2x speed
+## Other Parameters
 
-```sh
-kokoro_speech_speed_arg = DeclareLaunchArgument(
-    'kokoro_speech_speed',
-    default_value='1.2',
-    description='Speech speed for Kokoro TTS. 0.5 for half speed, 2.0 for double speed.'
-)
-```
+The following parameters can be configured in [kokoro.launch.py](launch/kokoro.launch.py).
+
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `kokoro_speech_speed` | Speaking speed. For example, set to `1.2` for 1.2x speed. | 1.0 |
+| `kokoro_split_regex` | Regex pattern for splitting text. The model processes and speaks text segmented by these characters. | `r'[\n,.!?、。！？]+'` |
+| `kokoro_device` | Computing device to use (`cpu` or `cuda:0`). If left empty, it automatically selects GPU if available, otherwise falls back to CPU. | `''` |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Delimiter Characters
-
-To split speech at specific characters, modify **kokoro_split\_regex** in [kokoro.launch.py](https://www.google.com/search?q=launch/kokoro.launch.py) (default value: `r'[\n,.!?、。！？]+'`).
- 
-Example: To split at `*`
-
-```sh
-kokoro_split_regex_arg = DeclareLaunchArgument(
-    'kokoro_split_regex',
-    default_value= r'[\n,.!?、。！？]+',
-    description='Regular expression to split text'
-)
-```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
------
 
 # OpenPico
 
@@ -275,7 +255,7 @@ Change **openpico_voice_data_ja** in [openpico.launch.py](launch/openpico.launch
 
 ## Parameters
 
-You can specify the following parameters in [coqui.launch.py](https://www.google.com/search?q=launch/coqui.launch.py).
+You can specify the following parameters in [coqui.launch.py](launch/coqui.launch.py).
 
 | Parameter | Parameter Name | Description | Default Value |
 | ----- | ----- | ----- | ----- |
@@ -673,7 +653,131 @@ ros2 param set /tts_action_server voicevox.style_id 1
 
 <p align="right">(<a href="#voicevox-top">Back to Voicevox TTS Top</a>)</p>
 
+<a name="supertonic-top"></a>
+
+# Supertonic TTS
+
+[Supertonic TTS](https://github.com/supertone-inc/supertonic) is a lightning-fast, on-device text-to-speech system designed for extreme performance with minimal computational overhead. Powered by ONNX Runtime, it runs entirely on your device and is even compatible with Raspberry Pi.
+
+## Installation
+1. Move to the `install` directory of `sobits_tts`
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. Install the model. 
+    ```bash
+    bash supertonic.sh
+    ```
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+## Launch and Usage
+1. Launch [supertonic.launch.py](launch/supertonic.launch.py)
+    ```sh
+    ros2 launch sobits_tts supertonic.launch.py
+    ```
+
+2. Start the Action Client
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+## Parameters
+You can set the following parameters in [supertonic.launch.py](launch/supertonic.launch.py).
+
+After launching the launch file, you can still dynamically change parameters using the following
+
+Example: To change the supertonic.voice_name to M1
+
+```sh
+ros2 param set /tts_action_server supertonic.voice_name M1
+```
+
+| Parameter Name | Description | Default Value |
+| --- | --- | --- |
+| supertonic_device | The computing device to use (cpu or cuda). If left empty, it prioritized the GPU if available; otherwise, the CPU is automatically selected. | 'cpu' |
+| supertonic_voice_name | Speaker selection. Available options: M1, M2, M3, M4, M5, F1, F2, F3, F4, F5. | 'F1' |
+| supertonic_language | Language code. Choose from `en`, `ko`, `es`, `pt`, or `fr`. | 'en' |
+| supertonic_total_steps | Number of denoising steps. Increasing this improves audio quality but slows down generation time. | 5 |
+| supertonic_speed | Speech speed. For example, set to `1.2` for 1.2x speed. Higher values may lead to skipped words. | 1.05 |
+| supertonic_max_chunk_length | The maximum number of characters to process in a single chunk. | 300 |
+| supertonic_silence_duration | The duration of silence (in seconds) to insert between sentences. | 0.3 |
+
+Supports 5 languages—English, Korean, Spanish, Portuguese, and French—while remaining extremely lightweight.
+
+<p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+<a name="piper-top"></a>
+
+# Piper TTS
+
+[Piper TTS](https://github.com/OHF-Voice/piper1-gpl) is a fast, local neural text-to-speech engine that utilizes [espeak-ng](https://github.com/espeak-ng/espeak-ng) for phonemization. 
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Installation
+
+1. Move to the install directory of sobits_tts
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+
+2. Install the models
+    ```bash
+    bash piper.sh
+    ```
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Usage and Operation
+
+1. Launch [piper.launch.py](launch/piper.launch.py)
+    ```sh
+    ros2 launch sobits_tts piper.launch.py
+    ```
+
+
+2. Start the Action Client
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Parameters
+
+The following parameters can be specified in [piper.launch.py](launch/piper.launch.py).
+
+Parameters can be dynamically changed after the launch file has started using the following command.
+
+Example: Changing piper.volume to 5.0
+
+```sh
+ros2 param set /tts_action_server piper.volume 5.0
+
+```
+
+| Parameter | Description | Default Value |
+| --- | --- | --- |
+| piper_model | The name of the model to use. It will be automatically downloaded if not found. | en_US-lessac-medium |
+| piper_length_scale | Speaking speed scale. Values less than 1.0 are faster, and values greater than 1.0 are slower. | 1.0 |
+| piper_noise_scale | Noise scale (emotional variability). Changing this value affects the voice texture and intonation. | 0.667 |
+| piper_noise_w_scale | Phoneme width noise scale (intonation). Controls the randomness of pronunciation timing. | 0.8 |
+| piper_volume | Output audio volume scale. | 1.0 |
+| piper_speaker_id | Speaker ID for multi-speaker models. | 0 |
+
+- List all available models (online)
+    ```sh
+    python3 -m piper.download_voices | jq -r 'keys[]'
+    ```
+
+- List currently downloaded models (local):
+    ```sh
+    ls ~/.sobits_tts/piper/*.onnx | xargs -n 1 basename | sed 's/\.onnx//'
+    ```
+
+- You can listen to voice samples for each model [here](https://rhasspy.github.io/piper-samples/).
+
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+
 <p align="right">(<a href="#readme-top">Back to Page Top</a>)</p>
-
-
-
