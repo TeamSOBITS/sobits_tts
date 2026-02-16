@@ -7,7 +7,7 @@ echo " Installing Piper TTS"
 echo "========================================"
 
 echo "[1/3] Installing piper..."
-pip3 install --upgrade piper
+pip3 install --upgrade piper --break-system-packages
 MODEL_DIR="$HOME/.sobits_tts/piper"
 mkdir -p "$MODEL_DIR"
 
