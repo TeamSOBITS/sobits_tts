@@ -200,17 +200,12 @@ def main(args=None):
         executor.add_node(action_server)
         executor.spin()
     except KeyboardInterrupt:
-        if action_server and rclpy.ok():
-            action_server.get_logger().fatal(f"A fatal error occurred in TTS Action Server: {e}")
-            action_server.get_logger().fatal(traceback.format_exc())
+        pass
+    except Exception as e:
+        if action_server:
+            action_server.get_logger().error(f"Fatal error: {e}")
         else:
-            try:
-                temp_node = rclpy.create_node('tts_server_fatal_logger')
-                temp_node.get_logger().fatal(f"Failed to initialize or run TTS Action Server: {e}")
-                temp_node.get_logger().fatal(traceback.format_exc())
-                temp_node.destroy_node()
-            except Exception as log_e:
-                print(f"FATAL ERROR: Could not initialize logger or TTS Action Server: {e}, Logger error: {log_e}")
+            print(f"Failed to start node: {e}")
     finally:
         if rclpy.ok():
             if action_server:

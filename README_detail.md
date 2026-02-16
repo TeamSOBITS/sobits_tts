@@ -625,5 +625,65 @@ ros2 param set /tts_action_server supertonic.voice_name M1
 
 <p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
 
+<a name="piper-top"></a>
+
+# Piper TTS
+[Piper TTS](https://github.com/OHF-Voice/piper1-gpl)は音声化のために[espeak-ng](https://github.com/espeak-ng/espeak-ng)を埋め込む高速かつローカルなニューラルテキスト読み上げエンジンです．
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール
+    ```bash
+    bash piper.sh
+    ```
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [piper.launch.py](launch/piper.launch.py)を起動
+    ```sh
+    ros2 launch sobits_tts piper.launch.py
+    ```
+
+2. Action Clientを起動
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+## パラメータ
+[piper.launch.py](launch/piper.launch.py)で以下のパラメータを指定できます．
+
+以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
+
+例：piper.volumeを5.0に変更する場合
+```sh
+ros2 param set /tts_action_server piper.volume 5.0
+```
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| piper_model | 使用するモデル名．なければ自動ダウンロードされる． | en_US-lessac-medium |
+| piper_length_scale | 話速の倍率．1.0 より小さいと速く、1.0 より大きいと遅くなる． | 1.0 |
+| piper_noise_scale | 音声の揺らぎ（感情の起伏）．値を変えると声の質感や抑揚が変化する． | 0.667 |
+| piper_noise_w_scale | 音素の長さのばらつき（抑揚）．発音のタイミングのランダム性を制御する． | 0.8 |
+| piper_volume | 音量の倍率． | 1.0 |
+| piper_speaker_id | マルチスピーカーモデルの話者ID． | 0 |
+
+- ダウンロード可能なモデル一覧は以下のコマンドで確認できます
+    ```sh
+    python3 -m piper.download_voices
+    ```
+- ダウンロード済みモデルは以下のコマンドで確認できます
+    ```sh
+    ls ~/.sobits_tts/piper/*.onnx | xargs -n 1 basename | sed 's/\.onnx//'
+    ```
+- モデルの音声サンプルは[こちら](https://rhasspy.github.io/piper-samples/)で確認できます．
+
+
+<p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
 
 <p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>

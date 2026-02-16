@@ -32,6 +32,7 @@ SOBITS TTS integrates various Text-to-Speech (TTS) engines with ROS2 Action comm
 Currently, it supports the following TTS engines:
 - Kokoro TTS
 - Coqui TTS
+- Piper TTS
 - Supertonic TTS
 - Voicevox TTS
 - Open JTalk, SVOX Pico TTS
@@ -109,6 +110,7 @@ Click on each TTS name to view download and execution instructions.
 | ---                         | -- |--- |--- |
 | [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#kokoro-tts)                      | ☆☆☆☆  | ☆☆☆☆ | Supports English, Japanese, etc. |
 | [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#coqui-tts)                       | ☆☆☆☆   | ☆☆☆☆ | Supports only English. |
+| [Piper](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#piper-tts)                     | ☆☆☆     | ☆☆☆☆☆ | Supports multiple languages beyond Japanese. Ultra-lightweight and high-speed operation even on a CPU.　|
 | [Supertonic](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#supertonic-tts)                  | ☆☆☆     | ☆☆☆☆☆ | Support for 5 languages (English, Korean, French, etc.)，lightning-fast.　|
 | [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#voicevox-tts)                    | ☆☆☆☆   | ☆☆☆☆| Supports only Japanese; speech is available with Zundamon voice　|
 | [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/humble-devel/README_detail.en.md#openpico)                        | ☆        | ☆☆☆☆☆ | Supports English and Japanese. |

@@ -255,7 +255,7 @@ Change **openpico_voice_data_ja** in [openpico.launch.py](launch/openpico.launch
 
 ## Parameters
 
-You can specify the following parameters in [coqui.launch.py](https://www.google.com/search?q=launch/coqui.launch.py).
+You can specify the following parameters in [coqui.launch.py](launch/coqui.launch.py).
 
 | Parameter | Parameter Name | Description | Default Value |
 | ----- | ----- | ----- | ----- |
@@ -706,5 +706,78 @@ ros2 param set /tts_action_server supertonic.voice_name M1
 Supports 5 languages—English, Korean, Spanish, Portuguese, and French—while remaining extremely lightweight.
 
 <p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
+
+<a name="piper-top"></a>
+
+# Piper TTS
+
+[Piper TTS](https://github.com/OHF-Voice/piper1-gpl) is a fast, local neural text-to-speech engine that utilizes [espeak-ng](https://github.com/espeak-ng/espeak-ng) for phonemization. 
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Installation
+
+1. Move to the install directory of sobits_tts
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+
+2. Install the models
+    ```bash
+    bash piper.sh
+    ```
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Usage and Operation
+
+1. Launch [piper.launch.py](launch/piper.launch.py)
+    ```sh
+    ros2 launch sobits_tts piper.launch.py
+    ```
+
+
+2. Start the Action Client
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
+## Parameters
+
+The following parameters can be specified in [piper.launch.py](launch/piper.launch.py).
+
+Parameters can be dynamically changed after the launch file has started using the following command.
+
+Example: Changing piper.volume to 5.0
+
+```sh
+ros2 param set /tts_action_server piper.volume 5.0
+
+```
+
+| Parameter | Description | Default Value |
+| --- | --- | --- |
+| piper_model | The name of the model to use. It will be automatically downloaded if not found. | en_US-lessac-medium |
+| piper_length_scale | Speaking speed scale. Values less than 1.0 are faster, and values greater than 1.0 are slower. | 1.0 |
+| piper_noise_scale | Noise scale (emotional variability). Changing this value affects the voice texture and intonation. | 0.667 |
+| piper_noise_w_scale | Phoneme width noise scale (intonation). Controls the randomness of pronunciation timing. | 0.8 |
+| piper_volume | Output audio volume scale. | 1.0 |
+| piper_speaker_id | Speaker ID for multi-speaker models. | 0 |
+
+- List all available models (online)
+    ```sh
+    python3 -m piper.download_voices | jq -r 'keys[]'
+    ```
+
+- List currently downloaded models (local):
+    ```sh
+    ls ~/.sobits_tts/piper/*.onnx | xargs -n 1 basename | sed 's/\.onnx//'
+    ```
+
+- You can listen to voice samples for each model [here](https://rhasspy.github.io/piper-samples/).
+
+
+<p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
+
 
 <p align="right">(<a href="#readme-top">Back to Page Top</a>)</p>
