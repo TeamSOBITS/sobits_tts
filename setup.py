@@ -9,7 +9,7 @@ data_files = [
     ('share/' + package_name, ['package.xml']),
     (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
     (os.path.join('share', package_name, 'install'), glob('install/*.htsvoice')),
-    (os.path.join('share', package_name, 'soundfile'), glob('soundfile/*.wav')),
+    (os.path.join('share', package_name, 'soundfile'), glob('soundfile/*')),
 ]
 
 def add_recursive_files(src_dir, target_base):
@@ -33,7 +33,7 @@ setup(
     maintainer='sobits',
     maintainer_email='f22hakuti@gmail.com',
     description='TTS package for ROS 2',
-    license='TODO: License declaration',
+    license='BSD-3-Clause',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

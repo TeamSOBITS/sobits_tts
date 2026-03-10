@@ -15,6 +15,7 @@
     <li><a href="#open-audio-tts">Open Audio TTS</a></li>
     <li><a href="#voicevox-tts">Voicevox TTS</a></li>
     <li><a href="#supertonic-tts">Supertonic TTS</a></li>
+    <li><a href="#piper-tts">Piper TTS</a></li>
   </ol>
 </details>
 
@@ -179,11 +180,11 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
 3. TTSサーバーを簡単に実行するために， `alias` を作成する.
     - **CPUのみ**の場合:
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_aliases
     ```
     - **GPU**の場合:
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_aliases
     ```
 > [!IMPORTANT]
 > `{PATH_ROS_WS_LOCAL}` は**ローカル環境**に存在するROSのワークスペースのPATHである．
@@ -223,7 +224,7 @@ OpenPicoは日本語のみ様々な話者に対応しています．\
 
 <p align="right">(<a href="#coqui-top">Coqui TTSトップに戻る</a>)</p>
 
-<a name="palar-top"></a>
+<a name="parler-top"></a>
 
 # Parler TTS
 Parler_TTSは，特定のスピーカーのスタイル(性別，ピッチ，話し方など)で高品質で自然な音声を生成できる軽量のテキスト読み上げ(TTS)モデルです．
@@ -241,7 +242,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
     bash parler.sh
     ```
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 ## 実行・操作方法
 1. [parler.launch.py](launch/parler.launch.py)を起動 (時間がかかるので注意)
@@ -251,7 +252,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 2. Action Clientを起動
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 ## パラメータ
 ### 対応言語
@@ -282,7 +283,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 
 別のモデルを使用したい場合は[こちら](https://huggingface.co/models?other=parler_tts&sort=likes)から選択してください．
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 ### 話者
 [parler.launch.py](launch/parler.launch.py)の**description**の項目で，特定の話者(推奨)か，毎回ランダムな話者にするかを指定できます．
@@ -298,7 +299,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
       default_value='Alisa.fast speed. Expression is rich. The speaking voice is noisy.',
       ```
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 ### 話し方
 次のような単純なテキストプロンプトで話し方を変更することができます．
@@ -320,7 +321,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 - 感情指定可能モデルについて
     - "happy", "confused", "laughing", "sad", "whisper", "emphasis"などの感情を指定できます.
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 ## 発話させる文章について
 
@@ -329,7 +330,7 @@ Stability AIとエジンバラ大学のDan LythとSimon Kingによる論文[Natu
 - 句読点は，世代の韻律を制御するために使用できます(たとえば，カンマを使用して音声に小さな区切りを追加します)
 - 1単語のみ発話させる場合は生成に時間がかかります
 
-<p align="right">(<a href="#palar-top">Palar TTSトップに戻る</a>)</p>
+<p align="right">(<a href="#parler-top">Parler TTSトップに戻る</a>)</p>
 
 <a name="openaudio-top"></a>
 
@@ -408,7 +409,7 @@ Open Audio TTSは以下の言語に対応しています．言語は自動検出
     python3 recorder.py
     ```
 
-3. [openaudio.launch.py](launch/openaudio.launch.py)にある**reference_audio_path**を，oundfileディレクトリに生成された**record.wavの絶対パス**に書き換える．
+3. [openaudio.launch.py](launch/openaudio.launch.py)にある**reference_audio_path**を，soundfileディレクトリに生成された**record.wavの絶対パス**に書き換える．
 4. [openaudio.launch.py](launch/openaudio.launch.py)を起動する．
     ```sh
     ros2 launch sobits_tts openaudio.launch.py
@@ -549,7 +550,7 @@ ros2 param set /tts_action_server openaudio_tts.reference_audio_path
 [voicevox.launch.py](launch/voicevox.launch.py)で以下のパラメータを指定できます．
 以下のコマンドでlaunch ファイル起動後もパラメーターを動的に変更可能です．
 
-例：スタイルIDを2に変更する場合
+例：スタイルIDを1に変更する場合
 ```sh
 ros2 param set /tts_action_server voicevox.style_id 1
 ```
@@ -559,8 +560,8 @@ ros2 param set /tts_action_server voicevox.style_id 1
 
 | パラメータ | パラメータ名 | 説明 | デフォルト値 |
 | --- |  --- |  --- |  --- | 
-| スタイルID |  voicevox_style_id |  話し方を指定する．[VVMファイルとスタイルIDの対応表](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8)を参照すること． |  3 | 
-| VVMファイル名	 |  voicevox_model_file_num | 話者を指定する．上記の対応表を参照すること．|  0.vvm | 
+| スタイルID |  voicevox_style_id |  話し方を指定する．[VVMファイルとスタイルIDの対応表](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8)を参照すること． |  14 |
+| VVMファイル名	 |  voicevox_model_file_num | 話者を指定する．上記の対応表を参照すること．|  1.vvm |
 | 発話速度 | voicevox_speed_scale |  1.0 → 1.5 にすると発話速度が50%アップ．1.0 → 0.5にすると発話速度が50%ダウン． |  1.0 | 
 | ピッチスケール |  voicevox_pitch_scale |  上げると高くなる．正の値（例：+1.0）を指定すると，声が高くなり可愛い印象．負の値（例：−1.0）では低い声に変化し，落ち着いた印象． |  0.0 | 
 | イントネーション |  voicevox_intonation_scale |  値を 0に近づけると，平坦で単調な音声になる． |  1.0 | 

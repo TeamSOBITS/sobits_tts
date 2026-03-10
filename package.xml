@@ -3,9 +3,9 @@
 <package format="3">
   <name>sobits_tts</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>TTS package for ROS 2</description>
   <maintainer email="f22hakuti@gmail.com">sobits</maintainer>
-  <license>TODO: License declaration</license>
+  <license>BSD-3-Clause</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

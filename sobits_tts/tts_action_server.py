@@ -177,9 +177,6 @@ class TTSActionServer(Node):
                  response.success = False
                  goal_handle.abort()
 
-            feedback.remaining_time = 0.0
-            goal_handle.publish_feedback(feedback)
-
         except Exception as e:
             self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}")
             self.get_logger().error(traceback.format_exc())

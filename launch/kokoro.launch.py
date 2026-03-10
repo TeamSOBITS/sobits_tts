@@ -35,7 +35,7 @@ def generate_launch_description():
         description='Regular expression to split text'
     )
 
-    kokoro_deveice_arg = DeclareLaunchArgument(
+    kokoro_device_arg = DeclareLaunchArgument(
         'kokoro_device',
         default_value='',
         description='Device to use for Kokoro TTS (e.g., cpu or cuda).'
@@ -62,6 +62,6 @@ def generate_launch_description():
         kokoro_voice_arg,
         kokoro_speech_speed_arg,
         kokoro_split_regex_arg,
-        kokoro_deveice_arg,
+        kokoro_device_arg,
         tts_server_node
     ])

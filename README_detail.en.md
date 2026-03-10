@@ -16,6 +16,7 @@
 <li><a href="#open-audio-tts">Open Audio TTS</a></li>
 <li><a href="#voicevox-tts">Voicevox TTS</a></li>
 <li><a href="#supertonic-tts">Supertonic TTS</a></li>
+<li><a href="#piper-tts">Piper TTS</a></li>
 </ol>
 </details>
 
@@ -204,12 +205,12 @@ Change **openpico_voice_data_ja** in [openpico.launch.py](launch/openpico.launch
       - For **CPU only**:
     <!-- end list -->
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts-cpu'" >> ~/.bash_aliases
     ```
       - For **GPU**:
     <!-- end list -->
     ```sh
-    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_alias
+    $ echo "alias tts_launch='docker run --rm -it -p 5002:5002 --gpus all -v ~/{PATH_ROS_WS_LOCAL}/src/sobits_tts/install/coqui/models/:/root/.local/share/tts/ --entrypoint \"tts-server\" ghcr.io/coqui-ai/tts'" >> ~/.bash_aliases
     ```
 
 > [!IMPORTANT]
@@ -631,7 +632,7 @@ You can set the following parameters in [voicevox.launch.py](launch/voicevox.lau
 
 After launching the launch file, you can still dynamically change parameters using the following command.
 
-Example: To change the style ID to 2
+Example: To change the style ID to 1
 
 ```sh
 ros2 param set /tts_action_server voicevox.style_id 1
@@ -640,8 +641,8 @@ ros2 param set /tts_action_server voicevox.style_id 1
 
 | Parameter | Name | Description | Default |
 | --- | --- | --- | --- |
-| Style ID | voicevox_style_id | Specifies the speaking style. Refer to the [VVM file and style ID mapping](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8). | 3 |
-| VVM file name | voicevox_model_file_num | Specifies the speaker. Refer to the table above. | 0.vvm |
+| Style ID | voicevox_style_id | Specifies the speaking style. Refer to the [VVM file and style ID mapping](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md#%E9%9F%B3%E5%A3%B0%E3%83%A2%E3%83%87%E3%83%ABvvm%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%A8%E5%A3%B0%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%A8%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB-id-%E3%81%AE%E5%AF%BE%E5%BF%9C%E8%A1%A8). | 14 |
+| VVM file name | voicevox_model_file_num | Specifies the speaker. Refer to the table above. | 1.vvm |
 | Speech speed | voicevox_speed_scale | For example, 1.0 → 1.5 increases speed by 50%, 1.0 → 0.5 reduces speed by 50%. | 1.0 |
 | Pitch scale | voicevox_pitch_scale | Higher values (e.g., +1.0) make the voice higher and cuter; negative values (e.g., -1.0) make the voice lower and calmer. | 0.0 |
 | Intonation | voicevox_intonation_scale | Values closer to 0 produce flatter, more monotone speech. | 1.0 |
