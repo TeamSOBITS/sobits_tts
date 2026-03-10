@@ -8,8 +8,7 @@ data_files = [
     ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
     ('share/' + package_name, ['package.xml']),
     (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-    (os.path.join('share', package_name, 'install'), glob('install/*.htsvoice')),
-    (os.path.join('share', package_name, 'soundfile'), glob('soundfile/*')),
+(os.path.join('share', package_name, 'soundfile'), glob('soundfile/*')),
 ]
 
 def add_recursive_files(src_dir, target_base):

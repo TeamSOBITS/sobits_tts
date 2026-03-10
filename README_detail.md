@@ -159,6 +159,7 @@ OpenPicoは以下の言語に対応しています．\
 
 ### 話者
 OpenPicoは日本語のみ様々な話者に対応しています．\
+`install/openpico.sh` 実行時に Mei voice（CC-BY 3.0）が `/opt/mei_voice/` にダウンロードされます．\
 [openpico.launch.py](launch/openpico.launch.py)の**openpico_voice_data_ja**を使用する話者のファイルパスに書き換えてください．
 
 <p align="right">(<a href="#openpico-top">OpenPico TTSに戻る</a>)</p>

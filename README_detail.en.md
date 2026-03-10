@@ -181,6 +181,7 @@ Change **openpico_language** in [openpico.launch.py](launch/openpico.launch.py) 
 ### Speaker
 
 OpenPico supports various speakers only for Japanese.
+Running `install/openpico.sh` downloads Mei voice (CC-BY 3.0) to `/opt/mei_voice/`.
 Change **openpico_voice_data_ja** in [openpico.launch.py](launch/openpico.launch.py) to the file path of your desired speaker.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
