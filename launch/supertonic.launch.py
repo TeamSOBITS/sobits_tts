@@ -51,11 +51,17 @@ def generate_launch_description():
         default_value='0.3',
         description='Silence duration between chunks in seconds.'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )       
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),                        
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
@@ -78,5 +84,6 @@ def generate_launch_description():
         supertonic_speed_arg,
         supertonic_max_chunk_length_arg,
         supertonic_silence_duration_arg,
+        namespace_arg,                        
         tts_server_node
     ])

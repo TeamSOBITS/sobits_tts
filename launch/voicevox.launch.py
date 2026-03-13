@@ -71,11 +71,17 @@ def generate_launch_description():
         default_value='false',
         description='Whether to output stereo sound. False for mono, True for stereo sound field.'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )    
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server',
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),                        
         output='screen',
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
@@ -104,5 +110,6 @@ def generate_launch_description():
         voicevox_post_phoneme_length_arg,
         voicevox_output_sampling_rate_arg,
         voicevox_output_stereo_arg,
+        namespace_arg,                                
         tts_server_node
     ])

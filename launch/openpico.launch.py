@@ -8,22 +8,19 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     tts_name_arg = DeclareLaunchArgument(
         'tts_name',
-        default_value='openpico', # モデル名を 'openpico' に設定
+        default_value='openpico',
         description='Name of the TTS model to use (e.g., kokoro, openpico).'
     )
 
-    # --- Open JTalk / Pico TTS 共通パラメータ ---
     openpico_language_arg = DeclareLaunchArgument(
         'openpico_language',
-        default_value='en', # デフォルト言語 ('en' または 'ja')
+        default_value='en',
         description='Default language for synthesis ("en" for Pico TTS, "ja" for Open JTalk).'
     )
     
-    # --- Open JTalk 固有パラメータ ---
     openpico_voice_data_ja_arg = DeclareLaunchArgument(
         'openpico_voice_data_ja',
         # default_value='/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice',
-        # その他の Open JTalk 音声データ例 (install/openpico.sh でダウンロード済みの場合)
         # default_value='/opt/mei_voice/mei_angry.htsvoice',
         # default_value='/opt/mei_voice/mei_bashful.htsvoice',
         # default_value='/opt/mei_voice/mei_happy.htsvoice',
@@ -38,7 +35,6 @@ def generate_launch_description():
         description='Path to Open JTalk dictionary (MeCab dictionary).'
     )
 
-    # --- 外部コマンドパス (システム依存) ---
     openpico_open_jtalk_cmd_arg = DeclareLaunchArgument(
         'openpico_open_jtalk_cmd',
         default_value='open_jtalk',
@@ -49,16 +45,20 @@ def generate_launch_description():
         default_value='pico2wave',
         description='Command name for Pico2wave executable (e.g., "pico2wave" or "/usr/bin/pico2wave").'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
-            
-            # OpenPicoTTSModel 固有のパラメータ
             {'openpico.language': LaunchConfiguration('openpico_language')},
             {'openpico.voice_data_ja': LaunchConfiguration('openpico_voice_data_ja')},
             {'openpico.dic_path_ja': LaunchConfiguration('openpico_dic_path_ja')},
@@ -74,6 +74,6 @@ def generate_launch_description():
         openpico_dic_path_ja_arg,
         openpico_open_jtalk_cmd_arg,
         openpico_pico2wave_cmd_arg,
-        
+        namespace_arg,
         tts_server_node
     ])

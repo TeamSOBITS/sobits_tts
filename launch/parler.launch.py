@@ -8,22 +8,14 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     tts_name_arg = DeclareLaunchArgument(
         'tts_name',
-        default_value='parler', # モデル名を 'parler_tts' に設定
+        default_value='parler',
         description='Name of the TTS model to use (e.g., kokoro, openpico, parler_tts).'
     )
 
     parler_tts_model_name_arg = DeclareLaunchArgument(
         'parler_tts_model_name',
-        default_value='parler-tts/parler-tts-mini-v1', # デフォルトの英語モデル
+        default_value='parler-tts/parler-tts-mini-v1', 
         description='Hugging Face model ID for ParlerTTS'
-
-        #英語モデル
-            #ミニ           ：parler-tts/parler-tts-mini-v1
-            #ミニジェニー   ：parler-tts/parler-mini-v1-jenny
-            #感情指定可能   ：parler-tts/parler-tts-mini-expresso
-            #CPU向けジェニー：parler-tts/parler-tiny-v1-jenny
-        #日本語モデル
-            #ミニ           ：2121-8/japanese-parler-tts-mini
     )
 
     parler_tts_description_arg = DeclareLaunchArgument(
@@ -34,14 +26,20 @@ def generate_launch_description():
 
     parler_tts_device_arg = DeclareLaunchArgument(
         'parler_tts_device',
-        default_value='auto', # 'cuda:0', 'cpu', 'auto'
+        default_value='auto',
         description='Device to use for ParlerTTS inference (e.g., "cuda:0", "cpu", "auto").'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )    
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),                        
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
@@ -56,6 +54,7 @@ def generate_launch_description():
         parler_tts_model_name_arg,
         parler_tts_description_arg,
         parler_tts_device_arg,
+        namespace_arg,        
         tts_server_node
     ])
 

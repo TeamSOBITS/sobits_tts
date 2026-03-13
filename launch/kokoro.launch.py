@@ -40,11 +40,17 @@ def generate_launch_description():
         default_value='',
         description='Device to use for Kokoro TTS (e.g., cpu or cuda).'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )    
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),        
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
@@ -63,5 +69,6 @@ def generate_launch_description():
         kokoro_speech_speed_arg,
         kokoro_split_regex_arg,
         kokoro_device_arg,
+        namespace_arg,        
         tts_server_node
     ])

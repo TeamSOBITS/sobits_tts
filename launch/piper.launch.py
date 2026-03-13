@@ -34,11 +34,17 @@ def generate_launch_description():
         'piper_speaker_id', default_value='0',
         description='Speaker ID for multi-speaker models.'
     )
+    namespace_arg = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the nodes"
+    )   
 
     tts_server_node = Node(
         package='sobits_tts',
         executable='tts_action_server', 
         name='tts_action_server',
+        namespace=LaunchConfiguration('namespace'),                        
         output='screen', 
         parameters=[
             {
@@ -60,5 +66,6 @@ def generate_launch_description():
         piper_noise_w_scale_arg,
         piper_volume_arg,
         piper_speaker_id_arg,
+        namespace_arg,                
         tts_server_node
     ])
