@@ -12,7 +12,7 @@ sudo apt install -y ros-${ROS_DISTRO}-vision-msgs
 cd ../
 if [ ! -d "sobits_interfaces" ]; then
     git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/sobits_interfaces.git
-    cd sobbits_interfaces/
+    cd sobits_interfaces/
     bash install.sh
     cd ..
 else
