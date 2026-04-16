@@ -117,6 +117,17 @@ Click on each TTS name to view download and execution instructions.
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.en.md#parler-tts)                      | ☆☆☆☆   | ☆ | Supports English, Japanese, etc. Includes models with emotion specification | 
 | [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.en.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | Supports English, Japanese, etc., voice cloning, and emotion specification. |
 
+### Common Parameters
+
+| Parameter | Description | Default |
+| --- | --- | --- |
+| speaker_volume | Sets the speaker output volume as a percentage. Returns to the original volume after shutdown. (e.g., `"150%"`) | `""` |
+
+> [!NOTE]
+> `speaker_volume` is now implemented by changing the default output sink volume with `pactl set-sink-volume`,
+> not by applying software gain to the generated WAV data.
+> If you change the output device in the GUI after the server starts, the node will manage and restore the sink volume captured at startup.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Milestones
