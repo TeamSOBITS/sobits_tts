@@ -6,6 +6,8 @@ import importlib
 import io
 import traceback
 import os
+import wave
+import audioop
 from ament_index_python.packages import get_package_share_directory
 from rclpy.executors import MultiThreadedExecutor
 
@@ -22,6 +24,7 @@ class TTSActionServer(Node):
         self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
         self.sample_rate = 24000 
+        self.declare_parameter('speaker_volume', '100%')
 
         self._tts_model_instance = None
         self._mixer_initialized = False
@@ -98,6 +101,63 @@ class TTSActionServer(Node):
         self.get_logger().debug('Received cancel request.')
         return CancelResponse.ACCEPT
 
+    def _get_speaker_gain(self):
+        raw_value = self.get_parameter('speaker_volume').value
+        try:
+            v_str = str(raw_value).strip()
+            if not v_str:
+                self.get_logger().warn("speaker_volume is empty. Falling back to 100%.")
+                return 1.0
+
+            if v_str.endswith('%'):
+                speaker_gain = float(v_str[:-1].strip()) / 100.0
+            else:
+                numeric = float(v_str)
+                # Backward compatibility:
+                # - 0.0..1.0 means normalized mixer gain
+                # - other numeric values are treated as percentages (e.g., 150 -> 150%)
+                speaker_gain = numeric if 0.0 <= numeric <= 1.0 else numeric / 100.0
+        except (TypeError, ValueError):
+            self.get_logger().warn(f"Invalid speaker_volume '{raw_value}'. Falling back to 100%.")
+            return 1.0
+
+        if speaker_gain < 0.0:
+            self.get_logger().warn(f"speaker_volume '{raw_value}' is negative; clamping it to 0%.")
+            return 0.0
+
+        return speaker_gain
+
+    def _apply_speaker_gain_to_wav(self, audio_buffer, speaker_gain):
+        if speaker_gain == 1.0:
+            audio_buffer.seek(0)
+            return audio_buffer
+
+        try:
+            audio_buffer.seek(0)
+            with wave.open(audio_buffer, 'rb') as wav_in:
+                params = wav_in.getparams()
+                frames = wav_in.readframes(params.nframes)
+
+            max_possible = (1 << (8 * params.sampwidth - 1)) - 1
+            source_peak = audioop.max(frames, params.sampwidth)
+            if speaker_gain > 1.0 and source_peak * speaker_gain > max_possible:
+                self.get_logger().warn(
+                    "speaker_volume may clip waveform peaks after overamplification."
+                )
+
+            scaled_frames = audioop.mul(frames, params.sampwidth, speaker_gain)
+
+            out_buffer = io.BytesIO()
+            with wave.open(out_buffer, 'wb') as wav_out:
+                wav_out.setparams(params)
+                wav_out.writeframes(scaled_frames)
+            out_buffer.seek(0)
+            return out_buffer
+        except Exception as e:
+            self.get_logger().warn(f"Failed to apply software speaker gain: {e}. Using original audio.")
+            audio_buffer.seek(0)
+            return audio_buffer
+
     def execute_callback(self, goal_handle):
         feedback = TextToSpeech.Feedback()
         response = TextToSpeech.Result()
@@ -136,11 +196,17 @@ class TTSActionServer(Node):
                 goal_handle.abort()
                 return response
 
+            speaker_gain = self._get_speaker_gain()
+            audio_buffer = self._apply_speaker_gain_to_wav(audio_buffer, speaker_gain)
+
             with open(self.output_filepath, 'wb') as f:
                 f.write(audio_buffer.getvalue())
             self.get_logger().info(f"Audio successfully saved to: {self.output_filepath}")
 
             pygame.mixer.music.load(self.output_filepath)
+            # Keep mixer gain at unity and apply speaker gain directly to PCM data.
+            pygame.mixer.music.set_volume(1.0)
+            self.get_logger().info(f"Speaker volume applied: {speaker_gain * 100.0:.1f}%")
             pygame.mixer.music.play()
 
             start_playback_loop_time = time.time()

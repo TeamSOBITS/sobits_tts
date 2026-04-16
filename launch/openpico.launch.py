@@ -12,6 +12,12 @@ def generate_launch_description():
         description='Name of the TTS model to use (e.g., kokoro, openpico).'
     )
 
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='100%',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
+
     openpico_language_arg = DeclareLaunchArgument(
         'openpico_language',
         default_value='en',
@@ -59,6 +65,7 @@ def generate_launch_description():
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'openpico.language': LaunchConfiguration('openpico_language')},
             {'openpico.voice_data_ja': LaunchConfiguration('openpico_voice_data_ja')},
             {'openpico.dic_path_ja': LaunchConfiguration('openpico_dic_path_ja')},
@@ -69,6 +76,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         openpico_language_arg,
         openpico_voice_data_ja_arg,
         openpico_dic_path_ja_arg,

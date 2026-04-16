@@ -12,6 +12,12 @@ def generate_launch_description():
         description='TTS model to use (e.g., kokoro, parler).'
     )
 
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='100%',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
+
     voicevox_style_id_arg = DeclareLaunchArgument(
         'voicevox_style_id',
         default_value='14',
@@ -85,6 +91,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'voicevox.style_id': ParameterValue(LaunchConfiguration('voicevox_style_id'), value_type=int)},
             {'voicevox.model_file_num': ParameterValue(LaunchConfiguration('voicevox_model_file_num'))},
             {'voicevox.speed_scale': ParameterValue(LaunchConfiguration('voicevox_speed_scale'), value_type=float)},
@@ -100,6 +107,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         voicevox_style_id_arg,
         voicevox_model_file_num_arg,
         voicevox_speed_scale_arg,

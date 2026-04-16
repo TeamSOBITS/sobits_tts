@@ -3,11 +3,18 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():   
     piper_model_arg = DeclareLaunchArgument(
         'piper_model', default_value='en_US-lessac-medium',
         description='Piper model name (e.g., en_US-amy-medium) or path.'
+    )
+
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='100%',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
     piper_length_scale_arg = DeclareLaunchArgument(
@@ -49,6 +56,7 @@ def generate_launch_description():
         parameters=[
             {
                 'tts_name': 'piper',
+                'speaker_volume': LaunchConfiguration('speaker_volume'),
                 'piper.model_path': LaunchConfiguration('piper_model'),
                 'piper.length_scale': LaunchConfiguration('piper_length_scale'),
                 'piper.noise_scale': LaunchConfiguration('piper_noise_scale'),
@@ -61,6 +69,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         piper_model_arg,
+        speaker_volume_arg,
         piper_length_scale_arg,
         piper_noise_scale_arg,
         piper_noise_w_scale_arg,
