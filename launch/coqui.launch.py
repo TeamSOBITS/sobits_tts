@@ -14,7 +14,7 @@ def generate_launch_description():
 
     speaker_volume_arg = DeclareLaunchArgument(
         'speaker_volume',
-        default_value='100%',
+        default_value='',
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
