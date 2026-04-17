@@ -2,12 +2,19 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     tts_name_arg = DeclareLaunchArgument(
         'tts_name',
         default_value='supertonic',
         description='Name of the TTS model to use.'
+    )
+
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
     supertonic_device_arg = DeclareLaunchArgument(
@@ -65,6 +72,7 @@ def generate_launch_description():
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'supertonic.device': LaunchConfiguration('supertonic_device')},
             {'supertonic.voice_name': LaunchConfiguration('supertonic_voice_name')},
             {'supertonic.language': LaunchConfiguration('supertonic_language')}, 
@@ -77,6 +85,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         supertonic_device_arg,
         supertonic_voice_name_arg,
         supertonic_language_arg, 

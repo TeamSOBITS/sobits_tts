@@ -11,6 +11,11 @@ def generate_launch_description():
         default_value='openaudio',
         description='Name of the TTS model to use.'
     )
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
     reference_audio_path_arg = DeclareLaunchArgument(
         'reference_audio_path',
         default_value='/home/sobits/colcon_ws/src/sobits_tts/soundfile/record.wav', 
@@ -107,6 +112,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
 
             {'openaudio_tts.listen_address': LaunchConfiguration('listen_address')},
             {'openaudio_tts.use_half_precision': ParameterValue(LaunchConfiguration('use_half_precision'), value_type=bool)},
@@ -130,6 +136,7 @@ def generate_launch_description():
     )
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         listen_address_arg,
         use_half_precision_arg,
         device_arg,
