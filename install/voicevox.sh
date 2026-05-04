@@ -16,8 +16,9 @@ fi
 
 sudo apt update -y
 
-echo "Download downloder"
-wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.0/download-linux-x64
+echo "Download downloder (Updated to v0.16.4)"
+# 【修正】実在する最新パッチバージョン「0.16.4」を正しく指定します
+wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.4/download-linux-x64 -O download-linux-x64
 
 chmod +x download-linux-x64
 
@@ -31,6 +32,7 @@ elif [ "$USE_CPU" == "true" ]; then
 fi
 
 echo "Install whl"
-pip3 install https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.0/voicevox_core-0.16.0-cp310-abi3-manylinux_2_34_x86_64.whl --break-system-packages
+# Pythonパッケージも整合性を合わせるため 0.16.4 を指定
+pip3 install https://github.com/VOICEVOX/voicevox_core/releases/download/0.16.4/voicevox_core-0.16.4-cp310-abi3-manylinux_2_34_x86_64.whl --break-system-packages
 
 echo "╚══╣ Install: voicevox TTS (FINISHED) ╠══╝"
