@@ -12,6 +12,12 @@ def generate_launch_description():
         description='Name of the TTS model to use (e.g., kokoro, openpico, parler_tts).'
     )
 
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
+
     parler_tts_model_name_arg = DeclareLaunchArgument(
         'parler_tts_model_name',
         default_value='parler-tts/parler-tts-mini-v1', 
@@ -43,6 +49,7 @@ def generate_launch_description():
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'parler_tts.model_name': LaunchConfiguration('parler_tts_model_name')},
             {'parler_tts.description': LaunchConfiguration('parler_tts_description')},
             {'parler_tts.device': LaunchConfiguration('parler_tts_device')},
@@ -51,6 +58,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         parler_tts_model_name_arg,
         parler_tts_description_arg,
         parler_tts_device_arg,

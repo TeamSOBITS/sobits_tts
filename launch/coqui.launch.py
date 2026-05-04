@@ -12,6 +12,12 @@ def generate_launch_description():
         description='Name of the TTS model to use (e.g., kokoro, openpico, parler, coqui).'
     )
 
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
+
     coqui_url_arg = DeclareLaunchArgument(
         'coqui_url',
         default_value='http://localhost:5002',
@@ -55,6 +61,7 @@ def generate_launch_description():
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'coqui.url': LaunchConfiguration('coqui_url')},
             {'coqui.add_stop_char': LaunchConfiguration('coqui_add_stop_char')},
             {'coqui.speaker_id': LaunchConfiguration('coqui_speaker_id')},
@@ -65,6 +72,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         coqui_url_arg,
         coqui_add_stop_char_arg,
         coqui_speaker_id_arg,

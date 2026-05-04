@@ -6,6 +6,8 @@ import importlib
 import io
 import traceback
 import os
+import re
+import subprocess
 from ament_index_python.packages import get_package_share_directory
 from rclpy.executors import MultiThreadedExecutor
 
@@ -22,6 +24,10 @@ class TTSActionServer(Node):
         self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
         self.sample_rate = 24000 
+        self.declare_parameter('speaker_volume', '')
+        self.original_default_sink = None
+        self.original_sink_volume = None
+        self.managed_sink = None
 
         self._tts_model_instance = None
         self._mixer_initialized = False
@@ -57,6 +63,8 @@ class TTSActionServer(Node):
             self.get_logger().fatal(traceback.format_exc())
             raise RuntimeError(f"Failed to load or initialize TTS '{self.tts_name}'.")
 
+        self._initialize_output_volume()
+
         try:
             pygame.mixer.init(frequency=self.sample_rate, size=-16, channels=1, buffer=512)
             self.get_logger().info("Pygame mixer initialized.")
@@ -85,6 +93,7 @@ class TTSActionServer(Node):
                 self.get_logger().info('Pygame mixer quit.')
             except Exception as e:
                  self.get_logger().error(f"Error quitting Pygame mixer: {e}")
+        self._restore_output_volume()
         super().destroy_node()
 
     def goal_callback(self, goal_request):
@@ -97,6 +106,97 @@ class TTSActionServer(Node):
     def cancel_callback(self, goal_handle):
         self.get_logger().debug('Received cancel request.')
         return CancelResponse.ACCEPT
+
+    def _get_target_speaker_volume(self):
+        raw_value = self.get_parameter('speaker_volume').value
+        try:
+            v_str = str(raw_value).strip()
+            if not v_str:
+                return ""
+
+            if v_str.isdigit():
+                return v_str + "%"
+
+            if v_str.endswith('%'):
+                float(v_str[:-1].strip())
+                return v_str
+
+            numeric = float(v_str)
+            if numeric < 0.0:
+                self.get_logger().warn(f"speaker_volume '{raw_value}' is negative; clamping it to 0%.")
+                return "0%"
+            if 0.0 <= numeric <= 1.0:
+                return f"{numeric * 100.0}%"
+            return f"{numeric}%"
+        except (TypeError, ValueError):
+            self.get_logger().warn(f"Invalid speaker_volume '{raw_value}'. Keeping current sink volume.")
+            return ""
+
+    def _get_default_sink(self):
+        try:
+            info = subprocess.run(['pactl', 'info'], capture_output=True, text=True, check=True).stdout
+            return next(
+                (line.split(':', 1)[1].strip() for line in info.splitlines()
+                 if "Default Sink" in line or "デフォルトシンク" in line),
+                None
+            )
+        except Exception as e:
+            self.get_logger().warn(f"Failed to get default sink: {e}")
+            return None
+
+    def _get_sink_volume(self, sink_name):
+        if not sink_name:
+            return None
+        try:
+            result = subprocess.run(
+                ['pactl', 'get-sink-volume', sink_name],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout
+            match = re.search(r'(\d+%)', result)
+            return match.group(1) if match else None
+        except Exception as e:
+            self.get_logger().warn(f"Failed to get sink volume for '{sink_name}': {e}")
+            return None
+
+    def _initialize_output_volume(self):
+        target_volume = self._get_target_speaker_volume()
+        if not target_volume:
+            self.get_logger().info("speaker_volume is empty. Keeping current sink volume.")
+            return
+
+        sink_name = self._get_default_sink()
+        if not sink_name:
+            return
+
+        self.original_default_sink = sink_name
+        self.managed_sink = sink_name
+        self.original_sink_volume = self._get_sink_volume(sink_name)
+        try:
+            subprocess.run(['pactl', 'set-sink-volume', sink_name, target_volume], check=True)
+            current_volume = self._get_sink_volume(sink_name)
+            self.get_logger().info(
+                f"Speaker volume updated on sink '{sink_name}': "
+                f"{self.original_sink_volume or 'unknown'} -> {current_volume or target_volume}"
+            )
+        except Exception as e:
+            self.get_logger().warn(f"Failed to set speaker volume on sink '{sink_name}': {e}")
+
+    def _restore_output_volume(self):
+        if not self.managed_sink or not self.original_sink_volume:
+            return
+        try:
+            subprocess.run(
+                ['pactl', 'set-sink-volume', self.managed_sink, self.original_sink_volume],
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            self.get_logger().info(
+                f"Restored sink '{self.managed_sink}' volume to {self.original_sink_volume}."
+            )
+        except Exception as e:
+            self.get_logger().warn(f"Failed to restore sink volume: {e}")
 
     def execute_callback(self, goal_handle):
         feedback = TextToSpeech.Feedback()
@@ -141,6 +241,7 @@ class TTSActionServer(Node):
             self.get_logger().info(f"Audio successfully saved to: {self.output_filepath}")
 
             pygame.mixer.music.load(self.output_filepath)
+            pygame.mixer.music.set_volume(1.0)
             pygame.mixer.music.play()
 
             start_playback_loop_time = time.time()

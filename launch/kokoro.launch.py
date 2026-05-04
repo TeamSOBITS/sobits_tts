@@ -11,6 +11,12 @@ def generate_launch_description():
         description='Name of the TTS model to use (e.g., kokoro, parler).'
     )
 
+    speaker_volume_arg = DeclareLaunchArgument(
+        'speaker_volume',
+        default_value='',
+        description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
+    )
+
     kokoro_lang_code_arg = DeclareLaunchArgument(   # 'a': English (US), 'b': English (UK)
         'kokoro_lang_code',                         # 'j': Japanese
         default_value='a',                          # 'e': Spanish, 'f': French, 'h': Hindi
@@ -54,6 +60,7 @@ def generate_launch_description():
         output='screen', 
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
+            {'speaker_volume': LaunchConfiguration('speaker_volume')},
             {'kokoro.lang_code': LaunchConfiguration('kokoro_lang_code')},
             {'kokoro.voice': LaunchConfiguration('kokoro_voice')},
             {'kokoro.speech_speed': LaunchConfiguration('kokoro_speech_speed')},
@@ -64,6 +71,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         tts_name_arg,
+        speaker_volume_arg,
         kokoro_lang_code_arg,
         kokoro_voice_arg,
         kokoro_speech_speed_arg,
