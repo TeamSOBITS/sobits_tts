@@ -289,6 +289,11 @@ class TTSActionServer(Node):
             except Exception as e:
                 self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}")
                 self.get_logger().error(traceback.format_exc())
+                try:
+                    if pygame.mixer.get_init() and pygame.mixer.music.get_busy():
+                        pygame.mixer.music.stop()
+                except Exception:
+                    pass
                 response.success = False
                 goal_handle.abort()
             finally:
