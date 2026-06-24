@@ -8,6 +8,7 @@ import traceback
 import os
 import re
 import subprocess
+import threading
 from ament_index_python.packages import get_package_share_directory
 from rclpy.executors import MultiThreadedExecutor
 
@@ -31,6 +32,7 @@ class TTSActionServer(Node):
 
         self._tts_model_instance = None
         self._mixer_initialized = False
+        self._speech_lock = threading.Lock()
 
         try:
             self.save_dir = os.path.join(get_package_share_directory('sobits_tts'), 'soundfile')
@@ -209,8 +211,6 @@ class TTSActionServer(Node):
             goal_handle.abort()
             return response
 
-        self.get_logger().info(f"Processing text: [{text}] using {self.tts_name}.")
-
         if not pygame.mixer.get_init() or self._tts_model_instance is None:
             self.get_logger().error("Pygame mixer or TTS model is not initialized. Cannot play audio.")
             response.success = False
@@ -221,70 +221,83 @@ class TTSActionServer(Node):
         play_time = 0.0
         audio_buffer = None
 
-        try:
-            play_time, audio_buffer = self._tts_model_instance.generate_audio(text)
-
+        with self._speech_lock:
             if goal_handle.is_cancel_requested:
-                self.get_logger().info('Goal canceled after audio generation.')
+                self.get_logger().info('Goal canceled before audio generation.')
                 goal_handle.canceled()
                 response.success = False
                 return response
 
-            if audio_buffer is None or play_time <= 0:
-                self.get_logger().error(f"Audio buffer generation failed or invalid play time ({play_time:.2f}s) from '{self.tts_name}' model. Check model logs for details.")
-                response.success = False
-                goal_handle.abort()
-                return response
+            try:
+                self.get_logger().info(f"Processing text: [{text}] using {self.tts_name}.")
+                play_time, audio_buffer = self._tts_model_instance.generate_audio(text)
 
-            with open(self.output_filepath, 'wb') as f:
-                f.write(audio_buffer.getvalue())
-            self.get_logger().info(f"Audio successfully saved to: {self.output_filepath}")
-
-            pygame.mixer.music.load(self.output_filepath)
-            pygame.mixer.music.set_volume(1.0)
-            pygame.mixer.music.play()
-
-            start_playback_loop_time = time.time()
-            feedback.remaining_time = play_time
-
-            while pygame.mixer.music.get_busy():
                 if goal_handle.is_cancel_requested:
-                    self.get_logger().info('Goal canceled during playback.')
-                    pygame.mixer.music.stop()
+                    self.get_logger().info('Goal canceled after audio generation.')
                     goal_handle.canceled()
                     response.success = False
                     return response
 
-                current_time_in_loop = time.time()
-                elapsed_in_loop = current_time_in_loop - start_playback_loop_time
-                response.total_time = elapsed_in_loop
-                feedback.remaining_time = play_time - elapsed_in_loop
+                if audio_buffer is None or play_time <= 0:
+                    self.get_logger().error(f"Audio buffer generation failed or invalid play time ({play_time:.2f}s) from '{self.tts_name}' model. Check model logs for details.")
+                    response.success = False
+                    goal_handle.abort()
+                    return response
 
-                if feedback.remaining_time < 0:
-                    feedback.remaining_time = 0.0
+                with open(self.output_filepath, 'wb') as f:
+                    f.write(audio_buffer.getvalue())
+                self.get_logger().info(f"Audio successfully saved to: {self.output_filepath}")
 
-                goal_handle.publish_feedback(feedback)
-                time.sleep(0.05)
+                pygame.mixer.music.load(self.output_filepath)
+                pygame.mixer.music.set_volume(1.0)
+                pygame.mixer.music.play()
 
-            final_elapsed_time = time.time() - start_playback_loop_time
-            response.total_time = final_elapsed_time
+                start_playback_loop_time = time.time()
+                feedback.remaining_time = play_time
 
-            if abs(play_time - final_elapsed_time) < 0.5 or final_elapsed_time >= play_time:
-                 self.get_logger().info(f"Playback completed. Estimated: {play_time:.2f}s, Actual: {final_elapsed_time:.2f}s")
-                 response.success = True
-                 goal_handle.succeed()
-            else:
-                 self.get_logger().warn(f"Playback ended prematurely or unexpectedly. Estimated: {play_time:.2f}s, Actual: {final_elapsed_time:.2f}s")
-                 response.success = False
-                 goal_handle.abort()
+                while pygame.mixer.music.get_busy():
+                    if goal_handle.is_cancel_requested:
+                        self.get_logger().info('Goal canceled during playback.')
+                        pygame.mixer.music.stop()
+                        goal_handle.canceled()
+                        response.success = False
+                        return response
 
-        except Exception as e:
-            self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}")
-            self.get_logger().error(traceback.format_exc())
-            response.success = False
-            goal_handle.abort()
-        finally:
-            pass
+                    current_time_in_loop = time.time()
+                    elapsed_in_loop = current_time_in_loop - start_playback_loop_time
+                    response.total_time = elapsed_in_loop
+                    feedback.remaining_time = play_time - elapsed_in_loop
+
+                    if feedback.remaining_time < 0:
+                        feedback.remaining_time = 0.0
+
+                    goal_handle.publish_feedback(feedback)
+                    time.sleep(0.05)
+
+                final_elapsed_time = time.time() - start_playback_loop_time
+                response.total_time = final_elapsed_time
+
+                if abs(play_time - final_elapsed_time) < 0.5 or final_elapsed_time >= play_time:
+                    self.get_logger().info(f"Playback completed. Estimated: {play_time:.2f}s, Actual: {final_elapsed_time:.2f}s")
+                    response.success = True
+                    goal_handle.succeed()
+                else:
+                    self.get_logger().warn(f"Playback ended prematurely or unexpectedly. Estimated: {play_time:.2f}s, Actual: {final_elapsed_time:.2f}s")
+                    response.success = False
+                    goal_handle.abort()
+
+            except Exception as e:
+                self.get_logger().error(f"An unexpected error occurred during audio generation or playback by TTS model: {e}")
+                self.get_logger().error(traceback.format_exc())
+                try:
+                    if pygame.mixer.get_init() and pygame.mixer.music.get_busy():
+                        pygame.mixer.music.stop()
+                except Exception:
+                    pass
+                response.success = False
+                goal_handle.abort()
+            finally:
+                pass
 
         return response
 
