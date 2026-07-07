@@ -4,10 +4,10 @@ from typing import Tuple
 
 import numpy as np
 import soundfile as sf
-import av
-import av.filter
 
 _SPEED_EPSILON = 1e-6
+_MIN_SPEED = 0.5
+_MAX_SPEED = 2.0
 _MAX_SUPPORTED_CHANNELS = 2
 
 
@@ -22,11 +22,19 @@ def apply_playback_speed(audio_buffer: io.BytesIO, speed: float) -> Tuple[io.Byt
     :return: (io.BytesIO(PCM16 WAV) after conversion, resulting duration in seconds)
     """
     audio_buffer.seek(0)
-    data, sample_rate = sf.read(audio_buffer, dtype="float32", always_2d=True)  # (samples, channels)
 
+    # Check the no-op case from header metadata only, without decoding the full buffer.
+    # This keeps the default (speed==1.0) path as cheap as before this feature existed,
+    # and avoids failing on audio that soundfile can't fully decode but pygame still could.
     if abs(speed - 1.0) < _SPEED_EPSILON:
+        duration = sf.info(audio_buffer).duration
         audio_buffer.seek(0)
-        return audio_buffer, len(data) / sample_rate
+        return audio_buffer, duration
+
+    if not np.isfinite(speed) or not (_MIN_SPEED <= speed <= _MAX_SPEED):
+        raise ValueError(f"playback_speed must be finite and within [{_MIN_SPEED}, {_MAX_SPEED}], got {speed}.")
+
+    data, sample_rate = sf.read(audio_buffer, dtype="float32", always_2d=True)  # (samples, channels)
 
     num_channels = data.shape[1]
     if num_channels > _MAX_SUPPORTED_CHANNELS:
@@ -52,6 +60,17 @@ def _atempo_filter(data: np.ndarray, sample_rate: int, speed: float, layout: str
     Time-stretch data (samples, channels) in-process via PyAV's (libavfilter) atempo filter.
     Returns a (channels, samples) float32 array.
     """
+    # Imported lazily so that 'av' is only a hard dependency when playback_speed != 1.0
+    # is actually requested, not for the whole node at import time.
+    try:
+        import av
+        import av.filter
+    except ImportError as e:
+        raise ImportError(
+            "playback_speed != 1.0 requires the 'av' package (PyAV). "
+            "Install it with: pip3 install av --break-system-packages"
+        ) from e
+
     planar = np.ascontiguousarray(data.T)  # abuffer requires planar (channels, samples)
 
     graph = av.filter.Graph()
