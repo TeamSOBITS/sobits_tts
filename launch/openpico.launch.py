@@ -18,6 +18,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     openpico_language_arg = DeclareLaunchArgument(
         'openpico_language',
         default_value='en',
@@ -66,6 +72,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'openpico.language': LaunchConfiguration('openpico_language')},
             {'openpico.voice_data_ja': LaunchConfiguration('openpico_voice_data_ja')},
             {'openpico.dic_path_ja': LaunchConfiguration('openpico_dic_path_ja')},
@@ -77,6 +84,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         openpico_language_arg,
         openpico_voice_data_ja_arg,
         openpico_dic_path_ja_arg,

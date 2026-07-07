@@ -18,6 +18,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     parler_tts_model_name_arg = DeclareLaunchArgument(
         'parler_tts_model_name',
         default_value='parler-tts/parler-tts-mini-v1', 
@@ -50,6 +56,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'parler_tts.model_name': LaunchConfiguration('parler_tts_model_name')},
             {'parler_tts.description': LaunchConfiguration('parler_tts_description')},
             {'parler_tts.device': LaunchConfiguration('parler_tts_device')},
@@ -59,6 +66,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         parler_tts_model_name_arg,
         parler_tts_description_arg,
         parler_tts_device_arg,

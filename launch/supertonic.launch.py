@@ -17,6 +17,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     supertonic_device_arg = DeclareLaunchArgument(
         'supertonic_device',
         default_value='cpu',
@@ -73,6 +79,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'supertonic.device': LaunchConfiguration('supertonic_device')},
             {'supertonic.voice_name': LaunchConfiguration('supertonic_voice_name')},
             {'supertonic.language': LaunchConfiguration('supertonic_language')}, 
@@ -86,6 +93,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         supertonic_device_arg,
         supertonic_voice_name_arg,
         supertonic_language_arg, 

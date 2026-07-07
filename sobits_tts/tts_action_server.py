@@ -11,11 +11,13 @@ import subprocess
 import threading
 from ament_index_python.packages import get_package_share_directory
 from rclpy.executors import MultiThreadedExecutor
+from rcl_interfaces.msg import ParameterDescriptor, FloatingPointRange
 
 from sobits_interfaces.action import TextToSpeech
 from rclpy.action import ActionServer, GoalResponse, CancelResponse
 
 from sobits_tts.include._base_tts import BaseTTSModel
+from sobits_tts.include._playback_speed import apply_playback_speed
 
 class TTSActionServer(Node):
     def __init__(self):
@@ -24,8 +26,15 @@ class TTSActionServer(Node):
         self.tts_name = self.get_parameter('tts_name').get_parameter_value().string_value
         self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
-        self.sample_rate = 24000 
+        self.sample_rate = 24000
         self.declare_parameter('speaker_volume', '')
+        self.declare_parameter(
+            'playback_speed',
+            1.0,
+            ParameterDescriptor(
+                floating_point_range=[FloatingPointRange(from_value=0.5, to_value=2.0, step=0.0)]
+            )
+        )
         self.original_default_sink = None
         self.original_sink_volume = None
         self.managed_sink = None
@@ -94,9 +103,12 @@ class TTSActionServer(Node):
                 pygame.mixer.quit()
                 self.get_logger().info('Pygame mixer quit.')
             except Exception as e:
-                 self.get_logger().error(f"Error quitting Pygame mixer: {e}")
+                self.get_logger().error(f"Error quitting Pygame mixer: {e}")
         self._restore_output_volume()
-        super().destroy_node()
+        try:
+            super().destroy_node()
+        except Exception as e:
+            self.get_logger().error(f"Error destroying node: {e}")
 
     def goal_callback(self, goal_request):
         self.get_logger().debug(f"Received goal request with text: '{goal_request.text}'")
@@ -244,6 +256,9 @@ class TTSActionServer(Node):
                     goal_handle.abort()
                     return response
 
+                playback_speed = self.get_parameter('playback_speed').value
+                audio_buffer, play_time = apply_playback_speed(audio_buffer, playback_speed)
+
                 with open(self.output_filepath, 'wb') as f:
                     f.write(audio_buffer.getvalue())
                 self.get_logger().info(f"Audio successfully saved to: {self.output_filepath}")
@@ -318,9 +333,12 @@ def main(args=None):
         else:
             print(f"Failed to start node: {e}")
     finally:
+        # rclpy's default SIGINT handler can invalidate the context before
+        # executor.spin() returns, so destroy_node() (which restores speaker
+        # volume) must not be gated behind rclpy.ok() or it gets skipped.
+        if action_server:
+            action_server.destroy_node()
         if rclpy.ok():
-            if action_server:
-                action_server.destroy_node()
             rclpy.shutdown()
 
 if __name__ == "__main__":

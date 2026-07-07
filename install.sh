@@ -23,4 +23,7 @@ pip3 install soundfile --break-system-packages
 
 pip3 install pygame --break-system-packages
 
+# For playback_speed: PyAV (in-process libavfilter atempo filter)
+pip3 install av --break-system-packages
+
 echo "╚══╣ Install: SOBITS TTS (FINISHED) ╠══╝"

@@ -18,6 +18,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     voicevox_style_id_arg = DeclareLaunchArgument(
         'voicevox_style_id',
         default_value='14',
@@ -92,6 +98,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'voicevox.style_id': ParameterValue(LaunchConfiguration('voicevox_style_id'), value_type=int)},
             {'voicevox.model_file_num': ParameterValue(LaunchConfiguration('voicevox_model_file_num'))},
             {'voicevox.speed_scale': ParameterValue(LaunchConfiguration('voicevox_speed_scale'), value_type=float)},
@@ -108,6 +115,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         voicevox_style_id_arg,
         voicevox_model_file_num_arg,
         voicevox_speed_scale_arg,

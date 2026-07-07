@@ -16,6 +16,11 @@ def generate_launch_description():
         default_value='',
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
     reference_audio_path_arg = DeclareLaunchArgument(
         'reference_audio_path',
         default_value='/home/sobits/colcon_ws/src/sobits_tts/soundfile/record.wav', 
@@ -113,6 +118,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
 
             {'openaudio_tts.listen_address': LaunchConfiguration('listen_address')},
             {'openaudio_tts.use_half_precision': ParameterValue(LaunchConfiguration('use_half_precision'), value_type=bool)},
@@ -137,6 +143,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         listen_address_arg,
         use_half_precision_arg,
         device_arg,
