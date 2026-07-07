@@ -17,6 +17,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     kokoro_lang_code_arg = DeclareLaunchArgument(   # 'a': English (US), 'b': English (UK)
         'kokoro_lang_code',                         # 'j': Japanese
         default_value='a',                          # 'e': Spanish, 'f': French, 'h': Hindi
@@ -61,6 +67,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': LaunchConfiguration('playback_speed')},
             {'kokoro.lang_code': LaunchConfiguration('kokoro_lang_code')},
             {'kokoro.voice': LaunchConfiguration('kokoro_voice')},
             {'kokoro.speech_speed': LaunchConfiguration('kokoro_speech_speed')},
@@ -72,6 +79,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         kokoro_lang_code_arg,
         kokoro_voice_arg,
         kokoro_speech_speed_arg,

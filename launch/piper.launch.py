@@ -17,6 +17,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     piper_length_scale_arg = DeclareLaunchArgument(
         'piper_length_scale', default_value='1.0',
         description='Speaking speed scale.'
@@ -57,6 +63,7 @@ def generate_launch_description():
             {
                 'tts_name': 'piper',
                 'speaker_volume': LaunchConfiguration('speaker_volume'),
+                'playback_speed': LaunchConfiguration('playback_speed'),
                 'piper.model_path': LaunchConfiguration('piper_model'),
                 'piper.length_scale': LaunchConfiguration('piper_length_scale'),
                 'piper.noise_scale': LaunchConfiguration('piper_noise_scale'),
@@ -70,6 +77,7 @@ def generate_launch_description():
     return LaunchDescription([
         piper_model_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         piper_length_scale_arg,
         piper_noise_scale_arg,
         piper_noise_w_scale_arg,

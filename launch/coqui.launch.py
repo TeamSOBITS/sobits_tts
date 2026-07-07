@@ -18,6 +18,12 @@ def generate_launch_description():
         description='Playback volume for the synthesized speech (e.g., 100%, 150%).'
     )
 
+    playback_speed_arg = DeclareLaunchArgument(
+        'playback_speed',
+        default_value='1.0',
+        description='Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved.'
+    )
+
     coqui_url_arg = DeclareLaunchArgument(
         'coqui_url',
         default_value='http://localhost:5002',
@@ -62,6 +68,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
+            {'playback_speed': LaunchConfiguration('playback_speed')},
             {'coqui.url': LaunchConfiguration('coqui_url')},
             {'coqui.add_stop_char': LaunchConfiguration('coqui_add_stop_char')},
             {'coqui.speaker_id': LaunchConfiguration('coqui_speaker_id')},
@@ -73,6 +80,7 @@ def generate_launch_description():
     return LaunchDescription([
         tts_name_arg,
         speaker_volume_arg,
+        playback_speed_arg,
         coqui_url_arg,
         coqui_add_stop_char_arg,
         coqui_speaker_id_arg,

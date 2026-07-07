@@ -11,11 +11,13 @@ import subprocess
 import threading
 from ament_index_python.packages import get_package_share_directory
 from rclpy.executors import MultiThreadedExecutor
+from rcl_interfaces.msg import ParameterDescriptor, FloatingPointRange
 
 from sobits_interfaces.action import TextToSpeech
 from rclpy.action import ActionServer, GoalResponse, CancelResponse
 
 from sobits_tts.include._base_tts import BaseTTSModel
+from sobits_tts.include._playback_speed import apply_playback_speed
 
 class TTSActionServer(Node):
     def __init__(self):
@@ -24,8 +26,15 @@ class TTSActionServer(Node):
         self.tts_name = self.get_parameter('tts_name').get_parameter_value().string_value
         self.get_logger().info(f"Selected TTS: {self.tts_name}")
 
-        self.sample_rate = 24000 
+        self.sample_rate = 24000
         self.declare_parameter('speaker_volume', '')
+        self.declare_parameter(
+            'playback_speed',
+            1.0,
+            ParameterDescriptor(
+                floating_point_range=[FloatingPointRange(from_value=0.5, to_value=2.0, step=0.0)]
+            )
+        )
         self.original_default_sink = None
         self.original_sink_volume = None
         self.managed_sink = None
@@ -243,6 +252,9 @@ class TTSActionServer(Node):
                     response.success = False
                     goal_handle.abort()
                     return response
+
+                playback_speed = self.get_parameter('playback_speed').value
+                audio_buffer, play_time = apply_playback_speed(audio_buffer, playback_speed)
 
                 with open(self.output_filepath, 'wb') as f:
                     f.write(audio_buffer.getvalue())
