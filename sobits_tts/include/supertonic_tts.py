@@ -32,12 +32,21 @@ class SupertonicTTSModel(BaseTTSModel):
         self._logger.info("[Supertonic] Mode: CPU")
 
         try:
-            self.supertonic_tts = TTS(
-                model="supertonic-3",
-                auto_download=True,
-                intra_op_num_threads=intra if intra > 0 else None,
-                inter_op_num_threads=inter if inter > 0 else None
-            )
+            try:
+                self.supertonic_tts = TTS(
+                    model="supertonic-3",
+                    auto_download=False,
+                    intra_op_num_threads=intra if intra > 0 else None,
+                    inter_op_num_threads=inter if inter > 0 else None
+                )
+            except FileNotFoundError:
+                self._logger.warn("[Supertonic] Model not found in local cache. Falling back to auto-download.")
+                self.supertonic_tts = TTS(
+                    model="supertonic-3",
+                    auto_download=True,
+                    intra_op_num_threads=intra if intra > 0 else None,
+                    inter_op_num_threads=inter if inter > 0 else None
+                )
             self._logger.info(f"[Supertonic] Successfully initialized from: {self.supertonic_tts.model_dir}")
         except Exception as e:
             self._logger.error(f"[Supertonic] Initialization failed: {e}")
