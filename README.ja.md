@@ -116,11 +116,15 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 | パラメータ | 説明 | デフォルト値 |
 | --- | --- | --- |
 | speaker_volume | スピーカー出力音量をパーセンテージで設定する．プログラム終了後は元の音量に戻る．例: `"150%"` | `""` |
+| playback_speed | 生成後の音声に対する再生速度倍率（0.5〜2.0）．使用しているTTSバックエンドに関わらずピッチは保持される．`ros2 param set` で稼働中に動的変更可能で，次の発話から反映される． | `1.0` |
 
 > [!NOTE]
 > `speaker_volume` は現在，生成したWAVデータをソフトウェア的に増幅する方式ではなく，
 > 起動時のデフォルト出力シンクに対して `pactl set-sink-volume` を使って音量を変更する方式です．
 > サーバ起動後にGUIで出力先を変更した場合は，起動時に取得したシンクの音量を管理・復元します．
+
+> [!NOTE]
+> `playback_speed` は，生成済みの音声に対する後処理（PyAVの`atempo`フィルタ）として適用されるため，各バックエンド固有の速度パラメータ（例: `supertonic.speed`、`voicevox_speed_scale`）とは独立して動作します．`tts_name` に何を選択していても同じ挙動になります．
 
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>

@@ -105,7 +105,10 @@ class TTSActionServer(Node):
             except Exception as e:
                  self.get_logger().error(f"Error quitting Pygame mixer: {e}")
         self._restore_output_volume()
-        super().destroy_node()
+        try:
+            super().destroy_node()
+        except Exception as e:
+            self.get_logger().error(f"Error destroying node: {e}")
 
     def goal_callback(self, goal_request):
         self.get_logger().debug(f"Received goal request with text: '{goal_request.text}'")
@@ -330,9 +333,12 @@ def main(args=None):
         else:
             print(f"Failed to start node: {e}")
     finally:
+        # rclpy's default SIGINT handler can invalidate the context before
+        # executor.spin() returns, so destroy_node() (which restores speaker
+        # volume) must not be gated behind rclpy.ok() or it gets skipped.
+        if action_server:
+            action_server.destroy_node()
         if rclpy.ok():
-            if action_server:
-                action_server.destroy_node()
             rclpy.shutdown()
 
 if __name__ == "__main__":

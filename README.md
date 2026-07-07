@@ -122,11 +122,15 @@ Click on each TTS name to view download and execution instructions.
 | Parameter | Description | Default |
 | --- | --- | --- |
 | speaker_volume | Sets the speaker output volume as a percentage. Returns to the original volume after shutdown. (e.g., `"150%"`) | `""` |
+| playback_speed | Post-generation playback speed multiplier (0.5-2.0). Pitch is preserved regardless of the TTS backend in use. Can be changed dynamically with `ros2 param set` and takes effect on the next utterance. | `1.0` |
 
 > [!NOTE]
 > `speaker_volume` is now implemented by changing the default output sink volume with `pactl set-sink-volume`,
 > not by applying software gain to the generated WAV data.
 > If you change the output device in the GUI after the server starts, the node will manage and restore the sink volume captured at startup.
+
+> [!NOTE]
+> `playback_speed` is applied as a post-processing step on the already-generated audio (via PyAV's `atempo` filter), independent of any backend-specific speed parameter (e.g., `supertonic.speed`, `voicevox_speed_scale`). It works the same way regardless of which `tts_name` is selected.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
