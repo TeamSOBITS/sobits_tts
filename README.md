@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[JA](README.md) | [EN](README.en.md)
+[JA](README.ja.md) | [EN](README.md)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -10,30 +10,26 @@
 
 # SOBITS TTS
 
-<!-- 目次 -->
 <details>
-  <summary>目次</summary>
-  <ol>
-    <li>
-      <a href="#概要">概要</a>
-    </li>
-    <li>
-      <a href="#セットアップ">セットアップ</a>
-      <ul>
-        <li><a href="#環境条件">環境条件</a></li>
-        <li><a href="#インストール方法">インストール方法</a></li>
-      </ul>
-    </li>
-    <li><a href="#実行操作方法">実行・操作方法</a></li>
-    <li><a href="#マイルストーン">マイルストーン</a></li>
-  </ol>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#getting-started">Getting Started</a>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#launch-and-usage">Launch and Usage</a></li>
+<li><a href="#milestones">Milestones</a></li>
+</ol>
 </details>
 
-<!-- レポジトリの概要 -->
-## 概要
-SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ，まとめたものです．
+## Introduction
 
-現在以下のTTSに対応しています．
+SOBITS TTS integrates various Text-to-Speech (TTS) engines with ROS2 Action communication.
+
+Currently, it supports the following TTS engines:
 - Kokoro TTS
 - Coqui TTS
 - Piper TTS
@@ -43,94 +39,101 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 - Parler TTS
 - Open Audio TTS
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- セットアップ -->
-## セットアップ
-ここで，本レポジトリのセットアップ方法について説明します．
+## Getting Started
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+This section explains how to set up this repository.
 
-### 環境条件
-まず，以下の環境を整えてから，次のインストール方法に進んでください．
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Prerequisites
+
+First, ensure you have the following environment set up before proceeding with the installation method.
 | System  | Version |
 | --- | --- |
 | Ubuntu | 24.04 (Noble Numbat) |
 | ROS    | Jazzy Jalisco |
 | Python | 3.12 |
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### インストール方法
-1. ROS2の`src`フォルダに移動します．
+### Installation
+
+1.  Navigate to your ROS2 `src` folder.
+
     ```sh
     cd ~/colcon_ws/src/
     ```
 
-2. 本レポジトリをcloneします．
+2.  Clone this repository.
+
     ```sh
     git clone -b jazzy-devel https://github.com/TeamSOBITS/sobits_tts.git
     ```
-3. レポジトリの中へ移動します．
+
+3.  Move into the repository directory.
+
     ```sh
     cd sobits_tts/
     ```
-4. 依存パッケージをインストールします．
+
+4.  Install the dependent packages.
+
     ```sh
     bash install.sh
     ```
-5. パッケージをコンパイルします．
+
+5.  Compile the package.
+
     ```sh
     cd ~/colcon_ws/
     ```
+
     ```sh
     colcon build --symlink-install
     ```
+
     ```sh
     source ~/colcon_ws/install/setup.sh
     ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- 実行・操作方法 -->
-## 実行・操作方法
+## Launch and Usage
 
-実行する前に，使用するTTSのモデルをダウンロードする必要があります．
+Before running, you need to download the models for the TTS engine you intend to use.
 
-各TTS名をクリックするとダウンロードと実行方法を閲覧できます．
+Click on each TTS name to view download and execution instructions.
 
-| TTS名                       | 精度 | 生成速度 | 特徴 | 
+| TTS Name                       | Accuracy | Generation Speed | Features | 
 | ---                         | -- |--- |--- |
-| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#kokoro-tts)                      | ☆☆☆☆  | ☆☆☆☆ | 英語・日本語などに対応 |
-| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#coqui-tts)                       | ☆☆☆☆   | ☆☆☆☆ | 英語のみに対応 |
-| [Piper](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#piper-tts)                     | ☆☆☆     | ☆☆☆☆☆ | 日本語以外の多言語対応，超軽量・CPUでも高速動作　|
-| [Supertonic](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#supertonic-tts)                  | ☆☆     | ☆☆☆☆☆ | 英語，韓国語，フランス語など5カ国語に対応，非常に軽量　|
-| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#voicevox-tts)                    | ☆☆☆☆   | ☆☆☆☆| 日本語のみに対応．ずんだもんで発話可能　|
-| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#openpico)                        | ☆        | ☆☆☆☆☆ | 英語・日本語に対応 |
-| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#parler-tts)                      | ☆☆☆☆   | ☆ | 英語・日本語などに対応，感情指定が可能なモデルあり | 
-| [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | 英語・日本語などに対応，音声クローン，感情指定可 |
+| [Kokoro](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#kokoro-tts)                      | ☆☆☆☆  | ☆☆☆☆ | Supports English, Japanese, etc. |
+| [Coqui](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#coqui-tts)                       | ☆☆☆☆   | ☆☆☆☆ | Supports only English. |
+| [Piper](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#piper-tts)                     | ☆☆☆     | ☆☆☆☆☆ | Supports multiple languages beyond Japanese. Ultra-lightweight and high-speed operation even on a CPU.　|
+| [Supertonic](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#supertonic-tts)                  | ☆☆☆     | ☆☆☆☆☆ | Supports 31 languages including English and Japanese, extremely lightweight.　|
+| [Voicevox](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#voicevox-tts)                    | ☆☆☆☆   | ☆☆☆☆| Supports only Japanese; speech is available with Zundamon voice　|
+| [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#openpico)                        | ☆        | ☆☆☆☆☆ | Supports English and Japanese. |
+| [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#parler-tts)                      | ☆☆☆☆   | ☆ | Supports English, Japanese, etc. Includes models with emotion specification | 
+| [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | Supports English, Japanese, etc., voice cloning, and emotion specification. |
 
+### Common Parameters
 
-### 共通パラメータ
-
-| パラメータ | 説明 | デフォルト値 |
+| Parameter | Description | Default |
 | --- | --- | --- |
-| speaker_volume | スピーカー出力音量をパーセンテージで設定する．プログラム終了後は元の音量に戻る．例: `"150%"` | `""` |
+| speaker_volume | Sets the speaker output volume as a percentage. Returns to the original volume after shutdown. (e.g., `"150%"`) | `""` |
 
 > [!NOTE]
-> `speaker_volume` は現在，生成したWAVデータをソフトウェア的に増幅する方式ではなく，
-> 起動時のデフォルト出力シンクに対して `pactl set-sink-volume` を使って音量を変更する方式です．
-> サーバ起動後にGUIで出力先を変更した場合は，起動時に取得したシンクの音量を管理・復元します．
+> `speaker_volume` is now implemented by changing the default output sink volume with `pactl set-sink-volume`,
+> not by applying software gain to the generated WAV data.
+> If you change the output device in the GUI after the server starts, the node will manage and restore the sink volume captured at startup.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+## Milestones
+Please refer to the [Issue page](https://github.com/TeamSOBITS/sobits_tts/issues) for current bugs and feature requests.
 
-## マイルストーン
-
-
-現時点のバグや新規機能の依頼を確認するために[Issueページ](https://github.com/TeamSOBITS/sobits_tts/issues)をご覧ください．
-
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
