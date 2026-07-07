@@ -25,7 +25,7 @@ def generate_launch_description():
 
     supertonic_voice_name_arg = DeclareLaunchArgument(
         'supertonic_voice_name',
-        default_value='F1',
+        default_value='F3',
         description='Voice name for Supertonic (e.g., F1, F2, M1, M2).'
     )
 
@@ -37,7 +37,7 @@ def generate_launch_description():
 
     supertonic_total_steps_arg = DeclareLaunchArgument(
         'supertonic_total_steps',
-        default_value='5',
+        default_value='8',
         description='Diffusion steps. Higher values improve quality but increase latency.'
     )
 
