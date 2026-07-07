@@ -72,7 +72,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'openpico.language': LaunchConfiguration('openpico_language')},
             {'openpico.voice_data_ja': LaunchConfiguration('openpico_voice_data_ja')},
             {'openpico.dic_path_ja': LaunchConfiguration('openpico_dic_path_ja')},

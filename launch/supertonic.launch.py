@@ -79,7 +79,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'supertonic.device': LaunchConfiguration('supertonic_device')},
             {'supertonic.voice_name': LaunchConfiguration('supertonic_voice_name')},
             {'supertonic.language': LaunchConfiguration('supertonic_language')}, 

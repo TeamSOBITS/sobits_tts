@@ -63,7 +63,7 @@ def generate_launch_description():
             {
                 'tts_name': 'piper',
                 'speaker_volume': LaunchConfiguration('speaker_volume'),
-                'playback_speed': LaunchConfiguration('playback_speed'),
+                'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float),
                 'piper.model_path': LaunchConfiguration('piper_model'),
                 'piper.length_scale': LaunchConfiguration('piper_length_scale'),
                 'piper.noise_scale': LaunchConfiguration('piper_noise_scale'),

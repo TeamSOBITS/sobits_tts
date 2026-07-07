@@ -103,7 +103,7 @@ class TTSActionServer(Node):
                 pygame.mixer.quit()
                 self.get_logger().info('Pygame mixer quit.')
             except Exception as e:
-                 self.get_logger().error(f"Error quitting Pygame mixer: {e}")
+                self.get_logger().error(f"Error quitting Pygame mixer: {e}")
         self._restore_output_volume()
         try:
             super().destroy_node()

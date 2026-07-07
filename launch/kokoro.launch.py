@@ -67,7 +67,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'kokoro.lang_code': LaunchConfiguration('kokoro_lang_code')},
             {'kokoro.voice': LaunchConfiguration('kokoro_voice')},
             {'kokoro.speech_speed': LaunchConfiguration('kokoro_speech_speed')},

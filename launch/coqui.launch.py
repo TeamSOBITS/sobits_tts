@@ -68,7 +68,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'coqui.url': LaunchConfiguration('coqui_url')},
             {'coqui.add_stop_char': LaunchConfiguration('coqui_add_stop_char')},
             {'coqui.speaker_id': LaunchConfiguration('coqui_speaker_id')},

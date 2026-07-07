@@ -118,7 +118,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
 
             {'openaudio_tts.listen_address': LaunchConfiguration('listen_address')},
             {'openaudio_tts.use_half_precision': ParameterValue(LaunchConfiguration('use_half_precision'), value_type=bool)},

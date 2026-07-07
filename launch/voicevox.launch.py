@@ -98,7 +98,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'voicevox.style_id': ParameterValue(LaunchConfiguration('voicevox_style_id'), value_type=int)},
             {'voicevox.model_file_num': ParameterValue(LaunchConfiguration('voicevox_model_file_num'))},
             {'voicevox.speed_scale': ParameterValue(LaunchConfiguration('voicevox_speed_scale'), value_type=float)},

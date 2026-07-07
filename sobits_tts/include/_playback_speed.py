@@ -78,4 +78,7 @@ def _atempo_filter(data: np.ndarray, sample_rate: int, speed: float, layout: str
         except (av.error.EOFError, av.error.BlockingIOError):
             break
 
+    if not out_chunks:
+        raise ValueError("atempo filter produced no output frames; input audio may be too short.")
+
     return np.concatenate(out_chunks, axis=1)

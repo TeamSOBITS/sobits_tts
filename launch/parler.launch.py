@@ -56,7 +56,7 @@ def generate_launch_description():
         parameters=[
             {'tts_name': LaunchConfiguration('tts_name')},
             {'speaker_volume': LaunchConfiguration('speaker_volume')},
-            {'playback_speed': LaunchConfiguration('playback_speed')},
+            {'playback_speed': ParameterValue(LaunchConfiguration('playback_speed'), value_type=float)},
             {'parler_tts.model_name': LaunchConfiguration('parler_tts_model_name')},
             {'parler_tts.description': LaunchConfiguration('parler_tts_description')},
             {'parler_tts.device': LaunchConfiguration('parler_tts_device')},
