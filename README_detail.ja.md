@@ -615,18 +615,18 @@ ros2 param set /tts_action_server supertonic.voice_name M1
 
 | パラメータ名 | 説明 | デフォルト値 |
 | --- | --- | --- |
-| supertonic_voice_name | 話者．M1, M2, M3, M4, M5, F1, F2, F3, F4, F5から選択可能． | 'F1' |
-| supertonic_language | 言語．英語・日本語(`ja`)を含む31言語+言語不明時のフォールバック`na`に対応． | 'en' |
-| supertonic_total_steps | ノイズ除去ステップ数．高くすると音質が良くなるが生成時間が遅くなる．| 15 |
-| supertonic_speed | 発話する速度．1.2倍にする場合は`1.2`．上げると読み飛ばしが起こりやすくなる． | 1.05 |
-| supertonic_max_chunk_length | 一度に処理するテキストの最大文字数．| 300 |
-| supertonic_silence_duration | 文と文の間に挿入する無音時間（秒数）．| 0.3 |
+| supertonic.voice_name | 話者．M1, M2, M3, M4, M5, F1, F2, F3, F4, F5から選択可能． | 'F3' |
+| supertonic.language | 言語．英語・日本語(`ja`)を含む31言語+言語不明時のフォールバック`na`に対応． | 'en' |
+| supertonic.total_steps | ノイズ除去ステップ数．高くすると音質が良くなるが生成時間が遅くなる．| 8 |
+| supertonic.speed | 発話する速度．1.2倍にする場合は`1.2`．上げると読み飛ばしが起こりやすくなる． | 1.05 |
+| supertonic.max_chunk_length | 一度に処理するテキストの最大文字数．| 300 |
+| supertonic.silence_duration | 文と文の間に挿入する無音時間（秒数）．| 0.3 |
 
 以下のパラメータはlaunch起動後に動的に変更不可能なもの（変更にはノードの再起動が必要）です．
 
 | パラメータ名 | 説明 | デフォルト値 |
 | --- | --- | --- |
-| supertonic_device | 使用する計算デバイス．現在はCPU専用で動作し，`cpu`以外を指定しても警告ログを出してCPUにフォールバックする（将来のGPU対応に向けたパラメータ）． | 'cpu' |
+| supertonic.device | 使用する計算デバイス．現在はCPU専用で動作し，`cpu`以外を指定しても警告ログを出してCPUにフォールバックする（将来のGPU対応に向けたパラメータ）． | 'cpu' |
 
 <p align="right">(<a href="#supertonic-top">Supertonic TTSトップに戻る</a>)</p>
 

@@ -701,18 +701,18 @@ The following parameters can be dynamically changed with `ros2 param set` after 
 
 | Parameter Name | Description | Default Value |
 | --- | --- | --- |
-| supertonic_voice_name | Speaker selection. Available options: M1, M2, M3, M4, M5, F1, F2, F3, F4, F5. | 'F1' |
-| supertonic_language | Language code. Supports 31 languages including English and Japanese (`ja`), plus `na` as a fallback for unknown languages. | 'en' |
-| supertonic_total_steps | Number of denoising steps. Increasing this improves audio quality but slows down generation time. | 15 |
-| supertonic_speed | Speech speed. For example, set to `1.2` for 1.2x speed. Higher values may lead to skipped words. | 1.05 |
-| supertonic_max_chunk_length | The maximum number of characters to process in a single chunk. | 300 |
-| supertonic_silence_duration | The duration of silence (in seconds) to insert between sentences. | 0.3 |
+| supertonic.voice_name | Speaker selection. Available options: M1, M2, M3, M4, M5, F1, F2, F3, F4, F5. | 'F3' |
+| supertonic.language | Language code. Supports 31 languages including English and Japanese (`ja`), plus `na` as a fallback for unknown languages. | 'en' |
+| supertonic.total_steps | Number of denoising steps. Increasing this improves audio quality but slows down generation time. | 8 |
+| supertonic.speed | Speech speed. For example, set to `1.2` for 1.2x speed. Higher values may lead to skipped words. | 1.05 |
+| supertonic.max_chunk_length | The maximum number of characters to process in a single chunk. | 300 |
+| supertonic.silence_duration | The duration of silence (in seconds) to insert between sentences. | 0.3 |
 
 The following parameter cannot be changed dynamically after launch (requires a node restart).
 
 | Parameter Name | Description | Default Value |
 | --- | --- | --- |
-| supertonic_device | The computing device to use. Currently CPU-only; any value other than `cpu` falls back to CPU with a warning log (kept as a parameter for future GPU support). | 'cpu' |
+| supertonic.device | The computing device to use. Currently CPU-only; any value other than `cpu` falls back to CPU with a warning log (kept as a parameter for future GPU support). | 'cpu' |
 
 <p align="right">(<a href="#supertonic-top">Back to Supertonic TTS Top</a>)</p>
 
