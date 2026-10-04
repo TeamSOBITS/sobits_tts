@@ -115,7 +115,8 @@ def load_overrides(path: str) -> dict:
     import yaml
     with open(path, encoding='utf-8') as f:
         data = yaml.safe_load(f) or {}
-    return {str(text): (value or {}) for text, value in data.items()}
+    # split_text と同じく末尾の句点を落としてから照合する(「…ですね。」と「…ですね」は同じ文)
+    return {re.sub(r'[。．.]+$', '', str(text).strip()): (value or {}) for text, value in data.items()}
 
 
 def chunk_seed(chunk: str, overrides: dict, seed: int) -> int:
