@@ -43,7 +43,8 @@ def resolve_path(path: str) -> str:
 
 def split_text(text: str, max_chunk_length: int = MAX_CHUNK_LENGTH) -> List[str]:
     # 1文ずつに分ける(文の組み合わせが変わっても同じ文は同じキャッシュを使えるように)．
-    # 長すぎる文は読点で分け，句読点だけの断片は捨てる
+    # 長すぎる文は読点で分け，句読点だけの断片は捨てる．
+    # 末尾の句点は落とす(「…ですか」と，後ろに文が続いた「…ですか。」を同じ文として扱うため)．疑問符などは抑揚が変わるので残す
     chunks = []
     for sentence in re.split(r'(?<=[。！？!?\n])', text.strip()):
         current = ''
@@ -53,7 +54,7 @@ def split_text(text: str, max_chunk_length: int = MAX_CHUNK_LENGTH) -> List[str]
                 current = ''
             current += phrase
         chunks.append(current)
-    chunks = [c.strip() for c in chunks if re.sub(r'[\s。、，,．.！？!?]', '', c)]
+    chunks = [re.sub(r'[。．.]+$', '', c.strip()) for c in chunks if re.sub(r'[\s。、，,．.！？!?]', '', c)]
     return chunks or [text]
 
 
