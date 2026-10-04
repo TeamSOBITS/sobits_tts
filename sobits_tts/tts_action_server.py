@@ -77,7 +77,9 @@ class TTSActionServer(Node):
         self._initialize_output_volume()
 
         try:
-            pygame.mixer.init(frequency=self.sample_rate, size=-16, channels=1, buffer=512)
+            # TTSモデルが出力のサンプルレートを指定していれば，それでミキサーを初期化する(未指定のモデルは従来どおり)
+            mixer_sample_rate = getattr(self._tts_model_instance, 'output_sample_rate', self.sample_rate)
+            pygame.mixer.init(frequency=mixer_sample_rate, size=-16, channels=1, buffer=512)
             self.get_logger().info("Pygame mixer initialized.")
             self._mixer_initialized = True
         except Exception as e:

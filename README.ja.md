@@ -42,6 +42,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 - Open JTalk, SVOX Pico TTS
 - Parler TTS
 - Open Audio TTS
+- Irodori TTS
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -109,6 +110,7 @@ SOBITS TTSは様々なText to Speech (TTS)をROS2のAction通信に対応させ�
 | [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.ja.md#openpico)                        | ☆        | ☆☆☆☆☆ | 英語・日本語に対応 |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.ja.md#parler-tts)                      | ☆☆☆☆   | ☆ | 英語・日本語などに対応，感情指定が可能なモデルあり | 
 | [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.ja.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | 英語・日本語などに対応，音声クローン，感情指定可 |
+| [Irodori](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.ja.md#irodori-tts)                  | ☆☆☆☆☆ | ☆☆☆ | 日本語のみに対応．音声クローン，説明文や絵文字による感情指定可 |
 
 
 ### 共通パラメータ

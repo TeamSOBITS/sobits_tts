@@ -1,2 +1,4 @@
 # HTS voice models (downloaded by install/openpico.sh)
 install/*.htsvoice
+# Irodori TTS repository and venv (created by install/irodori.sh)
+install/irodori/

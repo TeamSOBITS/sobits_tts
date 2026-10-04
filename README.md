@@ -38,6 +38,7 @@ Currently, it supports the following TTS engines:
 - Open JTalk, SVOX Pico TTS
 - Parler TTS
 - Open Audio TTS
+- Irodori TTS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,6 +117,7 @@ Click on each TTS name to view download and execution instructions.
 | [OpenPico](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#openpico)                        | ☆        | ☆☆☆☆☆ | Supports English and Japanese. |
 | [Parler](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#parler-tts)                      | ☆☆☆☆   | ☆ | Supports English, Japanese, etc. Includes models with emotion specification | 
 | [OpenAudio](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#open-audio-tts)                  | ☆☆☆☆☆ | ☆ | Supports English, Japanese, etc., voice cloning, and emotion specification. |
+| [Irodori](https://github.com/TeamSOBITS/sobits_tts/blob/jazzy-devel/README_detail.md#irodori-tts)                  | ☆☆☆☆☆ | ☆☆☆ | Supports only Japanese. Voice cloning and emotion control via captions or emoji. |
 
 ### Common Parameters
 

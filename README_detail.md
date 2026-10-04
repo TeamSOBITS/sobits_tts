@@ -17,6 +17,7 @@
 <li><a href="#voicevox-tts">Voicevox TTS</a></li>
 <li><a href="#supertonic-tts">Supertonic TTS</a></li>
 <li><a href="#piper-tts">Piper TTS</a></li>
+<li><a href="#irodori-tts">Irodori TTS</a></li>
 </ol>
 </details>
 
@@ -788,5 +789,146 @@ ros2 param set /tts_action_server piper.volume 5.0
 
 <p align="right">(<a href="#piper-top">Back to Piper TTS Top</a>)</p>
 
+
+<a name="irodori-top"></a>
+
+# Irodori TTS
+[Irodori TTS](https://github.com/Aratako/Irodori-TTS) is a Japanese-only, Flow Matching-based text-to-speech model. It speaks in the voice of a given reference voice, and the voice, speaking style, and emotion can also be described by a caption. Emoji in the text (e.g. 🤭, 😮‍💨) add expressions such as laughing or sighing. This package currently uses Irodori-TTS-v4.1-Small, and a GPU is recommended.
+
+Irodori TTS needs transformers 5 and torch 2.10, which conflict with other TTS engines (e.g. Kokoro), so it runs in its own venv created under `install/irodori/`. `tts_action_server` starts an API server (listening on 127.0.0.1 only) in this venv and sends synthesis requests to it.
+
+<p align="right">(<a href="#irodori-top">Back to Irodori TTS Top</a>)</p>
+
+## Installation
+1. Move to the `install` directory of `sobits_tts`
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. Install the model. Add -c at the end to use the CPU.
+    ```bash
+    bash irodori.sh
+    ```
+    The model is pre-downloaded and cached during installation, so the node can start without a network connection afterward.
+
+<p align="right">(<a href="#irodori-top">Back to Irodori TTS Top</a>)</p>
+
+## Launch and Usage
+1. Launch [irodori.launch.py](launch/irodori.launch.py). Startup takes a while because the model is loaded and warmed up.
+    ```sh
+    ros2 launch sobits_tts irodori.launch.py irodori_ref_wav:=/path/to/voice.wav
+    ```
+
+2. Start the Action Client
+
+Generated speech is cached in `irodori.cache_dir`, and the same text in the same voice is played from the cache.
+Long texts are split at sentence boundaries, generated, and cached per split unit.
+
+<p align="right">(<a href="#irodori-top">Back to Irodori TTS Top</a>)</p>
+
+## Emotion and Speaking Style Control
+Emotion and speaking style can be controlled with the caption (`irodori.caption`) and emoji in the text.
+
+1. Using the caption
+    Describe the voice, speaking style, and emotion in Japanese. Combined with the reference voice (`irodori.ref_wav`), only the speaking style changes while the voice stays the same.
+    ```sh
+    ros2 param set /tts_action_server irodori.caption "嬉しそうに、明るく弾んだ声で話している"
+    ```
+
+2. Using emoji
+    Put emoji at the beginning or in the middle of the text to add expressions such as emotions, laughing, or sighing at that position.
+
+    Example
+    ```
+    Joyful: 😆ありがとうございます！またお越しください！
+    Laugh: 🤭ふふっ、2つも頼んでくださるなんて、嬉しいです。
+    Flustered: 😰あっ、す、すみません！置くのに失敗しちゃいました。
+    ```
+
+<details>
+ <summary>All available emoji</summary>
+
+| Emoji | Effect |
+| --- | --- |
+| 👂 | Whisper |
+| 😮‍💨 | Breath / sigh |
+| ⏸️ | Pause |
+| 🤭 | Laugh / giggle |
+| 🥵 | Moan / groan |
+| 📢 | Echo / reverb |
+| 😏 | Teasing |
+| 🥺 | Trembling voice |
+| 🌬️ | Out of breath |
+| 😮 | Gasp |
+| 👅 | Licking / chewing sounds |
+| 💋 | Lip smack |
+| 🫶 | Tenderly |
+| 😭 | Crying / sobbing |
+| 😱 | Scream |
+| 😪 | Sleepy / languid |
+| 😴 | Sleep talking / snoring |
+| ⏩ | Fast / hurried |
+| 📞 | Over the phone |
+| 🐢 | Slowly |
+| 🥤 | Swallowing |
+| 🤧 | Cough / sniffle |
+| 😒 | Tutting |
+| 😰 | Flustered / stammering |
+| 😆 | Joyful |
+| 💥 | Forcefully |
+| 😠 | Angry / sulky |
+| 😲 | Surprised |
+| 🥱 | Yawn |
+| 😖 | Agonizingly |
+| 😟 | Worried |
+| 🫣 | Embarrassed |
+| 🙄 | Exasperatedly |
+| 😊 | Cheerful |
+| 😎 | Proud / confident |
+| 👌 | Backchannel (nodding) |
+| 🙏 | Pleading |
+| 🥴 | Drunkenly |
+| 🎵 | Humming |
+| 🤐 | Muffled |
+| 😌 | Relieved |
+| 🤔 | Questioning |
+| 💪 | Powerfully |
+| 👃 | Sniffing |
+| 📖 | Narration |
+</details>
+
+<p align="right">(<a href="#irodori-top">Back to Irodori TTS Top</a>)</p>
+
+## Parameters
+You can set the following parameters in [irodori.launch.py](launch/irodori.launch.py).
+
+Example: To change irodori.num_steps to 24
+```sh
+ros2 param set /tts_action_server irodori.num_steps 24
+```
+
+The following parameters can be dynamically changed with `ros2 param set` after launch, and take effect on the next utterance.
+
+| Parameter Name | Description | Default Value |
+| --- | --- | --- |
+| irodori.ref_wav | Reference voice wav file. `package://<package>/<path>` is also allowed. About 30 seconds of the same speaker in total works well. If empty, speech is generated without a reference. | '' |
+| irodori.caption | Caption describing the voice, speaking style, and emotion (e.g. `落ち着いた大人の女性`, `楽しそうに話している`). A caption that conflicts with the reference voice may make the audio unstable. | '' |
+| irodori.num_steps | Number of sampling steps. Increasing this improves audio quality but slows down generation. It is not part of the cache key. | 16 |
+| irodori.seed | Random seed. The same voice, text, and seed give the same speech. | 0 |
+
+The following parameters cannot be changed dynamically after launch (requires a node restart).
+
+| Parameter Name | Description | Default Value |
+| --- | --- | --- |
+| irodori.checkpoint | Hugging Face checkpoint name. | 'Aratako/Irodori-TTS-v4.1-Small' |
+| irodori.device | The computing device to use (`cuda` or `cpu`). | 'cuda' |
+| irodori.port | Port of the API server. If an API server is already running on this port, it is reused. | 50070 |
+| irodori.cache_dir | Directory to cache generated speech. | '~/.sobits_tts/irodori/cache' |
+
+> [!NOTE]
+> The model and code are MIT licensed, but do not use a real person's voice as the reference without their explicit consent.
+> Generated speech also contains an inaudible watermark by [SilentCipher](https://github.com/SesameAILabs/silentcipher).
+
+<p align="right">(<a href="#irodori-top">Back to Irodori TTS Top</a>)</p>
 
 <p align="right">(<a href="#readme-top">Back to Page Top</a>)</p>

@@ -16,6 +16,7 @@
     <li><a href="#voicevox-tts">Voicevox TTS</a></li>
     <li><a href="#supertonic-tts">Supertonic TTS</a></li>
     <li><a href="#piper-tts">Piper TTS</a></li>
+    <li><a href="#irodori-tts">Irodori TTS</a></li>
   </ol>
 </details>
 
@@ -690,5 +691,146 @@ ros2 param set /tts_action_server piper.volume 5.0
 
 
 <p align="right">(<a href="#piper-top">Piper TTSトップに戻る</a>)</p>
+
+<a name="irodori-top"></a>
+
+# Irodori TTS
+[Irodori TTS](https://github.com/Aratako/Irodori-TTS)はFlow Matchingベースの日本語専用のテキスト読み上げモデルです．声の見本(参照音声)を渡すとその声で話し，説明文(キャプション)で声や話し方，感情を指定することもできます．また，文中に絵文字(例：🤭，😮‍💨)を入れると，笑いやため息などの感情表現を加えられます．現在Irodori-TTS-v4.1-Smallを使用しており，GPUでの使用を推奨します．
+
+Irodori TTSはtransformers 5系とtorch 2.10系を必要とし，他のTTS(Kokoroなど)と依存関係が衝突するため，`install/irodori/`に作成する専用のvenvで動作します．`tts_action_server`はこのvenvでAPIサーバ(127.0.0.1のみで待ち受け)を起動し，合成を依頼します．
+
+<p align="right">(<a href="#irodori-top">Irodori TTSトップに戻る</a>)</p>
+
+## インストール方法
+1. sobits_ttsのinstallディレクトリに移動
+    ```sh
+    cd ~/colcon_ws/src/sobits_tts/install/
+    ```
+
+2. モデルをインストール．CPUを使用する場合は-cを末尾に追加．
+    ```bash
+    bash irodori.sh
+    ```
+    インストール時にモデルを事前ダウンロードしてキャッシュするため，実行時はネットワーク接続がなくても起動できます．
+
+<p align="right">(<a href="#irodori-top">Irodori TTSトップに戻る</a>)</p>
+
+## 実行・操作方法
+1. [irodori.launch.py](launch/irodori.launch.py)を起動．起動時にモデルの読み込みと空打ち(ウォームアップ)を行うため，起動には時間がかかります．
+    ```sh
+    ros2 launch sobits_tts irodori.launch.py irodori_ref_wav:=/path/to/voice.wav
+    ```
+
+2. Action Clientを起動
+
+生成した音声は`irodori.cache_dir`にキャッシュされ，同じ声で同じ文を話すときはキャッシュから再生されます．
+長い文は句点などで分割して生成し，分割した単位でキャッシュします．
+
+<p align="right">(<a href="#irodori-top">Irodori TTSトップに戻る</a>)</p>
+
+## 感情・話し方のコントロール
+説明文(`irodori.caption`)と，発話させるテキスト中の絵文字で，感情や話し方を制御できます．
+
+1. 説明文で指定する
+    声や話し方，感情を文章で指定します．声の見本(`irodori.ref_wav`)と組み合わせると，声はそのままで話し方だけを変えられます．
+    ```sh
+    ros2 param set /tts_action_server irodori.caption "嬉しそうに、明るく弾んだ声で話している"
+    ```
+
+2. 絵文字で指定する
+    テキストの先頭や途中に絵文字を入れると，その位置に感情表現や笑い・ため息などの音が加わります．
+
+    例
+    ```
+    喜び: 😆ありがとうございます！またお越しください！
+    笑い: 🤭ふふっ、2つも頼んでくださるなんて、嬉しいです。
+    慌てる: 😰あっ、す、すみません！置くのに失敗しちゃいました。
+    ```
+
+<details>
+ <summary>使用できるすべての絵文字</summary>
+
+| 絵文字 | 効果 |
+| --- | --- |
+| 👂 | 囁き(耳元の音) |
+| 😮‍💨 | 吐息(溜息、寝息) |
+| ⏸️ | 間(沈黙) |
+| 🤭 | 笑い(くすくす、含み笑い) |
+| 🥵 | 喘ぎ(うめき声、唸り声) |
+| 📢 | エコー(リバーブ) |
+| 😏 | からかう(甘えるように) |
+| 🥺 | 震え声(自信なさげに) |
+| 🌬️ | 息切れ(荒い息遣い、呼吸音) |
+| 😮 | 息をのむ(Gasp) |
+| 👅 | 舐める音(咀嚼音、水音) |
+| 💋 | リップノイズ(Lip smack) |
+| 🫶 | 優しく(Tenderly) |
+| 😭 | 泣き声(嗚咽、悲しみ) |
+| 😱 | 悲鳴(叫び、絶叫) |
+| 😪 | 眠そう(気だるげに) |
+| 😴 | 寝言(いびき) |
+| ⏩ | 早口(一気に、急いで) |
+| 📞 | 電話越し(スピーカー越し) |
+| 🐢 | ゆっくり(Slowly) |
+| 🥤 | 飲み込む(唾を飲む音) |
+| 🤧 | 咳・鼻(咳き込み、鼻すすり) |
+| 😒 | 舌打ち(Tutting) |
+| 😰 | 慌てる(動揺、緊張、どもり) |
+| 😆 | 喜び(嬉しそうに) |
+| 💥 | 勢いよく(力強い勢い) |
+| 😠 | 怒り(不満げ、拗ねる) |
+| 😲 | 驚き(感嘆) |
+| 🥱 | あくび(Yawn) |
+| 😖 | 苦しげ(Agonizingly) |
+| 😟 | 心配(不安そうに) |
+| 🫣 | 照れ(恥ずかしそうに) |
+| 🙄 | 呆れ(Exasperatedly) |
+| 😊 | 楽しげ(嬉しそうに) |
+| 😎 | 得意げ(自信ありげに) |
+| 👌 | 相槌(頷く音) |
+| 🙏 | 懇願(お願いするように) |
+| 🥴 | 酔う(Drunkenly) |
+| 🎵 | 鼻歌(Humming) |
+| 🤐 | 口を塞ぐ(Muffled) |
+| 😌 | 安堵(満足げに) |
+| 🤔 | 疑問(Questioning) |
+| 💪 | 力強く(力を込めて) |
+| 👃 | 嗅ぐ音(匂いを嗅ぐ音) |
+| 📖 | 朗読(ナレーション) |
+</details>
+
+<p align="right">(<a href="#irodori-top">Irodori TTSトップに戻る</a>)</p>
+
+## パラメータ
+[irodori.launch.py](launch/irodori.launch.py)で以下のパラメータを指定できます．
+
+例：irodori.num_stepsを24に変更する場合
+```sh
+ros2 param set /tts_action_server irodori.num_steps 24
+```
+
+以下のパラメータはlaunch起動後も`ros2 param set`で動的に変更可能で，次の発話から反映されます．
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| irodori.ref_wav | 声の見本(参照音声)のwavファイル．`package://<パッケージ名>/<パス>`形式も可．同じ人の声で合計30秒程度あるとよい．空の場合は見本なしで生成する． | '' |
+| irodori.caption | 声や話し方，感情の説明文(例：`落ち着いた大人の女性`，`楽しそうに話している`)．見本の声と食い違う説明文を指定すると音質が不安定になることがある． | '' |
+| irodori.num_steps | 生成のステップ数．高くすると音質が良くなるが生成時間が遅くなる．キャッシュのキーには含まれない． | 16 |
+| irodori.seed | 乱数のシード．同じ声・同じ文・同じシードでは同じ音声になる． | 0 |
+
+以下のパラメータはlaunch起動後に動的に変更不可能なもの（変更にはノードの再起動が必要）です．
+
+| パラメータ名 | 説明 | デフォルト値 |
+| --- | --- | --- |
+| irodori.checkpoint | Hugging Faceのチェックポイント名． | 'Aratako/Irodori-TTS-v4.1-Small' |
+| irodori.device | 使用する計算デバイス(`cuda`または`cpu`)． | 'cuda' |
+| irodori.port | APIサーバのポート番号．同じポートでAPIサーバが起動済みの場合はそれを使う． | 50070 |
+| irodori.cache_dir | 生成した音声のキャッシュ先． | '~/.sobits_tts/irodori/cache' |
+
+> [!NOTE]
+> モデルとコードはMITライセンスですが，本人の明確な同意なしに実在の人物の声を見本にしてはいけません．
+> また，生成した音声には[SilentCipher](https://github.com/SesameAILabs/silentcipher)による聞こえない電子透かしが入ります．
+
+<p align="right">(<a href="#irodori-top">Irodori TTSトップに戻る</a>)</p>
 
 <p align="right">(<a href="#readme-top">ページトップに戻る</a>)</p>
