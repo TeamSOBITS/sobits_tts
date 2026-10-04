@@ -25,6 +25,16 @@ DEFAULT_CACHE_DIR = os.path.expanduser('~/.sobits_tts/irodori/cache')
 MAX_CHUNK_LENGTH = 80       # Irodoriは1回に30秒までしか生成できないため，長い文はこの文字数を目安に分割する
 CHUNK_SILENCE_DURATION = 0.15
 
+# 語尾の余計な音(「…どうぞ。」のあとの「はっ」「あっ」)を切る基準.
+# Irodori は話し終わったあと 0.4秒以上の無音を置いてから短い音を出すことがある。文の途中の自然な間は 0.32秒以下だった
+ARTIFACT_LEVEL_DB = -40.0      # これより大きい 20ms 区間を「音がある」とみなす
+ARTIFACT_MIN_GAP_SEC = 0.4     # この長さ以上の無音のあとに
+ARTIFACT_MAX_BURST_SEC = 0.5   # この長さ以下の音で終わっていたら、その音を切る
+# 短い無音のあとの、ごく短い音(息・舌打ちのような「っ」)も切る。音節は 0.1秒より長いので、本当の語尾は切らない
+CLICK_MIN_GAP_SEC = 0.1
+CLICK_MAX_BURST_SEC = 0.1
+EDGE_SILENCE_SEC = 0.1         # 前後の無音はこの長さだけ残す
+
 
 def get_package_path() -> str:
     share_dir = get_package_share_directory('sobits_tts')
@@ -55,6 +65,70 @@ def split_text(text: str, max_chunk_length: int = MAX_CHUNK_LENGTH) -> List[str]
         chunks.append(current)
     chunks = [c.strip() for c in chunks if re.sub(r'[\s。、，,．.！？!?]', '', c)]
     return chunks or [text]
+
+
+def trim_artifacts(audio: np.ndarray, sample_rate: int) -> np.ndarray:
+    """語尾の余計な短い音を切り、前後の長い無音を EDGE_SILENCE_SEC まで詰める(音が無ければそのまま返す)."""
+    mono = audio if audio.ndim == 1 else audio.mean(axis=1)
+    hop = max(1, int(sample_rate * 0.02))
+    frames = len(mono) // hop
+    if frames == 0:
+        return audio
+    level = 20 * np.log10(np.sqrt(np.mean(mono[:frames * hop].reshape(frames, hop) ** 2, axis=1)) + 1e-9)
+    voiced = level > ARTIFACT_LEVEL_DB
+    segments, start = [], None
+    for i, v in enumerate(voiced):
+        if v and start is None:
+            start = i
+        elif not v and start is not None:
+            segments.append((start, i))
+            start = None
+    if start is not None:
+        segments.append((start, frames))
+    if not segments:
+        return audio
+    min_gap, max_burst = ARTIFACT_MIN_GAP_SEC / 0.02, ARTIFACT_MAX_BURST_SEC / 0.02
+    while len(segments) >= 2:
+        (_, prev_end), (last_start, last_end) = segments[-2], segments[-1]
+        gap, burst = last_start - prev_end, last_end - last_start
+        if (gap >= min_gap and burst <= max_burst) or \
+                (gap >= CLICK_MIN_GAP_SEC / 0.02 and burst <= CLICK_MAX_BURST_SEC / 0.02):
+            segments.pop()
+        else:
+            break
+    edge = int(EDGE_SILENCE_SEC * sample_rate)
+    begin = max(0, segments[0][0] * hop - edge)
+    end = min(len(audio), segments[-1][1] * hop + edge)
+    return audio[begin:end]
+
+
+def load_overrides(path: str) -> dict:
+    """文ごとの作り方の上書き {文: {"seed": 乱数の種, "speed": 再生の速さ}} を読む(無ければ空).
+
+    Irodori は文によって語尾に余計な音が付いたり、商品名などをゆっくり読みすぎたりする。そういう文だけ
+    別の seed で作り直したものを選び、それでも遅ければその文だけ速く再生する(robot_cafe_projects の check_speech が作る)。
+    """
+    path = resolve_path(path)
+    if not path or not os.path.exists(path):
+        return {}
+    import yaml
+    with open(path, encoding='utf-8') as f:
+        data = yaml.safe_load(f) or {}
+    return {str(text): (value or {}) for text, value in data.items()}
+
+
+def chunk_seed(chunk: str, overrides: dict, seed: int) -> int:
+    """この文を作る seed(上書きが無ければ全体の seed)."""
+    return int(overrides.get(chunk, {}).get('seed', seed))
+
+
+def stretch(audio: np.ndarray, sample_rate: int, speed: float) -> np.ndarray:
+    """声の高さを変えずに speed 倍の速さにする(1.0 ならそのまま)."""
+    if abs(speed - 1.0) < 1e-6 or len(audio) == 0:
+        return audio
+    from sobits_tts.include._playback_speed import _atempo_filter
+    mono = audio if audio.ndim == 1 else audio.mean(axis=1)
+    return _atempo_filter(mono[:, None].astype(np.float32), sample_rate, float(speed), "mono")[0]
 
 
 def cache_key(text: str, ref_wav: str, caption: str, seed: int, checkpoint: str) -> str:
@@ -177,6 +251,13 @@ class IrodoriTTSModel(BaseTTSModel):
         self._node.declare_parameter('irodori.device', DEFAULT_DEVICE)
         self._node.declare_parameter('irodori.port', DEFAULT_PORT)
         self._node.declare_parameter('irodori.cache_dir', DEFAULT_CACHE_DIR)
+        # True なら語尾の余計な音を切り、前後の無音を詰めて再生する(キャッシュの音声はそのまま)
+        self._node.declare_parameter('irodori.trim_artifacts', False)
+        # True なら起動時にモデルを読まず、キャッシュに無い文が来たときに初めて読む。
+        # 話す文を全部事前生成しておけば GPU を使わない(同じ GPU の InsightFace などに空けておける)
+        self._node.declare_parameter('irodori.lazy_start', False)
+        # 文ごとの seed・再生の速さの上書き(yaml。package:// も可。load_overrides)
+        self._node.declare_parameter('irodori.overrides_file', '')
 
         self.checkpoint = self._node.get_parameter('irodori.checkpoint').get_parameter_value().string_value
         device = self._node.get_parameter('irodori.device').get_parameter_value().string_value
@@ -184,13 +265,27 @@ class IrodoriTTSModel(BaseTTSModel):
         self.cache_dir = resolve_path(self._node.get_parameter('irodori.cache_dir').get_parameter_value().string_value)
         os.makedirs(self.cache_dir, exist_ok=True)
 
-        ref_wav, caption, num_steps, _ = self._get_voice_params()
+        self.overrides = load_overrides(
+            self._node.get_parameter('irodori.overrides_file').get_parameter_value().string_value)
+        if self.overrides:
+            self._logger.info(f"[Irodori] {len(self.overrides)} 文は seed・速さを上書きして話します")
         self.server = IrodoriServer(self._logger, port, self.checkpoint, device)
         atexit.register(self.server.stop)
+        self._server_started = False
+        if self._node.get_parameter('irodori.lazy_start').get_parameter_value().bool_value:
+            self._logger.info(f"[Irodori] キャッシュの音声だけで話します(キャッシュに無い文が来たらモデルを読みます). Cache: {self.cache_dir}")
+        else:
+            self._start_server()
+
+    def _start_server(self):
+        """Irodori サーバー(モデル)を起動する. 起動済みなら何もしない."""
+        if self._server_started:
+            return
+        ref_wav, caption, num_steps, _ = self._get_voice_params()
         if not self.server.start(ref_wav, caption, num_steps):
             self.server.stop()
             raise RuntimeError("Irodori TTS initialization failed.")
-
+        self._server_started = True
         YELLOW = '\033[93m'
         ENDC = '\033[0m'
         self._logger.info(f"{YELLOW}[Irodori] Server initialized. Cache: {self.cache_dir}{ENDC}")
@@ -209,15 +304,22 @@ class IrodoriTTSModel(BaseTTSModel):
             start_time = time.time()
             audio_chunks, num_cached, actual_sr = [], 0, None
             for chunk in split_text(text):
-                cache_path = os.path.join(self.cache_dir, f"{cache_key(chunk, ref_wav, caption, seed, self.checkpoint)}.wav")
+                chunk_s = chunk_seed(chunk, self.overrides, seed)
+                cache_path = os.path.join(self.cache_dir, f"{cache_key(chunk, ref_wav, caption, chunk_s, self.checkpoint)}.wav")
                 if os.path.exists(cache_path):
                     num_cached += 1
                 else:
-                    wav_bytes = self.server.synthesize(chunk, ref_wav, caption, num_steps, seed)
+                    if not self._server_started:
+                        self._logger.warn(f"[Irodori] キャッシュに無い文なのでモデルを読み込みます(数十秒かかります): {chunk}")
+                        self._start_server()
+                    wav_bytes = self.server.synthesize(chunk, ref_wav, caption, num_steps, chunk_s)
                     with open(cache_path + '.tmp', 'wb') as f:
                         f.write(wav_bytes)
                     os.replace(cache_path + '.tmp', cache_path)
                 audio, actual_sr = sf.read(cache_path, dtype='float32')
+                if self._node.get_parameter('irodori.trim_artifacts').get_parameter_value().bool_value:
+                    audio = trim_artifacts(audio, actual_sr)
+                audio = stretch(audio, actual_sr, float(self.overrides.get(chunk, {}).get('speed', 1.0)))
                 if audio_chunks:
                     audio_chunks.append(np.zeros(int(CHUNK_SILENCE_DURATION * actual_sr), dtype=np.float32))
                 audio_chunks.append(audio)

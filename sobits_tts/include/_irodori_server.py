@@ -76,7 +76,10 @@ class IrodoriEngine:
                 seed=int(seed),
             )
             result = self.runtime.synthesize(request)
-        audio = result.audio.float().cpu().numpy().reshape(-1)
+            audio = result.audio.float().cpu().numpy().reshape(-1)
+            # PyTorch は使い終わった GPU メモリを抱え込み、同じ GPU の InsightFace が起動できなくなるので毎回返す
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         buffer = io.BytesIO()
         sf.write(buffer, np.clip(audio, -1.0, 1.0), result.sample_rate, format="WAV", subtype="PCM_16")
         return buffer.getvalue()
